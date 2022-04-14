@@ -227,6 +227,7 @@
 - (NSDate *)at_dateWithIndex:(NSUInteger)index dateFormat:(NSString *)dateFormat {
     NSDateFormatter *formater = [[NSDateFormatter alloc] init];
     formater.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+    formater.timeZone = [NSTimeZone timeZoneWithName:@"GMT"];
     formater.calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
     formater.dateFormat = dateFormat;
     id value = [self at_objectWithIndex:index];
