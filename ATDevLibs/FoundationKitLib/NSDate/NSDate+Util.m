@@ -117,7 +117,10 @@ _Pragma("clang diagnostic pop") \
 + (NSDate *)date:(NSString *)datestr WithFormat:(NSString *)format
 {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setLocale:[NSLocale currentLocale]];
+    //[dateFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
+    dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+    dateFormatter.calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+    
     [dateFormatter setTimeZone:[NSTimeZone localTimeZone]];
     [dateFormatter setDateFormat:format];
     NSDate *date = [dateFormatter dateFromString:datestr];
@@ -133,6 +136,8 @@ _Pragma("clang diagnostic pop") \
 {
     NSDateFormatter *formatter = [NSDateFormatter new];
     //    formatter.locale = [NSLocale currentLocale]; // Necessary?
+    formatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+    formatter.calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
     formatter.dateFormat = format;
     return [formatter stringFromDate:self];
 }
@@ -140,6 +145,8 @@ _Pragma("clang diagnostic pop") \
 - (NSString *) stringWithDateStyle: (NSDateFormatterStyle) dateStyle timeStyle: (NSDateFormatterStyle) timeStyle
 {
     NSDateFormatter *formatter = [NSDateFormatter new];
+    formatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+    formatter.calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
     formatter.dateStyle = dateStyle;
     formatter.timeStyle = timeStyle;
     //    formatter.locale = [NSLocale currentLocale]; // Necessary?
@@ -620,6 +627,8 @@ _Pragma("clang diagnostic pop") \
 {
     NSDateFormatter *fmt = [[NSDateFormatter alloc] init];
     fmt.dateFormat = @"yyyy-MM-dd";
+    fmt.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+    fmt.calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
     NSString *selfStr = [fmt stringFromDate:self];
     return [fmt dateFromString:selfStr];
 }
@@ -627,6 +636,8 @@ _Pragma("clang diagnostic pop") \
 -(NSDate *)dateWithFormatter:(NSString *)formatter {
     NSDateFormatter *fmt = [[NSDateFormatter alloc] init];
     fmt.dateFormat = formatter;
+    fmt.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+    fmt.calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
     NSString *selfStr = [fmt stringFromDate:self];
     return [fmt dateFromString:selfStr];
 }
@@ -1050,7 +1061,8 @@ _Pragma("clang diagnostic pop") \
 + (NSDate *)dateWithString:(NSString *)string format:(NSString *)format {
     NSDateFormatter *inputFormatter = [[NSDateFormatter alloc] init];
     [inputFormatter setDateFormat:format];
-    
+    inputFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+    inputFormatter.calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
     NSDate *date = [inputFormatter dateFromString:string];
     
     return date;
@@ -1330,6 +1342,8 @@ _Pragma("clang diagnostic pop") \
 + (NSString *)currentWeekWithDateString:(NSString*)datestring{
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat:@"yyyy-MM-dd"];
+    formatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+    formatter.calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
     NSDate *date = [formatter dateFromString:datestring];
     return [self currentWeek:date];
 }
