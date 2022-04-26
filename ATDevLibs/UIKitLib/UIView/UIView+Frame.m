@@ -172,6 +172,45 @@
     self.top += top;
 }
 
+#pragma mark - 刘海屏
+
+- (CGFloat)safeAreaBottom {
+    CGFloat gap = 0;
+    if (@available(iOS 11, *)) {
+        if (self.superview.safeAreaLayoutGuide.layoutFrame.size.height > 0) {
+            gap = (self.superview.height - self.superview.safeAreaLayoutGuide.layoutFrame.origin.y - self.superview.safeAreaLayoutGuide.layoutFrame.size.height);
+        }
+    } else {
+        gap = 0;
+    }
+    return gap;
+}
+
+- (CGFloat)safeAreaTop {
+    CGFloat gap = 0;
+    if (@available(iOS 11, *)) {
+        gap = self.superview.safeAreaLayoutGuide.layoutFrame.origin.y;
+    }
+    return gap;
+}
+
+- (CGFloat)safeAreaLeft {
+    CGFloat gap = 0;
+    if (@available(iOS 11, *)) {
+        gap = self.superview.safeAreaLayoutGuide.layoutFrame.origin.x;
+    }
+    return gap;
+}
+
+- (CGFloat)safeAreaRight {
+    CGFloat gap = 0;
+    if (@available(iOS 11, *)) {
+        gap = (self.superview.width - self.superview.safeAreaLayoutGuide.layoutFrame.origin.x - self.superview.safeAreaLayoutGuide.layoutFrame.size.width);
+    }
+    return gap;
+}
+
+
 //加载同名的xib
 + (instancetype)viewFromXib{
     return [[NSBundle mainBundle] loadNibNamed:NSStringFromClass(self) owner:nil options:nil].lastObject;

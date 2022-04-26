@@ -42,6 +42,17 @@
 
 - (void)changeTopByAdding:(NSNumber *)number;
 
+#pragma mark - 刘海屏 iPhoneX adapt
+
+- (CGFloat)safeAreaBottom;
+
+- (CGFloat)safeAreaTop;
+
+- (CGFloat)safeAreaLeft;
+
+- (CGFloat)safeAreaRight;
+
+
 ////加载同名的xib
 //+ (instancetype)viewFromXib;
 
