@@ -36,27 +36,51 @@ void bd_decrypt(double bd_lat, double bd_lon, double *gg_lat, double *gg_lon)
 
 @implementation CoordinateConverter
 
-+ (CLLocationCoordinate2D)at_bdCoordinateFromGPSCoordinate:(CLLocationCoordinate2D)coordinate {
-    CLLocationCoordinate2D marsCoordinate = [self at_marsCoordinateFromGPSCoordinate:coordinate];
-    return [self at_bdCoordinateFromMarsCoordinate:marsCoordinate];
+/// @brief 把经纬度转化为字符串
+/// @param coord 经纬度
+/// @return 返回的字符串格式为  经度,维度
++ (NSString *)stringFromCoord:(CLLocationCoordinate2D)coord {
+    if (CLLocationCoordinate2DIsValid(coord) == NO) {
+        return @"";
+    }
+    return [NSString stringWithFormat:@"%.6f,%.6f", coord.longitude, coord.latitude];
 }
 
-+ (CLLocationCoordinate2D)at_gpsCoordinateFromBDCoordinate:(CLLocationCoordinate2D)coordinate {
-    CLLocationCoordinate2D marsCoordinate = [self at_marsCoordinateFromBDCoordinate:coordinate];
-    return [self at_gpsCoordinateFromMarsCoordinate:marsCoordinate];
+/// @brief 把 x,y形式的字符串，转换为经纬度，注意：经度在前，维度在后
+/// 如无效则返回kCLLocationCoordinate2DInvalid
+/// @param coordString 经纬度字符串格式为 经度,维度
+/// @return 经纬度坐标
++ (CLLocationCoordinate2D)coordinateFromString:(NSString *)coordString {
+    CLLocationCoordinate2D coor = kCLLocationCoordinate2DInvalid;
+
+    NSArray<NSString *> *positionArr = [coordString componentsSeparatedByString:@","];
+    if (positionArr.count == 2) {
+        coor = CLLocationCoordinate2DMake([positionArr.lastObject doubleValue], [positionArr.firstObject doubleValue]);
+    }
+    return coor;
 }
 
-+ (CLLocationCoordinate2D)at_gpsCoordinateFromMarsCoordinate:(CLLocationCoordinate2D)coordinate {
-    CLLocationCoordinate2D marsCoordinate = [self at_marsCoordinateFromGPSCoordinate:coordinate];
-    double latitude = marsCoordinate.latitude - coordinate.latitude;
-    double longitude = marsCoordinate.longitude - coordinate.longitude;
-    latitude = coordinate.latitude - latitude;
-    longitude = coordinate.longitude - longitude;
-    
-    return CLLocationCoordinate2DMake(latitude, longitude);
+/**
+ 世界标准地理坐标(WGS-84) 转换成 百度地理坐标（BD-09)
+ 
+ @param coordinate GPS坐标（WGS-84）
+ @return 百度坐标（BD-09）
+ */
++ (CLLocationCoordinate2D)wgs84ToBd09:(CLLocationCoordinate2D)coordinate {
+    CLLocationCoordinate2D marsCoordinate = [self wgs84ToGcj02:coordinate];
+    return [self gcj02ToBd09:marsCoordinate];
 }
 
-+ (CLLocationCoordinate2D)at_marsCoordinateFromGPSCoordinate:(CLLocationCoordinate2D)coordinate {
+
+
+
+/**
+ 世界标准地理坐标(WGS-84) 转换成 中国国测局地理坐标（GCJ-02）<火星坐标>
+ 
+ @param coordinate GPS坐标（WGS-84）
+ @return 火星坐标（GCJ-02）
+ */
++ (CLLocationCoordinate2D)wgs84ToGcj02:(CLLocationCoordinate2D)coordinate {
     
     const double a = 6378245.0;
 //    const double a = 6378137.0;
@@ -81,13 +105,52 @@ void bd_decrypt(double bd_lat, double bd_lon, double *gg_lat, double *gg_lon)
     return coordinate;
 }
 
-+ (CLLocationCoordinate2D)at_bdCoordinateFromMarsCoordinate:(CLLocationCoordinate2D)coordinate {
+/**
+ 中国国测局地理坐标 火星坐标（GCJ-02） 转换成 世界标准地理坐标（WGS-84）
+ 
+ @param coordinate 火星坐标（GCJ-02）
+ @return GPS坐标（WGS-84）
+ */
++ (CLLocationCoordinate2D)gcj02ToWgs84:(CLLocationCoordinate2D)coordinate {
+    CLLocationCoordinate2D marsCoordinate = [self wgs84ToGcj02:coordinate];
+    double latitude = marsCoordinate.latitude - coordinate.latitude;
+    double longitude = marsCoordinate.longitude - coordinate.longitude;
+    latitude = coordinate.latitude - latitude;
+    longitude = coordinate.longitude - longitude;
+    
+    return CLLocationCoordinate2DMake(latitude, longitude);
+}
+
+/**
+ 百度地理坐标（BD-09) 转换成 世界标准地理坐标（WGS-84）
+ 
+ @param coordinate 百度坐标（BD-09）
+ @return GPS坐标（WGS-84）
+ */
++ (CLLocationCoordinate2D)bd09ToWgs84:(CLLocationCoordinate2D)coordinate {
+    CLLocationCoordinate2D marsCoordinate = [self bd09ToGcj02:coordinate];
+    return [self gcj02ToWgs84:marsCoordinate];
+}
+
+/**
+ 中国国测局地理坐标（GCJ-02）<火星坐标> 转换成 百度地理坐标（BD-09)
+ 
+ @param coordinate 火星坐标（GCJ-02）
+ @return 百度坐标（BD-09）
+ */
++ (CLLocationCoordinate2D)gcj02ToBd09:(CLLocationCoordinate2D)coordinate {
     double latitude, longitude;
     bd_encrypt(coordinate.latitude, coordinate.longitude, &latitude, &longitude);
     return CLLocationCoordinate2DMake(latitude, longitude);
 }
 
-+ (CLLocationCoordinate2D)at_marsCoordinateFromBDCoordinate:(CLLocationCoordinate2D)coordinate {
+/**
+ 百度地理坐标（BD-09) 转换成 中国国测局地理坐标（GCJ-02）<火星坐标>
+ 
+ @param coordinate 百度坐标（BD-09）
+ @return 火星坐标（GCJ-02）
+ */
++ (CLLocationCoordinate2D)bd09ToGcj02:(CLLocationCoordinate2D)coordinate {
     double latitude, longitude;
     bd_decrypt(coordinate.latitude, coordinate.longitude, &latitude, &longitude);
     return CLLocationCoordinate2DMake(latitude, longitude);

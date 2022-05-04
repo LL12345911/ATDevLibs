@@ -313,8 +313,8 @@
 		41D0ECDB2799332D004F2A31 /* GPSConverter */ = {
 			isa = PBXGroup;
 			children = (
-				41D0ECDC2799332D004F2A31 /* CoordinateConverter.m */,
 				41D0ECDD2799332D004F2A31 /* CoordinateConverter.h */,
+				41D0ECDC2799332D004F2A31 /* CoordinateConverter.m */,
 			);
 			path = GPSConverter;
 			sourceTree = "<group>";
