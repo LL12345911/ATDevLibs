@@ -9,6 +9,8 @@
 #ifndef UIKitMacro_h
 #define UIKitMacro_h
 
+#import "WindowsManager.h"
+
 //#import "ATStaticView.h"
 
 // UIImage

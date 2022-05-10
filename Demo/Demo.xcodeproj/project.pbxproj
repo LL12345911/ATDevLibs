@@ -15,6 +15,7 @@
 		412CD9E5251B2834000411B6 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 412CD9E4251B2834000411B6 /* main.m */; };
 		412CD9EF251B2834000411B6 /* DemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 412CD9EE251B2834000411B6 /* DemoTests.m */; };
 		412CD9FA251B2834000411B6 /* DemoUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 412CD9F9251B2834000411B6 /* DemoUITests.m */; };
+		4175D4162829F8D800071C04 /* WindowsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4175D4142829F8D700071C04 /* WindowsManager.m */; };
 		41D0ED5E2799332D004F2A31 /* CoordinateConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = 41D0ECDC2799332D004F2A31 /* CoordinateConverter.m */; };
 		41D0ED5F2799332D004F2A31 /* MarsEventBus.m in Sources */ = {isa = PBXBuildFile; fileRef = 41D0ECDF2799332D004F2A31 /* MarsEventBus.m */; };
 		41D0ED602799332D004F2A31 /* ATMacro.m in Sources */ = {isa = PBXBuildFile; fileRef = 41D0ECE22799332D004F2A31 /* ATMacro.m */; };
@@ -96,6 +97,8 @@
 		412CD9F5251B2834000411B6 /* DemoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DemoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		412CD9F9251B2834000411B6 /* DemoUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DemoUITests.m; sourceTree = "<group>"; };
 		412CD9FB251B2834000411B6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4175D4142829F8D700071C04 /* WindowsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WindowsManager.m; sourceTree = "<group>"; };
+		4175D4152829F8D700071C04 /* WindowsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WindowsManager.h; sourceTree = "<group>"; };
 		41D0ECDC2799332D004F2A31 /* CoordinateConverter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoordinateConverter.m; sourceTree = "<group>"; };
 		41D0ECDD2799332D004F2A31 /* CoordinateConverter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoordinateConverter.h; sourceTree = "<group>"; };
 		41D0ECDF2799332D004F2A31 /* MarsEventBus.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MarsEventBus.m; sourceTree = "<group>"; };
@@ -277,6 +280,15 @@
 			path = DemoUITests;
 			sourceTree = "<group>";
 		};
+		4175D4132829F8CF00071C04 /* Window */ = {
+			isa = PBXGroup;
+			children = (
+				4175D4152829F8D700071C04 /* WindowsManager.h */,
+				4175D4142829F8D700071C04 /* WindowsManager.m */,
+			);
+			path = Window;
+			sourceTree = "<group>";
+		};
 		41D0ECD92799332D004F2A31 /* ATDevLibs */ = {
 			isa = PBXGroup;
 			children = (
@@ -378,6 +390,7 @@
 		41D0ECFA2799332D004F2A31 /* UIKitLib */ = {
 			isa = PBXGroup;
 			children = (
+				4175D4132829F8CF00071C04 /* Window */,
 				41D0ECFB2799332D004F2A31 /* UIImage */,
 				41D0ED002799332D004F2A31 /* UIScrollView */,
 				41D0ED032799332D004F2A31 /* ToastView */,
@@ -865,6 +878,7 @@
 				41D0ED802799332D004F2A31 /* Toast.m in Sources */,
 				41D0ED702799332D004F2A31 /* UIColor+HexColor.m in Sources */,
 				41D0ED862799332D004F2A31 /* LocationAlwaysPermission.m in Sources */,
+				4175D4162829F8D800071C04 /* WindowsManager.m in Sources */,
 				41D0ED6E2799332D004F2A31 /* UIButton+ATIndicator.m in Sources */,
 				41D0ED7A2799332D004F2A31 /* UIViewController+Util.m in Sources */,
 				41D0ED742799332D004F2A31 /* UINavigationSXFixSpace.m in Sources */,

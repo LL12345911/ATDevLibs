@@ -7,6 +7,7 @@
 //
 
 #import "Toast.h"
+#import "WindowsManager.h"
 
 #define DEFAULT_DISPLAY_DURATION 2.0f
 
@@ -125,7 +126,7 @@
 /** 显示Toast，带动画 */
 - (void)show
 {
-    UIWindow *window = [UIApplication sharedApplication].keyWindow;
+    UIWindow *window = [WindowsManager keyWindow];
     _contentView.center = window.center;
     [window addSubview:_contentView];
     [self showAnimation];
@@ -135,7 +136,7 @@
 /** 偏离顶部多少以显示Toast */
 - (void)showFromTopOffset:(CGFloat)topOffset
 {
-    UIWindow *window = [UIApplication sharedApplication].keyWindow;
+    UIWindow *window = [WindowsManager keyWindow];
     _contentView.center = CGPointMake(window.center.x, topOffset + _contentView.frame.size.height / 2);
     [window addSubview:_contentView];
     [self showAnimation];
@@ -145,7 +146,7 @@
 /** 偏离底部多少以显示Toast */
 - (void)showFromBottomOffset:(CGFloat)bottomOffset
 {
-    UIWindow *window = [UIApplication sharedApplication].keyWindow;
+    UIWindow *window = [WindowsManager keyWindow];
     _contentView.center = CGPointMake(window.center.x, window.frame.size.height - (bottomOffset + _contentView.frame.size.height / 2));
     [window addSubview:_contentView];
     [self showAnimation];

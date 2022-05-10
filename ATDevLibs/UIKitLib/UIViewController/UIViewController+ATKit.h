@@ -72,15 +72,6 @@
 - (void)dismissOrPopToRootControlelr;
 - (void)dismissOrPopToRootController:(BOOL)animated;
 
-/**
- 获取当前控制器
-
- @return 当前控制器
- */
-- (UIViewController *)currentController;
-
-/// 获取 KeyWindow
-- (UIWindow *)getKeyWindow;
 
 /**
  *  获取根目录

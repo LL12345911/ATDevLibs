@@ -223,25 +223,25 @@ CG_INLINE UIFont* ATBoldFont(){
 //    return kHeight-kNavHeight()-kTabBarHeight();
 //}
 
-/// 获取当前控制器
-CG_INLINE UIViewController* GetController(){
-    //获取当前控制器
-    UIViewController* vc = [UIApplication sharedApplication].keyWindow.rootViewController;
-    while (1) {
-        if ([vc isKindOfClass:[UITabBarController class]]) {
-            vc = ((UITabBarController*)vc).selectedViewController;
-        }
-        if ([vc isKindOfClass:[UINavigationController class]]) {
-            vc = ((UINavigationController*)vc).visibleViewController;
-        }
-        if (vc.presentedViewController) {
-            vc = vc.presentedViewController;
-        }else{
-            break;
-        }
-    }
-    return vc;
-}
+///// 获取当前控制器
+//CG_INLINE UIViewController* GetController(){
+//    //获取当前控制器
+//    UIViewController* vc = [UIApplication sharedApplication].keyWindow.rootViewController;
+//    while (1) {
+//        if ([vc isKindOfClass:[UITabBarController class]]) {
+//            vc = ((UITabBarController*)vc).selectedViewController;
+//        }
+//        if ([vc isKindOfClass:[UINavigationController class]]) {
+//            vc = ((UINavigationController*)vc).visibleViewController;
+//        }
+//        if (vc.presentedViewController) {
+//            vc = vc.presentedViewController;
+//        }else{
+//            break;
+//        }
+//    }
+//    return vc;
+//}
 
 
 #endif

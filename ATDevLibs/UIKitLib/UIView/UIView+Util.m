@@ -11,6 +11,8 @@
 #import <objc/runtime.h>
 #import <QuartzCore/QuartzCore.h>
 #import "UIView+Frame.h"
+#import "WindowsManager.h"
+
 //定义常量 必须是C语言字符串
 static char *IndicatorBackViewKey = "IndicatorBackKKViewKey";
 
@@ -32,42 +34,6 @@ float radiansForDegress(int degrees){
 
 @implementation UIView (ATKit)
 
-- (UIWindow *)getKeyWindow{
-    UIWindow* window = nil;
-    if (@available(iOS 13.0, *)){
-        for (UIWindowScene* windowScene in [UIApplication sharedApplication].connectedScenes){
-            if (windowScene.activationState == UISceneActivationStateForegroundActive){
-                window = windowScene.windows.firstObject;
-                
-                break;
-            }
-        }
-    }else {
-        window = [UIApplication sharedApplication].keyWindow;
-    }
-    
-    return window;
-}
-
-
-/// 获取当前控制器
-- (UIViewController *)currentController {
-    UIViewController* vc = [UIApplication sharedApplication].keyWindow.rootViewController;
-    while (1) {
-        if ([vc isKindOfClass:[UITabBarController class]]) {
-            vc = ((UITabBarController*)vc).selectedViewController;
-        }
-        if ([vc isKindOfClass:[UINavigationController class]]) {
-            vc = ((UINavigationController*)vc).visibleViewController;
-        }
-        if (vc.presentedViewController) {
-            vc = vc.presentedViewController;
-        }else{
-            break;
-        }
-    }
-    return vc;
-}
 
 - (void)setIndicatorBack:(UIView *)indicatorBack{
     objc_setAssociatedObject(self, IndicatorBackViewKey, indicatorBack, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
@@ -161,7 +127,7 @@ float radiansForDegress(int degrees){
  */
 - (void)startLoadingOther{
     @autoreleasepool {
-        UIWindow *window = [UIApplication sharedApplication].keyWindow;
+        UIWindow *window = [WindowsManager keyWindow];
         //    window.windowLevel = UIWindowLevelAlert;
         CGFloat height = window.frame.size.height;
         CGFloat width = window.frame.size.width;
@@ -191,7 +157,7 @@ float radiansForDegress(int degrees){
     @autoreleasepool {
         [self.indicatorBack removeFromSuperview];
         
-        UIWindow *window = [UIApplication sharedApplication].keyWindow;
+        UIWindow *window = [WindowsManager keyWindow];
         //    window.windowLevel = UIWindowLevelAlert;
         CGFloat height = window.frame.size.height;
         CGFloat width = window.frame.size.width;
@@ -222,7 +188,7 @@ float radiansForDegress(int degrees){
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         @autoreleasepool {
             [weakSelf.indicatorBack removeAllSubviews];
-            UIWindow *window = [UIApplication sharedApplication].keyWindow;
+            UIWindow *window = [WindowsManager keyWindow];
             CGFloat height = window.frame.size.height;
             CGFloat width = window.frame.size.width;
             
@@ -239,7 +205,7 @@ float radiansForDegress(int degrees){
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(time * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         @autoreleasepool {
             [weakSelf.indicatorBack removeAllSubviews];
-            UIWindow *window = [UIApplication sharedApplication].keyWindow;
+            UIWindow *window = [WindowsManager keyWindow];
             CGFloat height = window.frame.size.height;
             CGFloat width = window.frame.size.width;
             
@@ -265,7 +231,7 @@ float radiansForDegress(int degrees){
 
 //判断两个视图在同一窗口是否有重叠
 - (BOOL)intersectWithView:(UIView *)view{
-    UIWindow *window = [UIApplication sharedApplication].keyWindow;
+    UIWindow *window = [WindowsManager keyWindow];
     CGRect selfRect = [self convertRect:self.bounds toView:window];
     CGRect viewRect = [view convertRect:view.bounds toView:window];
     return CGRectIntersectsRect(selfRect, viewRect);
@@ -424,26 +390,6 @@ float radiansForDegress(int degrees){
     return nil;
 }
 
-- (UIViewController *)currentViewController {
-    UIWindow *window = [UIApplication sharedApplication].keyWindow;
-    return [self getCurrentViewController:window.rootViewController];
-//    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;;
-//    return [self getCurrentViewController:appDelegate.window.rootViewController];
-}
-
-//递归查找
-- (UIViewController *)getCurrentViewController:(UIViewController *)controller {
-    if ([controller isKindOfClass:[UITabBarController class]]) {
-        UINavigationController *nav = ((UITabBarController *)controller).selectedViewController;
-        return [nav.viewControllers lastObject];
-    }else if ([controller isKindOfClass:[UINavigationController class]]) {
-        return [((UINavigationController *)controller).viewControllers lastObject];
-    }else if ([controller isKindOfClass:[UIViewController class]]) {
-        return controller;
-    }else {
-        return nil;
-    }
-}
 
 - (UIViewController *)viewController {
     for (UIView* next = [self superview]; next; next = next.superview) {

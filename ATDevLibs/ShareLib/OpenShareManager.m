@@ -9,6 +9,7 @@
 #import "OpenShareManager.h"
 #import <Social/Social.h>
 #import "Toast.h"
+#import "WindowsManager.h"
 
 //#import "LWShareService.h"
 //#import "OpenShareHeader.h"
@@ -121,10 +122,10 @@
     //这儿一定要做iPhone与iPad的判断，因为这儿只有iPhone可以present，iPad需pop，所以这儿actVC.popoverPresentationController.sourceView = self.view;在iPad下必须有，不然iPad会crash，self.view你可以换成任何view，你可以理解为弹出的窗需要找个依托。
     activityVC.modalPresentationStyle = UIModalPresentationFullScreen;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        activityVC.popoverPresentationController.sourceView = [OpenShareManager currentVC].view;
-        [[OpenShareManager currentVC] presentViewController:activityVC animated:YES completion:nil];
+        activityVC.popoverPresentationController.sourceView = [WindowsManager presentController].view;
+        [[WindowsManager presentController] presentViewController:activityVC animated:YES completion:nil];
     } else {
-        [[OpenShareManager currentVC] presentViewController:activityVC animated:YES completion:nil];
+        [[WindowsManager presentController] presentViewController:activityVC animated:YES completion:nil];
     }
 }
 
@@ -233,32 +234,13 @@ CG_INLINE NSString* kIfNullString(NSString *f){
     //这儿一定要做iPhone与iPad的判断，因为这儿只有iPhone可以present，iPad需pop，所以这儿actVC.popoverPresentationController.sourceView = self.view;在iPad下必须有，不然iPad会crash，self.view你可以换成任何view，你可以理解为弹出的窗需要找个依托。
     activityVC.modalPresentationStyle = UIModalPresentationFullScreen;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        activityVC.popoverPresentationController.sourceView = [OpenShareManager currentVC].view;
-        [[OpenShareManager currentVC] presentViewController:activityVC animated:YES completion:nil];
+        activityVC.popoverPresentationController.sourceView = [WindowsManager presentController].view;
+        [[WindowsManager presentController] presentViewController:activityVC animated:YES completion:nil];
     } else {
-        [[OpenShareManager currentVC] presentViewController:activityVC animated:YES completion:nil];
+        [[WindowsManager presentController] presentViewController:activityVC animated:YES completion:nil];
     }
 }
 
 
-#pragma mark -
-#pragma mark - 获取当前控制器
-+ (UIViewController *)currentVC {
-    UIViewController* vc = [UIApplication sharedApplication].keyWindow.rootViewController;
-    while (1) {
-        if ([vc isKindOfClass:[UITabBarController class]]) {
-            vc = ((UITabBarController*)vc).selectedViewController;
-        }
-        if ([vc isKindOfClass:[UINavigationController class]]) {
-            vc = ((UINavigationController*)vc).visibleViewController;
-        }
-        if (vc.presentedViewController) {
-            vc = vc.presentedViewController;
-        }else{
-            break;
-        }
-    }
-    return vc;
-}
 
 @end

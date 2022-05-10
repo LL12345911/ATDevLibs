@@ -9,6 +9,7 @@
 #import "UIViewController+Animation.h"
 #import <QuartzCore/QuartzCore.h>
 #import <objc/runtime.h>
+#import "WindowsManager.h"
 
 #define kPopupModalAnimationDuration 0.35
 #define kATPopupViewController @"kATPopupViewController"

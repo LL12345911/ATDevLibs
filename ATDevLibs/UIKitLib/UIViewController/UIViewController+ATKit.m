@@ -7,6 +7,7 @@
 //
 
 #import "UIViewController+ATKit.h"
+#import "WindowsManager.h"
 
 @implementation UIViewController (ATKit)
 
@@ -128,7 +129,7 @@
 #pragma mark -  ATKit
 
 - (void)setKeyBoardDismiss{
-    [[UIApplication sharedApplication].keyWindow endEditing:YES];
+    [[WindowsManager keyWindow] endEditing:YES];
 }
 
 - (void)setLargeTitleDisplayModeNever{
@@ -183,42 +184,6 @@
     return [[[[UIApplication sharedApplication] delegate] window].rootViewController topPresentedControllerWihtKeys:keys];
 }
 
-
-//获取当前控制器
-- (UIViewController *)currentController {
-    UIViewController* vc = [UIApplication sharedApplication].keyWindow.rootViewController;
-    while (1) {
-        if ([vc isKindOfClass:[UITabBarController class]]) {
-            vc = ((UITabBarController*)vc).selectedViewController;
-        }
-        if ([vc isKindOfClass:[UINavigationController class]]) {
-            vc = ((UINavigationController*)vc).visibleViewController;
-        }
-        if (vc.presentedViewController) {
-            vc = vc.presentedViewController;
-        }else{
-            break;
-        }
-    }
-    return vc;
-}
-
-
-- (UIWindow *)getKeyWindow{
-    UIWindow* window = nil;
-    if (@available(iOS 13.0, *)){
-        for (UIWindowScene* windowScene in [UIApplication sharedApplication].connectedScenes){
-            if (windowScene.activationState == UISceneActivationStateForegroundActive){
-                window = windowScene.windows.firstObject;
-                
-                break;
-            }
-        }
-    }else {
-        window = [UIApplication sharedApplication].keyWindow;
-    }
-    return window;
-}
 
 
 

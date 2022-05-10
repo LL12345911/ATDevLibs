@@ -14,12 +14,6 @@ float radiansForDegress (int degress);
 
 @interface UIView (ATKit)
 
-
-/// 获取 KeyWindow
-- (UIWindow *)getKeyWindow;
-
-/// 获取当前控制器
-- (UIViewController *)currentController;
 /**
  开启动画
  */
@@ -85,8 +79,7 @@ float radiansForDegress (int degress);
 - (UIView *)at_findFirstResponder;
 /** 找到自己的所属viewController */
 - (UIViewController *)belongsViewController;
-/** 找到当前显示的viewController */
-- (UIViewController *)currentViewController;
+
 /**  获取viewcontroller */
 - (UIViewController *)viewController;
 /**

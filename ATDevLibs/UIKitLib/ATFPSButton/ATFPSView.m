@@ -8,6 +8,7 @@
 
 #import "ATFPSView.h"
 #import <mach/mach.h>
+#import "WindowsManager.h"
 
 @interface ATFPSView ()
 
@@ -36,7 +37,7 @@
     return config;
 }
 + (void)show{
-    [[UIApplication sharedApplication].keyWindow addSubview:[ATFPSView sharedInstance]];
+    [[WindowsManager keyWindow] addSubview:[ATFPSView sharedInstance]];
 }
 
 + (void)hide{
