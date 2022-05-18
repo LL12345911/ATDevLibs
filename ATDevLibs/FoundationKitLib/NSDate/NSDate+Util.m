@@ -123,18 +123,18 @@ _Pragma("clang diagnostic pop") \
     [dateFormatter setTimeZone:[NSTimeZone localTimeZone]];
     [dateFormatter setDateFormat:format];
     NSDate *date = [dateFormatter dateFromString:datestr];
-    // 获取系统的时区，
-    NSTimeZone * zone = [NSTimeZone systemTimeZone];
-    // 获取时间的时区与指定时区zone之间相差的秒数
-    NSInteger interval = [zone secondsFromGMTForDate:date];
-    // 将偏差的时间加到原来的时间上就是正式的时间
-    NSDate *systemZoneDate = [date dateByAddingTimeInterval:interval];
+//    // 获取系统的时区，
+//    NSTimeZone * zone = [NSTimeZone systemTimeZone];
+//    // 获取时间的时区与指定时区zone之间相差的秒数
+//    NSInteger interval = [zone secondsFromGMTForDate:date];
+//    // 将偏差的时间加到原来的时间上就是正式的时间
+//    NSDate *systemZoneDate = [date dateByAddingTimeInterval:interval];
     
-    return systemZoneDate;
+    return date;
 #if ! __has_feature(objc_arc)
     [dateFormatter release];
 #endif
-    return systemZoneDate;
+    return date;
 }
 
 
@@ -639,14 +639,14 @@ _Pragma("clang diagnostic pop") \
     NSString *selfStr = [fmt stringFromDate:self];
     NSDate *data = [fmt dateFromString:selfStr];
     
-    // 获取系统的时区，
-    NSTimeZone * zone = [NSTimeZone systemTimeZone];
-    // 获取时间的时区与指定时区zone之间相差的秒数
-    NSInteger interval = [zone secondsFromGMTForDate:data];
-    // 将偏差的时间加到原来的时间上就是正式的时间
-    NSDate *systemZoneDate = [data dateByAddingTimeInterval:interval];
+//    // 获取系统的时区，
+//    NSTimeZone * zone = [NSTimeZone systemTimeZone];
+//    // 获取时间的时区与指定时区zone之间相差的秒数
+//    NSInteger interval = [zone secondsFromGMTForDate:data];
+//    // 将偏差的时间加到原来的时间上就是正式的时间
+//    NSDate *systemZoneDate = [data dateByAddingTimeInterval:interval];
     
-    return systemZoneDate;
+    return data;
 }
 
 -(NSDate *)dateWithFormatter:(NSString *)formatter {
@@ -1090,14 +1090,14 @@ _Pragma("clang diagnostic pop") \
     inputFormatter.calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierISO8601];
     NSDate *date = [inputFormatter dateFromString:string];
     
-    // 获取系统的时区，
-    NSTimeZone * zone = [NSTimeZone systemTimeZone];
-    // 获取时间的时区与指定时区zone之间相差的秒数
-    NSInteger interval = [zone secondsFromGMTForDate:date];
-    // 将偏差的时间加到原来的时间上就是正式的时间
-    NSDate *systemZoneDate = [date dateByAddingTimeInterval:interval];
+//    // 获取系统的时区，
+//    NSTimeZone * zone = [NSTimeZone systemTimeZone];
+//    // 获取时间的时区与指定时区zone之间相差的秒数
+//    NSInteger interval = [zone secondsFromGMTForDate:date];
+//    // 将偏差的时间加到原来的时间上就是正式的时间
+//    NSDate *systemZoneDate = [date dateByAddingTimeInterval:interval];
     
-    return systemZoneDate;
+    return date;
 }
 
 - (NSUInteger)daysInMonth:(NSUInteger)month {
@@ -1378,13 +1378,13 @@ _Pragma("clang diagnostic pop") \
     formatter.calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierISO8601];
     NSDate *date = [formatter dateFromString:datestring];
     
-    // 获取系统的时区，
-    NSTimeZone * zone = [NSTimeZone systemTimeZone];
-    // 获取时间的时区与指定时区zone之间相差的秒数
-    NSInteger interval = [zone secondsFromGMTForDate:date];
-    // 将偏差的时间加到原来的时间上就是正式的时间
-    NSDate *systemZoneDate = [date dateByAddingTimeInterval:interval];
-    return [self currentWeek:systemZoneDate];
+//    // 获取系统的时区，
+//    NSTimeZone * zone = [NSTimeZone systemTimeZone];
+//    // 获取时间的时区与指定时区zone之间相差的秒数
+//    NSInteger interval = [zone secondsFromGMTForDate:date];
+//    // 将偏差的时间加到原来的时间上就是正式的时间
+//    NSDate *systemZoneDate = [date dateByAddingTimeInterval:interval];
+    return [self currentWeek:date];
 }
 + (NSString *)currentWeek:(NSDate*)date{
     NSArray *weeks =@[@"星期",@"星期日",@"星期一", @"星期二", @"星期三",@"星期四", @"星期五", @"星期六"];
