@@ -18,7 +18,7 @@
  * @param jsonString JSON格式的字符串
  * @return id (Array数组 或 NSDictionary字典)
  */
-CG_INLINE id IdWithJsonString(NSString *jsonString){
+NS_INLINE id IdWithJsonString(NSString *jsonString){
     if (jsonString == nil) {
           return nil;
       }
@@ -61,7 +61,7 @@ CG_INLINE id IdWithJsonString(NSString *jsonString){
  * @param jsonString JSON格式的字符串
  * @return 返回字典
  */
-CG_INLINE NSDictionary* DictionaryWithJsonString(NSString *jsonString){
+NS_INLINE NSDictionary* DictionaryWithJsonString(NSString *jsonString){
     if (jsonString == nil) {
            return nil;
        }
@@ -84,7 +84,7 @@ CG_INLINE NSDictionary* DictionaryWithJsonString(NSString *jsonString){
  * @param jsonString JSON格式的字符串
  * @return 返回字典
  */
-CG_INLINE NSArray* ArrayWithJsonString(NSString *jsonString){
+NS_INLINE NSArray* ArrayWithJsonString(NSString *jsonString){
     if (jsonString == nil) {
         return nil;
     }
@@ -107,7 +107,7 @@ CG_INLINE NSArray* ArrayWithJsonString(NSString *jsonString){
  * @param dict 字典
  * @return 返回JSON
  */
-CG_INLINE NSString* JSONString(NSDictionary *dict){
+NS_INLINE NSString* JSONString(NSDictionary *dict){
     NSError *error;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:&error];
     NSString *jsonString;
@@ -136,7 +136,7 @@ CG_INLINE NSString* JSONString(NSDictionary *dict){
  *
  *  @return NSString
  */
-CG_INLINE NSString* JSONStringWithArray(NSArray *array){
+NS_INLINE NSString* JSONStringWithArray(NSArray *array){
     
     NSError *error;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:array options:NSJSONWritingPrettyPrinted error:&error];
@@ -167,7 +167,7 @@ CG_INLINE NSString* JSONStringWithArray(NSArray *array){
  *
  *  @return NSDictionary
  */
-CG_INLINE NSDictionary* DictionaryWithURLQuery(NSString *query){
+NS_INLINE NSDictionary* DictionaryWithURLQuery(NSString *query){
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
     NSArray *parameters = [query componentsSeparatedByString:@"&"];
     for(NSString *parameter in parameters) {
@@ -197,7 +197,7 @@ CG_INLINE NSDictionary* DictionaryWithURLQuery(NSString *query){
  *
  *  @return url 参数字符串
  */
-CG_INLINE NSString* URLQueryStringWithDic(NSDictionary *dic){
+NS_INLINE NSString* URLQueryStringWithDic(NSDictionary *dic){
 
     NSMutableString *string = [NSMutableString string];
     for (NSString *key in [dic allKeys]) {

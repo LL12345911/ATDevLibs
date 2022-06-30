@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///  获取汉字转成拼音字符串 通讯录模糊搜索 支持拼音检索 首字母 全拼 汉字 搜索
 ///  三林四标浦林城建项目部  #sanlinsibiaopulinchengjianxiangmubu,#slsbplcjxmb,#三林四标浦林城建项目部
 /// @param aString 待转换字符串（汉字）
-CG_INLINE NSString* TransformToPinyin(NSString *aString){
+NS_INLINE NSString* TransformToPinyin(NSString *aString){
     if (aString.length == 0) {
         return @"";
     }

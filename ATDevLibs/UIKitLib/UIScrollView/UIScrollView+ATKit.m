@@ -45,17 +45,17 @@ ATSYNTH_DUMMY_CLASS(UIScrollView_ATKit)
 }
 
 /// 判断一个 CGSize 是否为空（宽或高为0）
-CG_INLINE BOOL
+NS_INLINE BOOL
 CGSizeIsEmpty(CGSize size) {
     return size.width <= 0 || size.height <= 0;
 }
 /// 获取UIEdgeInsets在垂直方向上的值
-CG_INLINE CGFloat
+NS_INLINE CGFloat
 UIEdgeInsetsGetVerticalValue(UIEdgeInsets insets) {
     return insets.top + insets.bottom;
 }
 /// 获取UIEdgeInsets在水平方向上的值
-CG_INLINE CGFloat
+NS_INLINE CGFloat
 UIEdgeInsetsGetHorizontalValue(UIEdgeInsets insets) {
     return insets.left + insets.right;
 }
