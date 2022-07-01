@@ -178,7 +178,7 @@ static char overlayImageKey;
 }
 
 /**
- 设置导航栏背景颜色
+ 设置导航栏背景颜色 导航栏下边无黑边
  
  @param color 背景颜色
  */
@@ -193,7 +193,7 @@ static char overlayImageKey;
 
 
 /**
- 设置导航栏背景颜色
+ 设置导航栏背景颜色 导航栏下边无黑边
  
 @param alpha 设置透明度
  @param color 背景颜色
@@ -205,6 +205,36 @@ static char overlayImageKey;
     [self setShadowImage:[[UIImage alloc] init]];
     self.translucent = YES;
 }
+
+
+/**
+ 设置导航栏背景颜色  导航栏下边有黑边
+ 
+ @param color 背景颜色
+ */
+- (void)at_setLineBackgroundCustomColor:(UIColor *)color {
+    [self at_reset];
+    [self setBackgroundImage:[self createImageWithColor:color] forBarMetrics:UIBarMetricsDefault];
+    //去掉透明后导航栏下边的黑边
+   
+    self.translucent = YES;
+}
+
+
+/**
+ 设置导航栏背景颜色 导航栏下边有黑边
+ 
+ @param alpha 设置透明度
+ @param color 背景颜色
+ */
+- (void)at_setLineBackgroundCustomColor:(UIColor *)color alpha:(CGFloat)alpha {
+    [self at_reset];
+    [self setBackgroundImage:[self createImageWithColor:color alpha:alpha] forBarMetrics:UIBarMetricsDefault];
+    self.translucent = YES;
+}
+
+
+
 /**
  颜色转变成图片
  

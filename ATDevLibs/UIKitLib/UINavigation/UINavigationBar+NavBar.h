@@ -39,26 +39,42 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 /**
- 设置导航栏背景图片
+ 设置导航栏背景图片 导航栏下边无黑边
 
  @param backgroundImage 背景图片n名
  */
 - (void)at_setBackgroundCustomImage:(NSString *)backgroundImage;
 
 /**
- 设置导航栏背景颜色
+ 设置导航栏背景颜色 导航栏下边无黑边
  
  @param color 背景颜色
  */
 - (void)at_setBackgroundCustomColor:(UIColor *)color;
 
 /**
- 设置导航栏背景颜色
+ 设置导航栏背景颜色 导航栏下边无黑边
  
  @param alpha 设置透明度
  @param color 背景颜色
  */
 - (void)at_setBackgroundCustomColor:(UIColor *)color alpha:(CGFloat)alpha;
+
+/**
+ 设置导航栏背景颜色  导航栏下边有黑边
+ 
+ @param color 背景颜色
+ */
+- (void)at_setLineBackgroundCustomColor:(UIColor *)color;
+
+
+/**
+ 设置导航栏背景颜色 导航栏下边有黑边
+ 
+ @param alpha 设置透明度
+ @param color 背景颜色
+ */
+- (void)at_setLineBackgroundCustomColor:(UIColor *)color alpha:(CGFloat)alpha;
 
 
 /**
