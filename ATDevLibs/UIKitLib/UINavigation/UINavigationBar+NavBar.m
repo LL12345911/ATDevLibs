@@ -216,7 +216,7 @@ static char overlayImageKey;
     [self at_reset];
     [self setBackgroundImage:[self createImageWithColor:color] forBarMetrics:UIBarMetricsDefault];
     //去掉透明后导航栏下边的黑边
-   
+    [self setShadowImage:nil];
     self.translucent = YES;
 }
 
@@ -230,6 +230,7 @@ static char overlayImageKey;
 - (void)at_setLineBackgroundCustomColor:(UIColor *)color alpha:(CGFloat)alpha {
     [self at_reset];
     [self setBackgroundImage:[self createImageWithColor:color alpha:alpha] forBarMetrics:UIBarMetricsDefault];
+    [self setShadowImage:nil];
     self.translucent = YES;
 }
 
