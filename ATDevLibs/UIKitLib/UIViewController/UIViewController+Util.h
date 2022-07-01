@@ -59,34 +59,34 @@ typedef void(^LeftBarButtonItemBlock)(void);
 - (void)stopIndicatorLoading:(float)time;
 
 
-/**
- 导航栏背景色
-
- @param imageName 图片名
- */
-- (void)at_navigationBarBackImage:(NSString *)imageName;
-
-
-/**
- 导航栏背景色
-
- @param backColor 颜色
- */
-- (void)at_navigationBarBackColor:(UIColor *)backColor;
-
-
-/**
- 导航栏背透明
- */
-- (void)at_navigationBarClearColor;
-
-
-/**
- 导航栏 标题字体颜色
-
- @param titleColor 字体颜色
- */
-- (void)at_navigationBarTitleColor:(UIColor *)titleColor;
+///**
+// 导航栏背景色
+//
+// @param imageName 图片名
+// */
+//- (void)at_navigationBarBackImage:(NSString *)imageName;
+//
+//
+///**
+// 导航栏背景色
+//
+// @param backColor 颜色
+// */
+//- (void)at_navigationBarBackColor:(UIColor *)backColor;
+//
+//
+///**
+// 导航栏背透明
+// */
+//- (void)at_navigationBarClearColor;
+//
+//
+///**
+// 导航栏 标题字体颜色
+//
+// @param titleColor 字体颜色
+// */
+//- (void)at_navigationBarTitleColor:(UIColor *)titleColor;
 
 
 

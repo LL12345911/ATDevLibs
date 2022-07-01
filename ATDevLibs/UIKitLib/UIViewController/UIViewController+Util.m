@@ -238,22 +238,22 @@ void swizzleMethod(Class class, SEL originalSelector, SEL swizzledSelector){
 }
 
 
-
-- (void)at_navigationBarBackImage:(NSString *)imageName{
-    [self.navigationController.navigationBar at_setBackgroundCustomImage:imageName.length > 0 ? imageName : @"navImage"];
-}
-
-- (void)at_navigationBarBackColor:(UIColor *)backColor{
-    [self.navigationController.navigationBar at_setBackgroundCustomColor:backColor ? backColor:[UIColor clearColor]];
-}
-
-- (void)at_navigationBarClearColor{
-    [self.navigationController.navigationBar at_setBackgroundCustomColor:[UIColor clearColor]];
-}
-
-- (void)at_navigationBarTitleColor:(UIColor *)titleColor{
-    [self.navigationController.navigationBar at_setTitleTextAttribute:titleColor ? titleColor : [UIColor whiteColor]];
-}
+//
+//- (void)at_navigationBarBackImage:(NSString *)imageName{
+//    [self.navigationController.navigationBar at_setBackgroundCustomImage:imageName.length > 0 ? imageName : @"navImage"];
+//}
+//
+//- (void)at_navigationBarBackColor:(UIColor *)backColor{
+//    [self.navigationController.navigationBar at_setBackgroundCustomColor:backColor ? backColor:[UIColor clearColor]];
+//}
+//
+//- (void)at_navigationBarClearColor{
+//    [self.navigationController.navigationBar at_setBackgroundCustomColor:[UIColor clearColor]];
+//}
+//
+//- (void)at_navigationBarTitleColor:(UIColor *)titleColor{
+//    [self.navigationController.navigationBar at_setTitleTextAttribute:titleColor ? titleColor : [UIColor whiteColor]];
+//}
 
 //
 //- (UIWindow *)getKeyWindow{
