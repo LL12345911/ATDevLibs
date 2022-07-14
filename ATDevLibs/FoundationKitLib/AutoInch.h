@@ -87,7 +87,15 @@ NS_INLINE CGFloat kStatusBar(){
 //    //获取状态栏的rect
 //    CGRect statusRect = [[UIApplication sharedApplication] statusBarFrame];
 //    return statusRect.size.height;
-    return (isIphoneX() ? 44.0 : 20.0);//状态栏;
+    //return (isIphoneX() ? 44.0 : 20.0);//状态栏;
+    if (@available(iOS 13.0, *)) {
+        NSSet *set = [UIApplication sharedApplication].connectedScenes;
+        UIWindowScene *windowScene = [set anyObject];
+        UIStatusBarManager *statusBarManager = windowScene.statusBarManager;
+        return statusBarManager.statusBarFrame.size.height;
+    } else {
+        return [UIApplication sharedApplication].statusBarFrame.size.height;
+    }
 }
 /**
  导航栏的高度
@@ -96,24 +104,59 @@ NS_INLINE CGFloat kStatusBar(){
  */
 NS_INLINE CGFloat kNavHeight(){
    // return kStatusBar() + 44;
-    return (isIphoneX() ? 88.0 : 64.0);//导航栏
+    //return (isIphoneX() ? 88.0 : 64.0);//导航栏
+    
+    return kStatusBar() + 44;
 }
+
+/**
+ 底部高度 安全区
+
+ @return 不是刘海屏默认0，是的话34
+ */
+NS_INLINE CGFloat kBottom(){
+    //return (isIphoneX() ? 34 : 0);//iphoneX斜刘海
+    if (@available(iOS 13.0, *)) {
+        NSSet *set = [UIApplication sharedApplication].connectedScenes;
+        UIWindowScene *windowScene = [set anyObject];
+        UIWindow *window = windowScene.windows.firstObject;
+        return window.safeAreaInsets.bottom;
+    } else if (@available(iOS 11.0, *)) {
+        UIWindow *window = [UIApplication sharedApplication].windows.firstObject;
+        return window.safeAreaInsets.bottom;
+    }
+    return 0;
+}
+
 /**
  底部tabbar的高度
 
  @return 不是刘海屏默认49，是的话83
  */
 NS_INLINE CGFloat kTabBarHeight(){
-    return (isIphoneX() ? 83.0 : 49.0);
+    //return (isIphoneX() ? 83.0 : 49.0);
+    return kBottom() + 49;
 }
-/**
- 底部高度
 
- @return 不是刘海屏默认0，是的话34
+/**
+ 顶部安全区高度
+
+ @return 顶部安全区高度
  */
-NS_INLINE CGFloat kBottom(){
-    return (isIphoneX() ? 34 : 0);//iphoneX斜刘海
+NS_INLINE CGFloat kSafeDistanceTop(){
+    if (@available(iOS 13.0, *)) {
+           NSSet *set = [UIApplication sharedApplication].connectedScenes;
+           UIWindowScene *windowScene = [set anyObject];
+           UIWindow *window = windowScene.windows.firstObject;
+           return window.safeAreaInsets.top;
+       } else if (@available(iOS 11.0, *)) {
+           UIWindow *window = [UIApplication sharedApplication].windows.firstObject;
+           return window.safeAreaInsets.top;
+       }
+       return 0;
 }
+
+
 /**
  去除导航栏和iPhone X底部圆弧的高度
  
