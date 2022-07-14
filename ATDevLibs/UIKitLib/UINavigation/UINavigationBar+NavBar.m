@@ -25,8 +25,17 @@ static char overlayImageKey;
 + (BOOL)isIphoneX {
     BOOL isBangsScreen = NO;
     /// 在这里之所以使用 windows 是因为，keyWindow、delegate.window有时候会获取不到，为null
-    if (@available(iOS 11.0, *)) {
-        UIWindow *window = [[UIApplication sharedApplication].windows firstObject];
+//    if (@available(iOS 11.0, *)) {
+//        UIWindow *window = [[UIApplication sharedApplication].windows firstObject];
+//        isBangsScreen = window.safeAreaInsets.bottom > 0;
+//    }
+    if (@available(iOS 13.0, *)) {
+        NSSet *set = [UIApplication sharedApplication].connectedScenes;
+        UIWindowScene *windowScene = [set anyObject];
+        UIWindow *window = windowScene.windows.firstObject;
+        isBangsScreen = window.safeAreaInsets.bottom > 0;
+    } else if (@available(iOS 11.0, *)) {
+        UIWindow *window = [UIApplication sharedApplication].windows.firstObject;
         isBangsScreen = window.safeAreaInsets.bottom > 0;
     }
     return isBangsScreen;
@@ -59,13 +68,23 @@ static char overlayImageKey;
     if (UIDevice.currentDevice.userInterfaceIdiom != UIUserInterfaceIdiomPhone) {//判断是否是手机
         return iPhoneX;
     }
-    if (@available(iOS 11.0, *)) {
-        UIWindow *mainWindow = [[[UIApplication sharedApplication] delegate] window];
-        //UIApplication.shared.windows[0].safeAreaInsets != UIEdgeInsets.zero
-        if (mainWindow.safeAreaInsets.bottom > 0.0) {
-            iPhoneX = YES;
-        }
+//    if (@available(iOS 11.0, *)) {
+//        UIWindow *mainWindow = [[[UIApplication sharedApplication] delegate] window];
+//        //UIApplication.shared.windows[0].safeAreaInsets != UIEdgeInsets.zero
+//        if (mainWindow.safeAreaInsets.bottom > 0.0) {
+//            iPhoneX = YES;
+//        }
+//    }
+    if (@available(iOS 13.0, *)) {
+        NSSet *set = [UIApplication sharedApplication].connectedScenes;
+        UIWindowScene *windowScene = [set anyObject];
+        UIWindow *window = windowScene.windows.firstObject;
+        iPhoneX = window.safeAreaInsets.bottom > 0;
+    } else if (@available(iOS 11.0, *)) {
+        UIWindow *window = [UIApplication sharedApplication].windows.firstObject;
+        iPhoneX = window.safeAreaInsets.bottom > 0;
     }
+    
     return iPhoneX;
 }
 
