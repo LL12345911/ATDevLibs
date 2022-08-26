@@ -46,17 +46,18 @@
 
 - (void) safeAreaInsetsDidChange{
     [super safeAreaInsetsDidChange];
-    if(self.oldSafeAreaInsets.left != self.safeAreaInsets.left ||
-       self.oldSafeAreaInsets.right != self.safeAreaInsets.right ||
-       self.oldSafeAreaInsets.top != self.safeAreaInsets.top ||
-       self.oldSafeAreaInsets.bottom != self.safeAreaInsets.bottom)
-    {
-        self.oldSafeAreaInsets = self.safeAreaInsets;
-        [self invalidateIntrinsicContentSize];
-        [self.superview setNeedsLayout];
-        //[self.superview layoutSubviews];
+    if(@available(iOS 11.0, *)){
+        if(self.oldSafeAreaInsets.left != self.safeAreaInsets.left ||
+           self.oldSafeAreaInsets.right != self.safeAreaInsets.right ||
+           self.oldSafeAreaInsets.top != self.safeAreaInsets.top ||
+           self.oldSafeAreaInsets.bottom != self.safeAreaInsets.bottom)
+        {
+            self.oldSafeAreaInsets = self.safeAreaInsets;
+            [self invalidateIntrinsicContentSize];
+            [self.superview setNeedsLayout];
+            //[self.superview layoutSubviews];
+        }
     }
-    
 }
 
 - (CGSize) sizeThatFits:(CGSize) size{
