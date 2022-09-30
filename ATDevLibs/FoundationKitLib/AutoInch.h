@@ -17,6 +17,13 @@
 #define kWidth [UIScreen mainScreen].bounds.size.width
 #define kHeight [UIScreen mainScreen].bounds.size.height
 
+/// 说明：竖屏时候，宽是SCREEN_MIN，高是SCREEN_MAX；横屏时候，宽是SCREEN_MAX，高是SCREEN_MIN。
+#define SCREEN_MIN MIN(kHeight,kWidth)
+/// 说明：竖屏时候，宽是SCREEN_MIN，高是SCREEN_MAX；横屏时候，宽是SCREEN_MAX，高是SCREEN_MIN。
+#define SCREEN_MAX MAX(kHeight,kWidth)
+
+
+
 //#define kWidth (MIN([UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height))
 //#define kHeight (MAX([UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height))
 
