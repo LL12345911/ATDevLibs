@@ -47,6 +47,9 @@
 
 - (instancetype)initWithFrame:(CGRect)frame{
     frame = CGRectMake(0, 300, 100, 60);
+    
+    NSLog(@"=++++++++==");
+    
     self = [super initWithFrame:frame];
     if (self) {
         self.backgroundColor = [UIColor colorWithWhite:0.000 alpha:0.700];
@@ -73,6 +76,8 @@
 }
 
 - (void)createView{
+    
+    NSLog(@"====================");
     _fpsLabel = [[UILabel alloc] init];
     _fpsLabel.textAlignment = NSTextAlignmentCenter;
     _fpsLabel.textColor = [UIColor whiteColor];

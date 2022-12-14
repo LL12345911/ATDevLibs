@@ -24,7 +24,11 @@
                 *stop = YES;
             }
         }];
+        
         UIWindowScene *curWinSc = (UIWindowScene *)tmpSc;
+        if (!curWinSc) {
+            return UIApplication.sharedApplication.delegate.window;
+        }
         if (@available(iOS 15, *)) {
             return curWinSc.keyWindow;
         }else {
@@ -58,6 +62,9 @@
             }
         }];
         UIWindowScene *curWinSc = (UIWindowScene *)tmpSc;
+        if (!curWinSc) {
+            return UIApplication.sharedApplication.windows;
+        }
         return curWinSc.windows;
         
     } else {
@@ -81,6 +88,10 @@
             }
         }];
         UIWindowScene *curWinSc = (UIWindowScene *)tmpSc;
+        if (!curWinSc) {
+            return UIApplication.sharedApplication.delegate.window.rootViewController;
+        }
+        
         if (@available(iOS 15, *)) {
             return curWinSc.keyWindow.rootViewController;
         }else {

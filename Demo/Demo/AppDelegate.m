@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "ATFPSView.h"
 
 @interface AppDelegate ()
 
@@ -20,6 +21,7 @@
 //    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
 //    self.window.backgroundColor = [UIColor whiteColor];
 //    [self.window makeKeyAndVisible];
+    [ATFPSView show];
     
     return YES;
 }
