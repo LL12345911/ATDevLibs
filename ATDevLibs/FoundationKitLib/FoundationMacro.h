@@ -22,7 +22,6 @@
 //NSString
 #import "NSString+ATKit.h"
 #import "Base64.h"
-#import "JsonTransform.h"
 
 #import "XTimer.h"
 
