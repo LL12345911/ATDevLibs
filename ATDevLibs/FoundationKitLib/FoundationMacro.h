@@ -31,6 +31,10 @@
 #import "MarsEventBus.h"
 #import "ATMacro.h"
 #import "AutoInch.h"
+#import "AttributedStringBuilder.h"
+#import "AttributeStringBuilder.h"
 
+#import "JsonTransForm.h"
+#import "YHDrawImage.h"
 
 #endif /* FoundationMacro_h */

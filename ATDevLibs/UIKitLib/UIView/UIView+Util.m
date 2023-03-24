@@ -122,6 +122,21 @@ float radiansForDegress(int degrees){
 }
 
 
+/// 返回屏幕截图
+- (UIImage *)shotImage {
+
+    UIGraphicsBeginImageContextWithOptions(self.bounds.size, YES, 0);
+    
+    [self drawViewHierarchyInRect:self.bounds afterScreenUpdates:YES];
+    
+    UIImage * shotImg = UIGraphicsGetImageFromCurrentImageContext();
+    
+    UIGraphicsEndImageContext();
+    
+    return shotImg;
+}
+
+
 /**
  开启动画
  */

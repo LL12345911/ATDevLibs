@@ -14,6 +14,9 @@ float radiansForDegress (int degress);
 
 @interface UIView (ATKit)
 
+/// 返回屏幕截图
+- (UIImage *)shotImage;
+
 /**
  开启动画
  */
