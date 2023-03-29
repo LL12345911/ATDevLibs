@@ -193,7 +193,7 @@ string = [NSString stringWithFormat:@"%@%d",string,tone];\
 
 
 //获取文本高度
-+ (float)heightForTextView:(CGSize)constraint WithText: (NSString *) strText WithFont:(CGFloat)font{
++ (float)heightForTextView:(CGSize)constraint WithText:(NSString *) strText WithFont:(CGFloat)font{
     if (!strText||strText.length==0) {
         return 0;
     }

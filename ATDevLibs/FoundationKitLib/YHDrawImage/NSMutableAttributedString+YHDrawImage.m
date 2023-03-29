@@ -10,7 +10,7 @@
 
 @implementation NSMutableAttributedString (YHDrawImage)
 
--(void)yh_appendAttachmentImage: (UIImage *)img offsetY: (CGFloat)offsetY{
+-(void)yh_appendAttachmentImage:(UIImage *)img offsetY:(CGFloat)offsetY{
     NSTextAttachment *textAttachment = [[NSTextAttachment alloc]init];
     textAttachment.image = img;
     CGRect frame = CGRectMake(0, 0, textAttachment.image.size.width, textAttachment.image.size.height);

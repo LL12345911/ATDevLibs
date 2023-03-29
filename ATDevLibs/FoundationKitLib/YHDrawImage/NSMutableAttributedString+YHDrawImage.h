@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface NSMutableAttributedString (YHDrawImage)
 
 ///img:追加图片，offsetY:调整图片垂直方向位置
--(void)yh_appendAttachmentImage: (UIImage *)img offsetY: (CGFloat)offsetY;
+-(void)yh_appendAttachmentImage:(UIImage *)img offsetY:(CGFloat)offsetY;
 
 @end
 

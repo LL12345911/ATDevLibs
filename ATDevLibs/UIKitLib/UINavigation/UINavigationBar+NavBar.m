@@ -269,7 +269,7 @@ static char overlayImageKey;
  @param alpha 设置透明度
  @return UIImage
  */
-- (UIImage *)createImageWithColor: (UIColor *)color alpha:(CGFloat)alpha{
+- (UIImage *)createImageWithColor:(UIColor *)color alpha:(CGFloat)alpha{
     CGRect rect = CGRectMake(0.0f, 0.0f, self.bounds.size.width, self.bounds.size.height);
     UIGraphicsBeginImageContext(rect.size);
     CGContextRef context = UIGraphicsGetCurrentContext();
@@ -304,7 +304,7 @@ static char overlayImageKey;
  @param color UIColor
  @return UIImage
  */
-- (UIImage *)createImageWithColor: (UIColor *) color{
+- (UIImage *)createImageWithColor:(UIColor *) color{
     CGRect rect = CGRectMake(0.0f, 0.0f, self.bounds.size.width, self.bounds.size.height);
     UIGraphicsBeginImageContext(rect.size);
     CGContextRef context = UIGraphicsGetCurrentContext();

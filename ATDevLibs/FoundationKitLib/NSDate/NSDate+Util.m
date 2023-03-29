@@ -64,13 +64,13 @@ _Pragma("clang diagnostic pop") \
 
 #pragma mark - Relative Dates
 
-+ (NSDate *)dateWithDaysFromNow: (NSInteger) days
++ (NSDate *)dateWithDaysFromNow:(NSInteger) days
 {
     // Thanks, Jim Morrison
     return [[NSDate date] dateByAddingDays:days];
 }
 
-+ (NSDate *)dateWithDaysBeforeNow: (NSInteger) days
++ (NSDate *)dateWithDaysBeforeNow:(NSInteger) days
 {
     // Thanks, Jim Morrison
     return [[NSDate date] dateBySubtractingDays:days];
@@ -86,28 +86,28 @@ _Pragma("clang diagnostic pop") \
     return [NSDate dateWithDaysBeforeNow:1];
 }
 
-+ (NSDate *) dateWithHoursFromNow: (NSInteger) dHours
++ (NSDate *) dateWithHoursFromNow:(NSInteger) dHours
 {
     NSTimeInterval aTimeInterval = [[NSDate date] timeIntervalSinceReferenceDate] + D_HOUR * dHours;
     NSDate *newDate = [NSDate dateWithTimeIntervalSinceReferenceDate:aTimeInterval];
     return newDate;
 }
 
-+ (NSDate *) dateWithHoursBeforeNow: (NSInteger) dHours
++ (NSDate *) dateWithHoursBeforeNow:(NSInteger) dHours
 {
     NSTimeInterval aTimeInterval = [[NSDate date] timeIntervalSinceReferenceDate] - D_HOUR * dHours;
     NSDate *newDate = [NSDate dateWithTimeIntervalSinceReferenceDate:aTimeInterval];
     return newDate;
 }
 
-+ (NSDate *) dateWithMinutesFromNow: (NSInteger) dMinutes
++ (NSDate *) dateWithMinutesFromNow:(NSInteger) dMinutes
 {
     NSTimeInterval aTimeInterval = [[NSDate date] timeIntervalSinceReferenceDate] + D_MINUTE * dMinutes;
     NSDate *newDate = [NSDate dateWithTimeIntervalSinceReferenceDate:aTimeInterval];
     return newDate;
 }
 
-+ (NSDate *) dateWithMinutesBeforeNow: (NSInteger) dMinutes
++ (NSDate *) dateWithMinutesBeforeNow:(NSInteger) dMinutes
 {
     NSTimeInterval aTimeInterval = [[NSDate date] timeIntervalSinceReferenceDate] - D_MINUTE * dMinutes;
     NSDate *newDate = [NSDate dateWithTimeIntervalSinceReferenceDate:aTimeInterval];
@@ -139,7 +139,7 @@ _Pragma("clang diagnostic pop") \
 
 
 #pragma mark - String Properties
-- (NSString *) stringWithFormat: (NSString *) format
+- (NSString *) stringWithFormat:(NSString *) format
 {
     NSDateFormatter *formatter = [NSDateFormatter new];
     //    formatter.locale = [NSLocale currentLocale]; // Necessary?
@@ -149,7 +149,7 @@ _Pragma("clang diagnostic pop") \
     return [formatter stringFromDate:self];
 }
 
-- (NSString *) stringWithDateStyle: (NSDateFormatterStyle) dateStyle timeStyle: (NSDateFormatterStyle) timeStyle
+- (NSString *) stringWithDateStyle:(NSDateFormatterStyle) dateStyle timeStyle:(NSDateFormatterStyle) timeStyle
 {
     NSDateFormatter *formatter = [NSDateFormatter new];
     formatter.locale = [NSLocale systemLocale];
@@ -207,7 +207,7 @@ _Pragma("clang diagnostic pop") \
 
 #pragma mark - Comparing Dates
 
-- (BOOL) isEqualToDateIgnoringTime: (NSDate *) aDate
+- (BOOL) isEqualToDateIgnoringTime:(NSDate *) aDate
 {
     NSDateComponents *components1 = [[NSDate currentCalendar] components:ATT_NSDATE_UTILITIES_COMPONENT_FLAGS fromDate:self];
     NSDateComponents *components2 = [[NSDate currentCalendar] components:ATT_NSDATE_UTILITIES_COMPONENT_FLAGS fromDate:aDate];
@@ -232,7 +232,7 @@ _Pragma("clang diagnostic pop") \
 }
 
 // This hard codes the assumption that a week is 7 days
-- (BOOL)isSameWeekAsDate: (NSDate *) aDate
+- (BOOL)isSameWeekAsDate:(NSDate *) aDate
 {
     NSDateComponents *components1 = [[NSDate currentCalendar] components:ATT_NSDATE_UTILITIES_COMPONENT_FLAGS fromDate:self];
     NSDateComponents *components2 = [[NSDate currentCalendar] components:ATT_NSDATE_UTILITIES_COMPONENT_FLAGS fromDate:aDate];
@@ -265,7 +265,7 @@ _Pragma("clang diagnostic pop") \
 }
 
 // Thanks, mspasov
-- (BOOL) isSameMonthAsDate: (NSDate *) aDate
+- (BOOL) isSameMonthAsDate:(NSDate *) aDate
 {
     
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_8_0
@@ -306,7 +306,7 @@ _Pragma("clang diagnostic pop") \
     return [self isSameMonthAsDate:[[NSDate date] dateByAddingMonths:1]];
 }
 
-- (BOOL) isSameYearAsDate: (NSDate *) aDate
+- (BOOL) isSameYearAsDate:(NSDate *) aDate
 {
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_8_0
     NSDateComponents *components1;
@@ -379,12 +379,12 @@ _Pragma("clang diagnostic pop") \
     return (components1.year == (components2.year - 1));
 }
 
-- (BOOL) isEarlierThanDate: (NSDate *) aDate
+- (BOOL) isEarlierThanDate:(NSDate *) aDate
 {
     return ([self compare:aDate] == NSOrderedAscending);
 }
 
-- (BOOL) isLaterThanDate: (NSDate *) aDate
+- (BOOL) isLaterThanDate:(NSDate *) aDate
 {
     return ([self compare:aDate] == NSOrderedDescending);
 }
@@ -447,7 +447,7 @@ _Pragma("clang diagnostic pop") \
 #pragma mark - Adjusting Dates
 
 // Thaks, rsjohnson
-- (NSDate *) dateByAddingYears: (NSInteger) dYears
+- (NSDate *) dateByAddingYears:(NSInteger) dYears
 {
     NSDateComponents *dateComponents = [[NSDateComponents alloc] init];
     [dateComponents setYear:dYears];
@@ -455,12 +455,12 @@ _Pragma("clang diagnostic pop") \
     return newDate;
 }
 
-- (NSDate *) dateBySubtractingYears: (NSInteger) dYears
+- (NSDate *) dateBySubtractingYears:(NSInteger) dYears
 {
     return [self dateByAddingYears:-dYears];
 }
 
-- (NSDate *) dateByAddingMonths: (NSInteger) dMonths
+- (NSDate *) dateByAddingMonths:(NSInteger) dMonths
 {
     NSDateComponents *dateComponents = [[NSDateComponents alloc] init];
     [dateComponents setMonth:dMonths];
@@ -468,13 +468,13 @@ _Pragma("clang diagnostic pop") \
     return newDate;
 }
 
-- (NSDate *) dateBySubtractingMonths: (NSInteger) dMonths
+- (NSDate *) dateBySubtractingMonths:(NSInteger) dMonths
 {
     return [self dateByAddingMonths:-dMonths];
 }
 
 // Courtesy of dedan who mentions issues with Daylight Savings
-- (NSDate *) dateByAddingDays: (NSInteger) dDays
+- (NSDate *) dateByAddingDays:(NSInteger) dDays
 {
     NSDateComponents *dateComponents = [[NSDateComponents alloc] init];
     [dateComponents setDay:dDays];
@@ -482,36 +482,36 @@ _Pragma("clang diagnostic pop") \
     return newDate;
 }
 
-- (NSDate *) dateBySubtractingDays: (NSInteger) dDays
+- (NSDate *) dateBySubtractingDays:(NSInteger) dDays
 {
-    return [self dateByAddingDays: (dDays * -1)];
+    return [self dateByAddingDays:(dDays * -1)];
 }
 
-- (NSDate *) dateByAddingHours: (NSInteger) dHours
+- (NSDate *) dateByAddingHours:(NSInteger) dHours
 {
     NSTimeInterval aTimeInterval = [self timeIntervalSinceReferenceDate] + D_HOUR * dHours;
     NSDate *newDate = [NSDate dateWithTimeIntervalSinceReferenceDate:aTimeInterval];
     return newDate;
 }
 
-- (NSDate *) dateBySubtractingHours: (NSInteger) dHours
+- (NSDate *) dateBySubtractingHours:(NSInteger) dHours
 {
-    return [self dateByAddingHours: (dHours * -1)];
+    return [self dateByAddingHours:(dHours * -1)];
 }
 
-- (NSDate *) dateByAddingMinutes: (NSInteger) dMinutes
+- (NSDate *) dateByAddingMinutes:(NSInteger) dMinutes
 {
     NSTimeInterval aTimeInterval = [self timeIntervalSinceReferenceDate] + D_MINUTE * dMinutes;
     NSDate *newDate = [NSDate dateWithTimeIntervalSinceReferenceDate:aTimeInterval];
     return newDate;
 }
 
-- (NSDate *) dateBySubtractingMinutes: (NSInteger) dMinutes
+- (NSDate *) dateBySubtractingMinutes:(NSInteger) dMinutes
 {
-    return [self dateByAddingMinutes: (dMinutes * -1)];
+    return [self dateByAddingMinutes:(dMinutes * -1)];
 }
 
-- (NSDateComponents *) componentsWithOffsetFromDate: (NSDate *) aDate
+- (NSDateComponents *) componentsWithOffsetFromDate:(NSDate *) aDate
 {
     NSDateComponents *dTime = [[NSDate currentCalendar] components:ATT_NSDATE_UTILITIES_COMPONENT_FLAGS fromDate:aDate toDate:self options:0];
     return dTime;
@@ -541,37 +541,37 @@ _Pragma("clang diagnostic pop") \
 
 #pragma mark - Retrieving Intervals
 
-- (NSInteger) minutesAfterDate: (NSDate *) aDate
+- (NSInteger) minutesAfterDate:(NSDate *) aDate
 {
     NSTimeInterval ti = [self timeIntervalSinceDate:aDate];
     return (NSInteger) (ti / D_MINUTE);
 }
 
-- (NSInteger) minutesBeforeDate: (NSDate *) aDate
+- (NSInteger) minutesBeforeDate:(NSDate *) aDate
 {
     NSTimeInterval ti = [aDate timeIntervalSinceDate:self];
     return (NSInteger) (ti / D_MINUTE);
 }
 
-- (NSInteger) hoursAfterDate: (NSDate *) aDate
+- (NSInteger) hoursAfterDate:(NSDate *) aDate
 {
     NSTimeInterval ti = [self timeIntervalSinceDate:aDate];
     return (NSInteger) (ti / D_HOUR);
 }
 
-- (NSInteger) hoursBeforeDate: (NSDate *) aDate
+- (NSInteger) hoursBeforeDate:(NSDate *) aDate
 {
     NSTimeInterval ti = [aDate timeIntervalSinceDate:self];
     return (NSInteger) (ti / D_HOUR);
 }
 
-- (NSInteger) daysAfterDate: (NSDate *) aDate
+- (NSInteger) daysAfterDate:(NSDate *) aDate
 {
     NSTimeInterval ti = [self timeIntervalSinceDate:aDate];
     return (NSInteger) (ti / D_DAY);
 }
 
-- (NSInteger) daysBeforeDate: (NSDate *) aDate
+- (NSInteger) daysBeforeDate:(NSDate *) aDate
 {
     NSTimeInterval ti = [aDate timeIntervalSinceDate:self];
     return (NSInteger) (ti / D_DAY);

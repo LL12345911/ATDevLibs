@@ -28,7 +28,7 @@
 }
 
 -(BOOL)valid {
-    return (!self.eventName.length) ? NO : ((self.subType < 0 && self.subType != -1) ? NO : YES);
+    return (!self.eventName.length) ? NO :((self.subType < 0 && self.subType != -1) ? NO : YES);
 }
 
 #pragma mark --- override ---
