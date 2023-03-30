@@ -21,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @return JSON字符串
  */
-+ (NSString *)toJsonStrWithDict:(NSDictionary *)dict;
++ (NSString *)dictToJsonString:(NSDictionary *)dict;
 
 
 /**

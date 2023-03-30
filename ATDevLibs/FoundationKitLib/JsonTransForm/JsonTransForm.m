@@ -20,7 +20,7 @@
  * @return JSON字符串
  
  */
-+ (NSString *)toJsonStrWithDict:(NSDictionary *)dict{
++ (NSString *)dictToJsonString:(NSDictionary *)dict{
     
     NSError *error;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:&error];
