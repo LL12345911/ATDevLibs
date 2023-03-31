@@ -133,8 +133,8 @@
     NSError *err;
     NSData *jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
     NSArray* jsonObject = [NSJSONSerialization JSONObjectWithData:jsonData
-                                                    options:NSJSONReadingAllowFragments
-                                                      error:&err];
+                                                          options:NSJSONReadingAllowFragments
+                                                            error:&err];
     if (jsonObject != nil && err == nil){
         return jsonObject;
     }else{
@@ -196,7 +196,15 @@
         return nil;
     }
     
-    return [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    NSMutableString *mutStr = [NSMutableString stringWithString:jsonString];
+    //NSRange range = {0,jsonString.length};
+    ////去掉字符串中的空格
+    //[mutStr replaceOccurrencesOfString:@" " withString:@"" options:NSLiteralSearch range:range];
+    NSRange range2 = NSMakeRange(0, mutStr.length);
+    //去掉字符串中的换行符
+    [mutStr replaceOccurrencesOfString:@"\n" withString:@"" options:NSLiteralSearch range:range2];
+    return mutStr;
 }
 
 /**
@@ -214,7 +222,15 @@
         return nil;
     }
     
-    return [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    NSMutableString *mutStr = [NSMutableString stringWithString:jsonString];
+    //NSRange range = {0,jsonString.length};
+    ////去掉字符串中的空格
+    //[mutStr replaceOccurrencesOfString:@" " withString:@"" options:NSLiteralSearch range:range];
+    NSRange range2 = NSMakeRange(0, mutStr.length);
+    //去掉字符串中的换行符
+    [mutStr replaceOccurrencesOfString:@"\n" withString:@"" options:NSLiteralSearch range:range2];
+    return mutStr;
 }
 
 
@@ -232,11 +248,76 @@
         return nil;
     }
     
-    return [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    NSMutableString *mutStr = [NSMutableString stringWithString:jsonString];
+    //NSRange range = {0,jsonString.length};
+    ////去掉字符串中的空格
+    //[mutStr replaceOccurrencesOfString:@" " withString:@"" options:NSLiteralSearch range:range];
+    NSRange range2 = NSMakeRange(0, mutStr.length);
+    //去掉字符串中的换行符
+    [mutStr replaceOccurrencesOfString:@"\n" withString:@"" options:NSLiteralSearch range:range2];
+    return mutStr;
 }
 
 
 
+
+
+
+/**
+ *  @brief  将url参数转换成NSDictionary
+ *
+ *  @param query url参数
+ *
+ *  @return NSDictionary
+ */
++ (NSDictionary *)urlQueryToDict:(NSString *)query {
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    NSArray *parameters = [query componentsSeparatedByString:@"&"];
+    for(NSString *parameter in parameters) {
+        NSArray *contents = [parameter componentsSeparatedByString:@"="];
+        if([contents count] == 2) {
+            NSString *key = [contents objectAtIndex:0];
+            NSString *value = [contents objectAtIndex:1];
+            //    if (@available(iOS 9, *)) {
+            //        value = [value stringByRemovingPercentEncoding];
+            //    }else{
+            //        value = [value stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            //    }
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored"-Wdeprecated-declarations"
+            value = [value stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+#pragma clang diagnostic pop
+            if (key && value) {
+                [dict setObject:value forKey:key];
+            }
+        }
+    }
+    return [NSDictionary dictionaryWithDictionary:dict];
+}
+
+/**
+ *  @brief  将NSDictionary转换成url 参数字符串
+ *
+ *  @return url 参数字符串
+ */
++ (NSString *)dictToUrlQuery:(NSDictionary *)dict {
+
+    NSMutableString *string = [NSMutableString string];
+    for (NSString *key in [dict allKeys]) {
+        if ([string length]) {
+            [string appendString:@"&"];
+        }
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored"-Wdeprecated-declarations"
+        CFStringRef escaped = CFURLCreateStringByAddingPercentEscapes(NULL,(CFStringRef)[[dict objectForKey:key] description],NULL,(CFStringRef)@"!*'();:@&=+$,/?%#[]",kCFStringEncodingUTF8);
+        
+#pragma clang diagnostic pop
+        [string appendFormat:@"%@=%@", key, escaped];
+        CFRelease(escaped);
+    }
+    return string;
+}
 
 
 + (id)getObjectInternal_Ext:(id)obj {

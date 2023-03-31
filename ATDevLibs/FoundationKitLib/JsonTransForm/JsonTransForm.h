@@ -98,6 +98,22 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 
+/**
+ *  @brief  将url参数转换成NSDictionary
+ *
+ *  @param query url参数
+ *
+ *  @return NSDictionary
+ */
++ (NSDictionary *)urlQueryToDict:(NSString *)query;
+
+/**
+ *  @brief  将NSDictionary转换成url 参数字符串
+ *
+ *  @return url 参数字符串
+ */
++ (NSString *)dictToUrlQuery:(NSDictionary *)dict;
+
 @end
 
 NS_ASSUME_NONNULL_END
