@@ -60,7 +60,7 @@
  * @return JSON字符串
  
  */
-+ (NSString *)arrayToJsonString:(NSArray *)array {
++ (NSString *)toJsonStrWithArray:(NSArray *)array {
     
     NSError *error;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:array options:NSJSONWritingPrettyPrinted error:&error];
@@ -181,16 +181,32 @@
     return dic;
 }
 
-
-+ (nullable NSString *)objectToJsonString:(id)obj options:(NSJSONWritingOptions)options error:(NSError**)error {
+/**
+ * 将对象序列换成JSON字符串
+ *
+ * @param obj 需要序列换的参数
+ * @param options  设置nsjsonwritingprettyprinting选项将生成带有空格的JSON，以使输出更具可读性。如果没有设置该选项，将生成尽可能紧凑的
+ * @param error 失败时，失败信息
+ *
+ * @return 修改的json 字符串的数据， 如果发生错误，error参数将被设置，返回值将为nil。
+ */
++ (NSString *)objectToJsonString:(id)obj options:(NSJSONWritingOptions)options error:(NSError**)error {
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:[self objectToDict:obj] options:options error:error];
-     if (!jsonData) {
-         return nil;
-     }
+    if (!jsonData) {
+        return nil;
+    }
+    
     return [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
- }
+}
 
-
+/**
+ * 将对象序列换成JSON字符串
+ *
+ * @param obj 需要序列换的参数
+ * @param options  设置nsjsonwritingprettyprinting选项将生成带有空格的JSON，以使输出更具可读性。如果没有设置该选项，将生成尽可能紧凑的
+ *
+ * @return 修改的json 字符串的数据 ， 如果发生错误，error参数将被设置，返回值将为nil。
+ */
 + (NSString *)objectToJsonString:(id)obj options:(NSJSONWritingOptions)options {
     NSError *error;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:[self objectToDict:obj] options:options error:&error];
@@ -200,6 +216,26 @@
     
     return [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
 }
+
+
+/**
+ * 将对象序列换成JSON字符串
+ *
+ * @param obj 需要序列换的参数
+ *
+ * @return 修改的json 字符串的数据
+ */
++ (NSString *)objectToJsonString:(id)obj {
+    NSError *error;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:[self objectToDict:obj] options:NSJSONWritingPrettyPrinted error:&error];
+    if (!error) {
+        return nil;
+    }
+    
+    return [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+}
+
+
 
 
 
