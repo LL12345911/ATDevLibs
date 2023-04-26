@@ -30,6 +30,22 @@
 //        return [self infoCallback];
 //    });
     
+    
+    
+    
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(30, 0, 300, 300)];
+    label.numberOfLines = 0;
+    [self.view addSubview:label];
+    
+    AttributeStringBuilder *build = AttributeStringBuilder.build(@"NSBackgroundColorAttributeName 圆角")
+        //.append(@"背景颜色").font(AutoFont(15)).color([UIColor yellowColor])
+        .
+    appendBackgroundColor(@"背景颜色", [UIFont systemFontOfSize:34],[UIColor redColor],3)
+        .all.lineSpacing(3);
+    
+    label.attributedText = [build commit];
+    
+    
     //判断 App是否开启定位权限
     [[AuthorizationManager defaultManager] requestAuthorizationWithAuthorizationType:AuthorizationTypeMapWhenInUseOrMapAlways authorizedHandler:^{
         NSLog(@" =================== ");

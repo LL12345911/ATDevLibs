@@ -136,9 +136,57 @@ NS_ASSUME_NONNULL_BEGIN
 /// 背景颜色
 - (AttributeStringBuilder *(^)(UIColor *color))backgroundColor;
 
+
+/**
+ 背景圆角
+ 
+ @discussion string  背景文字
+ @discussion font  文字字体
+ @discussion color  背景颜色
+ @discussion radius  圆角
+ */
+- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *color, CGFloat radius))appendBackgroundColor;
+
+/**
+ 背景圆角
+ 
+ @discussion string  背景文字
+ @discussion font  文字字体
+ @discussion color  背景颜色
+ @discussion radius  圆角
+ @discussion corners  圆角属性
+ */
+- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *color, CGFloat radius, UIRectCorner corners))appendBackgroundCornerColor;
+
+
+/**
+ 背景圆角
+ 
+ @discussion text  文本数据
+ @discussion font  文字字体
+ @discussion color 背景颜色
+ @discussion radius  圆角半径
+ @discussion corners  圆角属性
+ @discussion imgSize  固定宽高(size.width=0/size.height=0表示不固定，文本水平/垂直居中)
+ @discussion insets  文本边距(设置固定宽size.width之后left/right失效，设置固定高size.height之后top/bottom失效)
+ @discussion margins  边框以外的边距
+ @discussion strokeColor  边框线颜色
+ @discussion lineWidth   宽度
+ */
+- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *color, CGFloat radius, UIRectCorner corners, CGSize imgSize, UIEdgeInsets insets, UIEdgeInsets margins, UIColor *strokeColor, CGFloat lineWidth))appendBackgroundRadiusColor;
+
+
 #pragma mark - Glyph
 
-/// 删除线风格
+/**
+ 删除线风格
+ 
+ @discussion NSUnderlineStyleNone 默认值
+ @discussion NSUnderlineStyleNone 不设置删除线
+ @discussion NSUnderlineStyleSingle 设置删除线为细单实线
+ @discussion NSUnderlineStyleThick 设置删除线为粗单实线
+ @discussion NSUnderlineStyleDouble 设置删除线为细双实线
+ */
 - (AttributeStringBuilder *(^)(NSUnderlineStyle style))strikethroughStyle;
 
 /// 删除线颜色
@@ -146,7 +194,15 @@ NS_ASSUME_NONNULL_BEGIN
 /// 具体见：https://stackoverflow.com/questions/43074652/ios-10-3-nsstrikethroughstyleattributename-is-not-rendered-if-applied-to-a-sub
 - (AttributeStringBuilder *(^)(UIColor *color))strikethroughColor;
 
-/// 下划线风格
+/**
+ 下划线风格
+
+@discussion NSUnderlineStyleNone 默认值
+@discussion NSUnderlineStyleNone 不设置删除线
+@discussion NSUnderlineStyleSingle 设置删除线为细单实线
+@discussion NSUnderlineStyleThick 设置删除线为粗单实线
+@discussion NSUnderlineStyleDouble 设置删除线为细双实线
+*/
 - (AttributeStringBuilder *(^)(NSUnderlineStyle style))underlineStyle;
 
 /// 下划线颜色

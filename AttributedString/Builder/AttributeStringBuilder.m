@@ -7,6 +7,7 @@
 //
 
 #import "AttributeStringBuilder.h"
+#import <UIKit/UIKit.h>
 
 @interface AttributeStringBuilder ()
 
@@ -362,9 +363,227 @@
     };
 }
 
+/**
+ 背景圆角
+ 
+ @discussion string  背景文字
+ @discussion font  文字字体
+ @discussion color  背景颜色
+ @discussion radius  圆角
+ */
+- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *color, CGFloat radius))appendBackgroundColor {
+    return ^(NSString *text, UIFont *font, UIColor *color, CGFloat radius) {
+        
+        NSRange range = NSMakeRange(self.source.length, text.length);
+        self.scr_ranges = @[ [NSValue valueWithRange:range] ];
+        
+        
+        UIImage *img1 = [self drawRadius:radius text:text font:font corners:UIRectCornerAllCorners imgSize:CGSizeMake(0, 0) fillColor:color insets:UIEdgeInsetsMake(0, 0, 0, 0) margins:UIEdgeInsetsMake(0, 0, 0, 0) strokeColor:nil lineWidth:0];
+
+        
+        NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
+        attachment.image = img1;
+        attachment.bounds = CGRectMake(0, 0, attachment.image.size.width, attachment.image.size.height);
+        [self.source appendAttributedString:[NSAttributedString attributedStringWithAttachment:attachment]];
+        
+        return self;
+    };
+}
+
+
+/**
+ 背景圆角
+ 
+ @discussion string  背景文字
+ @discussion font  文字字体
+ @discussion color  背景颜色
+ @discussion radius  圆角
+ @discussion corners  圆角属性
+ */
+- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *color, CGFloat radius, UIRectCorner corners))appendBackgroundCornerColor {
+    return ^(NSString *text, UIFont *font, UIColor *color, CGFloat radius, UIRectCorner corners) {
+        
+        NSRange range = NSMakeRange(self.source.length, text.length);
+        self.scr_ranges = @[ [NSValue valueWithRange:range] ];
+        
+        
+        UIImage *img1 = [self drawRadius:radius text:text font:font corners:corners imgSize:CGSizeMake(0, 0) fillColor:color insets:UIEdgeInsetsMake(0, 0, 0, 0) margins:UIEdgeInsetsMake(0, 0, 0, 0) strokeColor:nil lineWidth:0];
+
+        
+        NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
+        attachment.image = img1;
+        attachment.bounds = CGRectMake(0, 0, attachment.image.size.width, attachment.image.size.height);
+        [self.source appendAttributedString:[NSAttributedString attributedStringWithAttachment:attachment]];
+        
+        return self;
+    };
+}
+
+
+
+/**
+ 背景圆角
+ 
+ @discussion text  文本数据
+ @discussion font  文字字体
+ @discussion color 背景颜色
+ @discussion radius  圆角半径
+ @discussion corners  圆角属性
+ @discussion imgSize  固定宽高(size.width=0/size.height=0表示不固定，文本水平/垂直居中)
+ @discussion insets  文本边距(设置固定宽size.width之后left/right失效，设置固定高size.height之后top/bottom失效)
+ @discussion margins  边框以外的边距
+ @discussion strokeColor  边框线颜色
+ @discussion lineWidth   宽度
+ */
+- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *color, CGFloat radius, UIRectCorner corners, CGSize imgSize, UIEdgeInsets insets, UIEdgeInsets margins, UIColor *strokeColor, CGFloat lineWidth))appendBackgroundRadiusColor {
+    
+    return ^(NSString *text, UIFont *font, UIColor *color, CGFloat radius, UIRectCorner corners, CGSize imgSize, UIEdgeInsets insets, UIEdgeInsets margins, UIColor *strokeColor, CGFloat lineWidth) {
+        
+        NSRange range = NSMakeRange(self.source.length, text.length);
+        self.scr_ranges = @[ [NSValue valueWithRange:range] ];
+        
+        
+        UIImage *img1 = [self drawRadius:radius text:text font:font corners:corners imgSize:imgSize fillColor:color insets:insets margins:margins strokeColor:strokeColor lineWidth:lineWidth];
+
+        
+        NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
+        attachment.image = img1;
+        attachment.bounds = CGRectMake(0, 0, attachment.image.size.width, attachment.image.size.height);
+        [self.source appendAttributedString:[NSAttributedString attributedStringWithAttachment:attachment]];
+        
+        return self;
+    };
+}
+
+/**
+ 开始画图
+ 
+ @Param radius  圆角半径
+ @Param text  文本数据
+ @Param font  文字字体
+ @Param corners  圆角属性
+ @Param imgSize  固定宽高(size.width=0/size.height=0表示不固定，文本水平/垂直居中)
+ @Param fillColor 背景颜色
+ @Param insets  文本边距(设置固定宽size.width之后left/right失效，设置固定高size.height之后top/bottom失效)
+ @Param margins  边框以外的边距
+ @Param strokeColor  边框线颜色
+ @Param lineWidth   宽度
+ 
+ */
+- (UIImage*)drawRadius:(CGFloat)radius text:(NSString *)text font:(UIFont *)font corners:(UIRectCorner)corners imgSize:(CGSize)imgSize fillColor:(UIColor *)fillColor insets:(UIEdgeInsets)insets margins:(UIEdgeInsets)margins strokeColor:(UIColor *)strokeColor lineWidth:(CGFloat)lineWidth {
+
+    NSMutableAttributedString *attrStr = [[NSMutableAttributedString alloc] initWithString:text];
+    if (font) {
+        [attrStr addAttribute:NSFontAttributeName value:font range:NSMakeRange(0, text.length)];
+    }
+    
+    CGFloat radiusTopLeft = 0.0;
+    CGFloat radiusTopRight = 0.0;
+    CGFloat radiusBottomLeft = 0.0;
+    CGFloat radiusBottomRight = 0.0;
+    if ((corners & UIRectCornerTopLeft) > 0) {
+        radiusTopLeft = radius;
+    }
+    if ((corners & UIRectCornerTopRight) > 0) {
+        radiusTopRight = radius;
+    }
+    if ((corners & UIRectCornerBottomLeft) > 0) {
+        radiusBottomLeft = radius;
+    }
+    if ((corners & UIRectCornerBottomRight) > 0) {
+        radiusBottomRight = radius;
+    }
+    
+    CGFloat maxStrWidth = imgSize.width - (insets.left + insets.right + lineWidth);
+    CGFloat maxStrHeight = imgSize.height - (insets.top + insets.bottom + lineWidth);
+    CGSize strSize = [attrStr boundingRectWithSize:CGSizeMake(maxStrWidth > 0 ? maxStrWidth : CGFLOAT_MAX, maxStrHeight > 0 ? maxStrHeight : CGFLOAT_MAX)
+                                            options:NSStringDrawingTruncatesLastVisibleLine | NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading
+                                            context:nil].size;
+    CGSize drawSize = imgSize;
+    drawSize = CGSizeMake(drawSize.width > 0 ? drawSize.width : strSize.width + insets.left + insets.right + lineWidth,
+                          drawSize.height > 0 ? drawSize.height : strSize.height + insets.top + insets.bottom + lineWidth);
+    
+    drawSize = CGSizeMake(drawSize.width + margins.left + margins.right,
+                          drawSize.height + margins.top + margins.bottom);
+
+    /* 1.设置当前上下文中绘制的区域 */
+    UIGraphicsBeginImageContextWithOptions(drawSize, NO, 0);
+    
+    CGContextRef ctx = UIGraphicsGetCurrentContext();
+    void (^drawBlock)(CGRect rrect,
+                      CGFloat radiusTopLeft,
+                      CGFloat radiusTopRight,
+                      CGFloat radiusBottomLeft,
+                      CGFloat radiusBottomRight) = ^(CGRect rrect,
+                                                    CGFloat radiusTopLeft,
+                                                    CGFloat radiusTopRight,
+                                                    CGFloat radiusBottomLeft,
+                                                    CGFloat radiusBottomRight){
+        CGFloat
+        minx = CGRectGetMinX(rrect),
+        midx = CGRectGetMidX(rrect),
+        maxx = CGRectGetMaxX(rrect);
+        CGFloat
+        miny = CGRectGetMinY(rrect),
+        midy = CGRectGetMidY(rrect),
+        maxy = CGRectGetMaxY(rrect);
+        CGContextMoveToPoint(ctx, minx, midy);
+        CGContextAddArcToPoint(ctx, minx, miny, midx, miny, radiusTopLeft);
+        CGContextAddArcToPoint(ctx, maxx, miny, maxx, midy, radiusTopRight);
+        CGContextAddArcToPoint(ctx, maxx, maxy, midx, maxy, radiusBottomLeft);
+        CGContextAddArcToPoint(ctx, minx, maxy, minx, midy, radiusBottomRight);
+        CGContextClosePath(ctx);
+        CGContextDrawPath(ctx, kCGPathFillStroke);
+    };
+    CGFloat r = 0, g, b, a;
+    if (strokeColor) {
+        [strokeColor getRed:&r green:&g blue:&b alpha:&a];
+        CGContextSetLineWidth(ctx, lineWidth);
+        CGContextSetRGBStrokeColor(ctx, r, g, b, a);
+    } else {
+        CGContextSetLineWidth(ctx, 0);
+        CGContextSetRGBStrokeColor(ctx, 0, 0, 0, 0);
+    }
+    if (fillColor) {
+        [fillColor getRed:&r green:&g blue:&b alpha:&a];
+        CGContextSetRGBFillColor(ctx, r, g, b, a);
+    } else {
+        CGContextSetRGBFillColor(ctx, 0, 0, 0, 0);
+    }
+    
+    CGRect rrect = CGRectMake(lineWidth / 2 + margins.left,
+                              lineWidth / 2 + margins.top,
+                              drawSize.width - lineWidth - margins.left - margins.right,
+                              drawSize.height - lineWidth - margins.top - margins.bottom);
+    
+    drawBlock(rrect,
+              radiusTopLeft,
+              radiusTopRight,
+              radiusBottomLeft,
+              radiusBottomRight);
+    
+    [attrStr drawInRect:CGRectMake(imgSize.width > 0 ? drawSize.width / 2 - strSize.width / 2 : insets.left + lineWidth / 2 + margins.left,imgSize.height > 0 ? drawSize.height / 2 - strSize.height / 2 : insets.top + lineWidth / 2 + margins.top, strSize.width, strSize.height)];
+    
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return image;
+
+}
+
+
+
 #pragma mark - Glyph
 
-/// 删除线风格
+/**
+ 删除线风格
+ 
+ @discussion NSUnderlineStyleNone 默认值
+ @discussion NSUnderlineStyleNone 不设置删除线
+ @discussion NSUnderlineStyleSingle 设置删除线为细单实线
+ @discussion NSUnderlineStyleThick 设置删除线为粗单实线
+ @discussion NSUnderlineStyleDouble 设置删除线为细双实线
+ */
 - (AttributeStringBuilder *(^)(NSUnderlineStyle))strikethroughStyle {
     return ^(NSUnderlineStyle style) {
         [self addAttribute:NSStrikethroughStyleAttributeName value:@(style)];
@@ -382,7 +601,15 @@
     };
 }
 
-/// 下划线风格
+/**
+ 下划线风格
+
+@discussion NSUnderlineStyleNone 默认值
+@discussion NSUnderlineStyleNone 不设置删除线
+@discussion NSUnderlineStyleSingle 设置删除线为细单实线
+@discussion NSUnderlineStyleThick 设置删除线为粗单实线
+@discussion NSUnderlineStyleDouble 设置删除线为细双实线
+*/
 - (AttributeStringBuilder *(^)(NSUnderlineStyle))underlineStyle {
     return ^(NSUnderlineStyle style) {
         [self addAttribute:NSUnderlineStyleAttributeName value:@(style)];
