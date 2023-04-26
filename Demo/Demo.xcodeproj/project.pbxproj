@@ -66,7 +66,6 @@
 		41D325DC29CD968E00F9E976 /* YHDrawModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 41D325D629CD968E00F9E976 /* YHDrawModel.m */; };
 		41D325DD29CD968E00F9E976 /* NSMutableAttributedString+YHDrawImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 41D325D729CD968E00F9E976 /* NSMutableAttributedString+YHDrawImage.m */; };
 		41D325DE29CD968E00F9E976 /* JsonTransForm.m in Sources */ = {isa = PBXBuildFile; fileRef = 41D325DA29CD968E00F9E976 /* JsonTransForm.m */; };
-		41D325E729CD969400F9E976 /* AttributedStringBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 41D325E129CD969400F9E976 /* AttributedStringBuilder.m */; };
 		41D325E829CD969400F9E976 /* AttributeStringBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 41D325E529CD969400F9E976 /* AttributeStringBuilder.m */; };
 		41D325EC29CD97A700F9E976 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41D325EB29CD97A600F9E976 /* UIKit.framework */; };
 		41D325EE29CD97B000F9E976 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41D325ED29CD97B000F9E976 /* Foundation.framework */; };
@@ -216,8 +215,6 @@
 		41D325D729CD968E00F9E976 /* NSMutableAttributedString+YHDrawImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableAttributedString+YHDrawImage.m"; sourceTree = "<group>"; };
 		41D325D929CD968E00F9E976 /* JsonTransForm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JsonTransForm.h; sourceTree = "<group>"; };
 		41D325DA29CD968E00F9E976 /* JsonTransForm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JsonTransForm.m; sourceTree = "<group>"; };
-		41D325E029CD969400F9E976 /* AttributedStringBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AttributedStringBuilder.h; sourceTree = "<group>"; };
-		41D325E129CD969400F9E976 /* AttributedStringBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AttributedStringBuilder.m; sourceTree = "<group>"; };
 		41D325E329CD969400F9E976 /* AttributeStringBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AttributeStringBuilder.h; sourceTree = "<group>"; };
 		41D325E529CD969400F9E976 /* AttributeStringBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AttributeStringBuilder.m; sourceTree = "<group>"; };
 		41D325EB29CD97A600F9E976 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -709,20 +706,10 @@
 		41D325DF29CD969400F9E976 /* AttributedString */ = {
 			isa = PBXGroup;
 			children = (
-				41D325E029CD969400F9E976 /* AttributedStringBuilder.h */,
-				41D325E129CD969400F9E976 /* AttributedStringBuilder.m */,
-				41D325E229CD969400F9E976 /* Builder */,
-			);
-			path = AttributedString;
-			sourceTree = "<group>";
-		};
-		41D325E229CD969400F9E976 /* Builder */ = {
-			isa = PBXGroup;
-			children = (
 				41D325E329CD969400F9E976 /* AttributeStringBuilder.h */,
 				41D325E529CD969400F9E976 /* AttributeStringBuilder.m */,
 			);
-			path = Builder;
+			path = AttributedString;
 			sourceTree = "<group>";
 		};
 		41D325EA29CD97A600F9E976 /* Frameworks */ = {
@@ -950,7 +937,6 @@
 				41D0ED6C2799332D004F2A31 /* AlignmentLabel.m in Sources */,
 				412CD9DA251B282F000411B6 /* ViewController.m in Sources */,
 				41D0ED6B2799332D004F2A31 /* Helper.m in Sources */,
-				41D325E729CD969400F9E976 /* AttributedStringBuilder.m in Sources */,
 				41D0ED872799332D004F2A31 /* LocationInUsePermission.m in Sources */,
 				41D0ED612799332D004F2A31 /* NSString+ATKit.m in Sources */,
 				41D0ED642799332D004F2A31 /* XTimer.m in Sources */,

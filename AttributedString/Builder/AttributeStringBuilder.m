@@ -33,7 +33,7 @@
 
 
 #pragma mark - Content
-
+/// 创建一个 Attributed String
 + (AttributeStringBuilder *(^)(NSString *))build {
     return ^(NSString *string) {
         NSRange range = NSMakeRange(0, string.length);
@@ -45,6 +45,7 @@
     };
 }
 
+/// 尾部追加一个新的 Attributed String
 - (AttributeStringBuilder *(^)(NSString *))append {
     return ^(NSString *string) {
         NSRange range = NSMakeRange(self.source.length, string.length);
@@ -54,6 +55,7 @@
     };
 }
 
+/// 同 append 比，参数是 NSAttributedString
 - (AttributeStringBuilder *(^)(NSAttributedString *))attributedAppend {
     return ^(NSAttributedString *attributedString) {
         NSRange range = NSMakeRange(self.source.length, attributedString.string.length);
@@ -63,6 +65,7 @@
     };
 }
 
+/// 插入一个新的 Attributed String
 - (AttributeStringBuilder *(^)(NSString *, NSUInteger index))insert {
     return ^(NSString *string, NSUInteger index) {
         if (index > self.source.length) {
@@ -76,6 +79,8 @@
     };
 }
 
+
+/// 增加间隔，spacing 的单位是 point。放到 Content 的原因是，间隔是通过空格+字体模拟的，但不会导致 Range 的切换
 - (AttributeStringBuilder *(^)(CGFloat))appendSpacing {
     return ^(CGFloat spacing) {
         if (spacing <= 0) {
@@ -89,6 +94,8 @@
     };
 }
 
+
+/// 尾部追加一个附件。同插入字符不同，插入附件并不会将当前 Range 切换成附件所在的 Range，下同
 - (AttributeStringBuilder *(^)(NSTextAttachment *))appendAttachment {
     return ^(NSTextAttachment *attachment) {
         NSAttributedString *string = [NSAttributedString attributedStringWithAttachment:attachment];
@@ -97,12 +104,16 @@
     };
 }
 
+
+/// 在尾部追加图片附件，默认使用图片尺寸，图片垂直居中，为了设置处理垂直居中（基于字体的 capHeight），需要在添加图片附件之前设置字体
 - (AttributeStringBuilder *(^)(UIImage *))appendImage {
     return ^(UIImage *image) {
         return self.appendSizeImage(image, image.size);
     };
 }
 
+
+/// 在尾部追加图片附件，可以自定义尺寸，默认使用图片前一位的字体进行对齐，其他同 appendImage
 - (AttributeStringBuilder *(^)(UIImage *, CGSize))appendSizeImage {
     return ^(UIImage *image, CGSize imageSize) {
         UIFont *font = [self.source attribute:NSFontAttributeName atIndex:self.source.string.length - 1 effectiveRange:nil];
@@ -110,12 +121,16 @@
     };
 }
 
+
+/// 在尾部追加图片附件，可以自定义想对齐的字体，图片使用自身尺寸，其他同 appendImage
 - (AttributeStringBuilder *(^)(UIImage *, UIFont *))appendFontImage {
     return ^(UIImage *image, UIFont *font) {
         return self.appendCustomImage(image, image.size, font);
     };
 }
 
+
+/// 在尾部追加图片附件，可以自定义尺寸和想对齐的字体，其他同 appendImage
 - (AttributeStringBuilder *(^)(UIImage *, CGSize, UIFont *))appendCustomImage {
     return ^(UIImage *image, CGSize imageSize, UIFont *font) {
         CGFloat offset = 0;
@@ -130,6 +145,8 @@
     };
 }
 
+
+/// 在 index 位置插入图片附件，由于不确定字体信息，因此需要显式输入字体
 - (AttributeStringBuilder *(^)(UIImage *, CGSize, NSUInteger, UIFont *))insertImage {
     return ^(UIImage *image, CGSize imageSize, NSUInteger index, UIFont *font) {
         CGFloat offset = roundf((font.capHeight - imageSize.height) / 2);
@@ -149,6 +166,8 @@
     };
 }
 
+
+/// 同 insertImage 的区别在于，会在当前 Range 的头部插入图片附件，如果没有 Range 则什么也不做
 - (AttributeStringBuilder *(^)(UIImage *, CGSize, UIFont *))headInsertImage {
     return ^(UIImage *image, CGSize imageSize, UIFont *font) {
         NSMutableArray *ranges = [NSMutableArray array];
@@ -170,6 +189,8 @@
 
 #pragma mark - Range
 
+
+/// 根据 start 和 length 设置范围
 - (AttributeStringBuilder *(^)(NSInteger, NSInteger))range {
     return ^(NSInteger location, NSInteger length) {
         if (location < 0 || length <= 0 || location + length > self.source.length) {
@@ -181,12 +202,16 @@
     };
 }
 
+
+/// 将范围设置为当前字符串全部
 - (AttributeStringBuilder *)all {
     NSRange range = NSMakeRange(0, self.source.length);
     self.scr_ranges = @[ [NSValue valueWithRange:range] ];
     return self;
 }
 
+
+/// 匹配所有符合的字符串
 - (AttributeStringBuilder *(^)(NSString *))match {
     return ^(NSString *string) {
         if (string.length == 0) {
@@ -209,6 +234,8 @@
     };
 }
 
+
+/// 从头开始匹配第一个符合的字符串
 - (AttributeStringBuilder *(^)(NSString *))matchFirst {
     return ^(NSString *string) {
         if (string.length == 0) {
@@ -222,6 +249,7 @@
     };
 }
 
+/// 为尾开始匹配第一个符合的字符串
 - (AttributeStringBuilder *(^)(NSString *))matchLast {
     return ^(NSString *string) {
         if (string.length == 0) {
@@ -235,8 +263,61 @@
     };
 }
 
+
+/**
+ 正则表达式
+ 
+ @Discussion string 正则表达式
+ @Discussion all 是否匹配所有
+ */
+-(AttributeStringBuilder *(^)(NSString *regularExpression, BOOL all))regular {
+    return ^(NSString *regularExpression, BOOL all) {
+        if (regularExpression.length == 0) {
+            return self;
+        }
+        
+        self.scr_ranges = [self searchString:regularExpression options:NSRegularExpressionSearch all:all];
+
+        return self;
+    };
+}
+
+-(NSArray *)searchString:(NSString*)searchString options:(NSStringCompareOptions)options all:(BOOL)all {
+    if (self.source == nil) {
+        return nil;
+    }
+    
+    NSMutableArray *tempArr = [NSMutableArray arrayWithCapacity:1];
+    NSString *str = self.source.string;
+    if (!all) {
+        NSRange range = [str rangeOfString:searchString options:options];
+        if (range.location != NSNotFound) {
+            [tempArr addObject:[NSValue valueWithRange:range]];
+        }
+        
+    }else {
+        NSRange searchRange = NSMakeRange(0, str.length);
+        NSRange range = NSMakeRange(0, 0);
+        
+        while(range.location != NSNotFound && searchRange.location < str.length) {
+            range = [str rangeOfString:searchString options:options range:searchRange];
+
+            if (range.location != NSNotFound) {
+                [tempArr addObject:[NSValue valueWithRange:range]];
+                
+                searchRange.location = range.location + range.length;
+                searchRange.length = str.length - searchRange.location;
+            }
+        }
+    }
+    
+    return tempArr;
+    
+}
+
 #pragma mark - Basic
 
+/// 字体
 - (AttributeStringBuilder *(^)(UIFont *))font {
     return ^(UIFont *font) {
         [self addAttribute:NSFontAttributeName value:font];
@@ -244,6 +325,7 @@
     };
 }
 
+/// 字号，默认字体
 - (AttributeStringBuilder *(^)(CGFloat))fontSize {
     return ^(CGFloat fontSize) {
         UIFont *font = [UIFont systemFontOfSize:fontSize];
@@ -252,6 +334,7 @@
     };
 }
 
+/// 字体颜色
 - (AttributeStringBuilder *(^)(UIColor *))color {
     return ^(UIColor *color) {
         [self addAttribute:NSForegroundColorAttributeName value:color];
@@ -259,6 +342,7 @@
     };
 }
 
+/// 字体颜色，16 进制
 - (AttributeStringBuilder *(^)(NSInteger))hexColor {
     return ^(NSInteger hex) {
         UIColor *color = [UIColor colorWithRed:((float)(((hex) & 0xFF0000) >> 16))/255.0
@@ -270,6 +354,7 @@
     };
 }
 
+/// 背景颜色
 - (AttributeStringBuilder *(^)(UIColor *))backgroundColor {
     return ^(UIColor *color) {
         [self addAttribute:NSBackgroundColorAttributeName value:color];
@@ -279,6 +364,7 @@
 
 #pragma mark - Glyph
 
+/// 删除线风格
 - (AttributeStringBuilder *(^)(NSUnderlineStyle))strikethroughStyle {
     return ^(NSUnderlineStyle style) {
         [self addAttribute:NSStrikethroughStyleAttributeName value:@(style)];
@@ -286,6 +372,9 @@
     };
 }
 
+/// 删除线颜色
+/// 由于 iOS 的 Bug，删除线在 iOS 10.3 中无法正确显示，需要配合 baseline 使用
+/// 具体见：https://stackoverflow.com/questions/43074652/ios-10-3-nsstrikethroughstyleattributename-is-not-rendered-if-applied-to-a-sub
 - (AttributeStringBuilder *(^)(UIColor *))strikethroughColor {
     return ^(UIColor *color) {
         [self addAttribute:NSStrikethroughColorAttributeName value:color];
@@ -293,6 +382,7 @@
     };
 }
 
+/// 下划线风格
 - (AttributeStringBuilder *(^)(NSUnderlineStyle))underlineStyle {
     return ^(NSUnderlineStyle style) {
         [self addAttribute:NSUnderlineStyleAttributeName value:@(style)];
@@ -300,6 +390,7 @@
     };
 }
 
+/// 下划线颜色
 - (AttributeStringBuilder *(^)(UIColor *))underlineColor {
     return ^(UIColor * color) {
         [self addAttribute:NSUnderlineColorAttributeName value:color];
@@ -307,6 +398,8 @@
     };
 }
 
+/// 字形边框颜色
+/// @discussion 中空文字的颜色
 - (AttributeStringBuilder *(^)(UIColor *))strokeColor {
     return ^(UIColor *color) {
         [self addAttribute:NSStrokeColorAttributeName value:color];
@@ -314,6 +407,8 @@
     };
 }
 
+/// 字形边框宽度
+/// @discussion 中空的线宽度
 - (AttributeStringBuilder *(^)(CGFloat))strokeWidth {
     return ^(CGFloat strokeWidth) {
         [self addAttribute:NSStrokeWidthAttributeName value:@(strokeWidth)];
@@ -321,13 +416,8 @@
     };
 }
 
-- (AttributeStringBuilder *(^)(NSShadow *))shadow {
-    return ^(NSShadow *shadow) {
-        [self addAttribute:NSShadowAttributeName value:shadow];
-        return self;
-    };
-}
-
+/// 设置文本特殊效果
+/// @discussion NSTextEffectLetterpressStyle
 - (AttributeStringBuilder *(^)(NSString *))textEffect {
     return ^(NSString *textEffect) {
         [self addAttribute:NSTextEffectAttributeName value:textEffect];
@@ -335,6 +425,15 @@
     };
 }
 
+/// 阴影
+- (AttributeStringBuilder *(^)(NSShadow *))shadow {
+    return ^(NSShadow *shadow) {
+        [self addAttribute:NSShadowAttributeName value:shadow];
+        return self;
+    };
+}
+
+/// 链接
 - (AttributeStringBuilder *(^)(NSURL *))link {
     return ^(NSURL *url) {
         [self addAttribute:NSLinkAttributeName value:url];
@@ -343,7 +442,7 @@
 }
 
 #pragma mark - Paragraph
-
+/// 行间距
 - (AttributeStringBuilder *(^)(CGFloat))lineSpacing {
     return ^(CGFloat lineSpacing) {
         [self configParagraphStyle:^(NSMutableParagraphStyle *paragraphStyle) {
@@ -353,6 +452,7 @@
     };
 }
 
+/// 段间距
 - (AttributeStringBuilder *(^)(CGFloat))paragraphSpacing {
     return ^(CGFloat paragraphSpacing) {
         [self configParagraphStyle:^(NSMutableParagraphStyle *paragraphStyle) {
@@ -362,6 +462,7 @@
     };
 }
 
+/// 对齐
 - (AttributeStringBuilder *(^)(NSTextAlignment))alignment {
     return ^(NSTextAlignment alignment) {
         [self configParagraphStyle:^(NSMutableParagraphStyle *paragraphStyle) {
@@ -371,6 +472,7 @@
     };
 }
 
+/// 换行
 - (AttributeStringBuilder *(^)(NSLineBreakMode))lineBreakMode {
     return ^(NSLineBreakMode lineBreakMode) {
         [self configParagraphStyle:^(NSMutableParagraphStyle *paragraphStyle) {
@@ -380,6 +482,7 @@
     };
 }
 
+/// 段第一行头部缩进
 - (AttributeStringBuilder *(^)(CGFloat))firstLineHeadIndent {
     return ^(CGFloat firstLineHeadIndent) {
         [self configParagraphStyle:^(NSMutableParagraphStyle *paragraphStyle) {
@@ -389,6 +492,7 @@
     };
 }
 
+/// 段头部缩进
 - (AttributeStringBuilder *(^)(CGFloat))headIndent {
     return ^(CGFloat headIndent) {
         [self configParagraphStyle:^(NSMutableParagraphStyle *paragraphStyle) {
@@ -398,6 +502,7 @@
     };
 }
 
+/// 段尾部缩进
 - (AttributeStringBuilder *(^)(CGFloat))tailIndent {
     return ^(CGFloat tailIndent) {
         [self configParagraphStyle:^(NSMutableParagraphStyle *paragraphStyle) {
@@ -407,6 +512,9 @@
     };
 }
 
+/// 行高，iOS 的行高会在顶部增加空隙，效果一般不符合 UI 的认知，很少使用
+/// 这里为了完全匹配 Sketch 的行高效果，会根据当前字体对 baselineOffset 进行修正
+/// 具体见: https://joeshang.github.io/2018/03/29/ios-multiline-text-spacing/
 - (AttributeStringBuilder *(^)(CGFloat))lineHeight {
     return ^(CGFloat lineHeight) {
         [self configParagraphStyle:^(NSMutableParagraphStyle *style) {
@@ -428,7 +536,7 @@
 }
 
 #pragma mark - Special
-
+/// 基线偏移
 - (AttributeStringBuilder *(^)(CGFloat))baselineOffset {
     return ^(CGFloat baselineOffset) {
         [self addAttribute:NSBaselineOffsetAttributeName value:@(baselineOffset)];
@@ -436,6 +544,7 @@
     };
 }
 
+/// 连字
 - (AttributeStringBuilder *(^)(CGFloat))ligature {
     return ^(CGFloat ligature) {
         [self addAttribute:NSLigatureAttributeName value:@(ligature)];
@@ -443,6 +552,7 @@
     };
 }
 
+/// 字间距
 - (AttributeStringBuilder *(^)(CGFloat))kern {
     return ^(CGFloat kern) {
         [self addAttribute:NSKernAttributeName value:@(kern)];
@@ -450,6 +560,7 @@
     };
 }
 
+/// 倾斜
 - (AttributeStringBuilder *(^)(CGFloat))obliqueness {
     return ^(CGFloat obliqueness) {
         [self addAttribute:NSObliquenessAttributeName value:@(obliqueness)];
@@ -457,6 +568,7 @@
     };
 }
 
+/// 扩张（压缩文字，正值为伸，负值为缩）
 - (AttributeStringBuilder *(^)(CGFloat))expansion {
     return ^(CGFloat expansion) {
         [self addAttribute:NSExpansionAttributeName value:@(expansion)];

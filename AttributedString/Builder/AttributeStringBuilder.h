@@ -28,7 +28,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion attachment.bounds = CGRectMake(0, 0, 50, 50);
  @discussion NSString *text = @"测试多行文字测试多行文字测试多行文字链接测试多行文字测试多行文字链接测试多行文字测试多行文字测试多行文字链接测试多行文字测试多行文字测试多行文字\n";
  
- @discussion AttributedStringBuilder2 *build =  AttributedStringBuilder2.build(@"颜色字体\n").fontSize(30).color([UIColor purpleColor])
+ @discussion AttributeStringBuilder *build =  AttributeStringBuilder.build(@"颜色字体\n").fontSize(30).color([UIColor purpleColor])
      .range(1, 1).color([UIColor redColor])
      .insert(@"/插入文字/", 2).fontSize(20).color([UIColor blueColor])
      .append(text).firstLineHeadIndent(20).lineHeight(25).paragraphSpacing(20)
@@ -110,6 +110,15 @@ NS_ASSUME_NONNULL_BEGIN
 /// 为尾开始匹配第一个符合的字符串
 - (AttributeStringBuilder *(^)(NSString *string))matchLast;
 
+/**
+ 正则表达式
+ 
+ @Discussion regularExpression 正则表达式
+ @Discussion all 是否匹配所有
+ */
+-(AttributeStringBuilder *(^)(NSString *regularExpression, BOOL all))regular;
+
+
 #pragma mark - Basic
 
 /// 字体
@@ -144,12 +153,15 @@ NS_ASSUME_NONNULL_BEGIN
 - (AttributeStringBuilder *(^)(UIColor *color))underlineColor;
 
 /// 字形边框颜色
+/// @discussion 中空文字的颜色
 - (AttributeStringBuilder *(^)(UIColor *color))strokeColor;
 
 /// 字形边框宽度
+/// @discussion 中空的线宽度
 - (AttributeStringBuilder *(^)(CGFloat width))strokeWidth;
 
-/// 字体效果
+/// 设置文本特殊效果
+/// @discussion NSTextEffectLetterpressStyle
 - (AttributeStringBuilder *(^)(NSString *effect))textEffect;
 
 /// 阴影
@@ -200,7 +212,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// 倾斜
 - (AttributeStringBuilder *(^)(CGFloat obliqueness))obliqueness;
 
-/// 扩张
+/// 扩张（压缩文字，正值为伸，负值为缩）
 - (AttributeStringBuilder *(^)(CGFloat expansion))expansion;
 
 
