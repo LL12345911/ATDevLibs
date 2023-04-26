@@ -137,26 +137,31 @@ NS_ASSUME_NONNULL_BEGIN
 - (AttributeStringBuilder *(^)(UIColor *color))backgroundColor;
 
 
-/**
- 背景圆角
- 
- @discussion string  背景文字
- @discussion font  文字字体
- @discussion color  背景颜色
- @discussion radius  圆角
- */
-- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *color, CGFloat radius))appendBackgroundColor;
 
 /**
  背景圆角
  
  @discussion string  背景文字
  @discussion font  文字字体
- @discussion color  背景颜色
+ @discussion textColor  文字颜色
+ @discussion fillColor  填充背景色
+ @discussion radius  圆角
+ */
+- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius))appendBackgroundColor;
+
+
+/**
+ 背景圆角
+ 
+ @discussion string  背景文字
+ @discussion font  文字字体
+ @discussion textColor  文字颜色
+ @discussion fillColor  填充背景色
  @discussion radius  圆角
  @discussion corners  圆角属性
  */
-- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *color, CGFloat radius, UIRectCorner corners))appendBackgroundCornerColor;
+- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, UIRectCorner corners))appendBackgroundCornerColor;
+
 
 
 /**
@@ -164,7 +169,8 @@ NS_ASSUME_NONNULL_BEGIN
  
  @discussion text  文本数据
  @discussion font  文字字体
- @discussion color 背景颜色
+ @discussion textColor  文字颜色
+ @discussion fillColor  填充背景色
  @discussion radius  圆角半径
  @discussion corners  圆角属性
  @discussion imgSize  固定宽高(size.width=0/size.height=0表示不固定，文本水平/垂直居中)
@@ -173,7 +179,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion strokeColor  边框线颜色
  @discussion lineWidth   宽度
  */
-- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *color, CGFloat radius, UIRectCorner corners, CGSize imgSize, UIEdgeInsets insets, UIEdgeInsets margins, UIColor *strokeColor, CGFloat lineWidth))appendBackgroundRadiusColor;
+- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, UIRectCorner corners, CGSize imgSize, UIEdgeInsets insets, UIEdgeInsets margins, UIColor *strokeColor, CGFloat lineWidth))appendBackgroundRadiusColor;
 
 
 #pragma mark - Glyph

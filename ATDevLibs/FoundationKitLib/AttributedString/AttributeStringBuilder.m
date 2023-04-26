@@ -368,17 +368,18 @@
  
  @discussion string  背景文字
  @discussion font  文字字体
- @discussion color  背景颜色
+ @discussion textColor  文字颜色
+ @discussion fillColor  填充背景色
  @discussion radius  圆角
  */
-- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *color, CGFloat radius))appendBackgroundColor {
-    return ^(NSString *text, UIFont *font, UIColor *color, CGFloat radius) {
+- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius))appendBackgroundColor {
+    return ^(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius) {
         
         NSRange range = NSMakeRange(self.source.length, text.length);
         self.scr_ranges = @[ [NSValue valueWithRange:range] ];
         
         
-        UIImage *img1 = [self drawRadius:radius text:text font:font corners:UIRectCornerAllCorners imgSize:CGSizeMake(0, 0) fillColor:color insets:UIEdgeInsetsMake(0, 0, 0, 0) margins:UIEdgeInsetsMake(0, 0, 0, 0) strokeColor:nil lineWidth:0];
+        UIImage *img1 = [self drawRadius:radius text:text font:font corners:UIRectCornerAllCorners imgSize:CGSizeMake(0, 0) textColor:textColor fillColor:fillColor insets:UIEdgeInsetsMake(0, 0, 0, 0) margins:UIEdgeInsetsMake(0, 0, 0, 0) strokeColor:nil lineWidth:0];
 
         
         NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
@@ -396,18 +397,19 @@
  
  @discussion string  背景文字
  @discussion font  文字字体
- @discussion color  背景颜色
+ @discussion textColor  文字颜色
+ @discussion fillColor  填充背景色
  @discussion radius  圆角
  @discussion corners  圆角属性
  */
-- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *color, CGFloat radius, UIRectCorner corners))appendBackgroundCornerColor {
-    return ^(NSString *text, UIFont *font, UIColor *color, CGFloat radius, UIRectCorner corners) {
+- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, UIRectCorner corners))appendBackgroundCornerColor {
+    return ^(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, UIRectCorner corners) {
         
         NSRange range = NSMakeRange(self.source.length, text.length);
         self.scr_ranges = @[ [NSValue valueWithRange:range] ];
         
         
-        UIImage *img1 = [self drawRadius:radius text:text font:font corners:corners imgSize:CGSizeMake(0, 0) fillColor:color insets:UIEdgeInsetsMake(0, 0, 0, 0) margins:UIEdgeInsetsMake(0, 0, 0, 0) strokeColor:nil lineWidth:0];
+        UIImage *img1 = [self drawRadius:radius text:text font:font corners:corners imgSize:CGSizeMake(0, 0) textColor:textColor fillColor:fillColor insets:UIEdgeInsetsMake(0, 0, 0, 0) margins:UIEdgeInsetsMake(0, 0, 0, 0) strokeColor:nil lineWidth:0];
 
         
         NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
@@ -426,7 +428,8 @@
  
  @discussion text  文本数据
  @discussion font  文字字体
- @discussion color 背景颜色
+ @discussion textColor  文字颜色
+ @discussion fillColor  填充背景色
  @discussion radius  圆角半径
  @discussion corners  圆角属性
  @discussion imgSize  固定宽高(size.width=0/size.height=0表示不固定，文本水平/垂直居中)
@@ -435,15 +438,15 @@
  @discussion strokeColor  边框线颜色
  @discussion lineWidth   宽度
  */
-- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *color, CGFloat radius, UIRectCorner corners, CGSize imgSize, UIEdgeInsets insets, UIEdgeInsets margins, UIColor *strokeColor, CGFloat lineWidth))appendBackgroundRadiusColor {
+- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, UIRectCorner corners, CGSize imgSize, UIEdgeInsets insets, UIEdgeInsets margins, UIColor *strokeColor, CGFloat lineWidth))appendBackgroundRadiusColor {
     
-    return ^(NSString *text, UIFont *font, UIColor *color, CGFloat radius, UIRectCorner corners, CGSize imgSize, UIEdgeInsets insets, UIEdgeInsets margins, UIColor *strokeColor, CGFloat lineWidth) {
+    return ^(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, UIRectCorner corners, CGSize imgSize, UIEdgeInsets insets, UIEdgeInsets margins, UIColor *strokeColor, CGFloat lineWidth) {
         
         NSRange range = NSMakeRange(self.source.length, text.length);
         self.scr_ranges = @[ [NSValue valueWithRange:range] ];
         
         
-        UIImage *img1 = [self drawRadius:radius text:text font:font corners:corners imgSize:imgSize fillColor:color insets:insets margins:margins strokeColor:strokeColor lineWidth:lineWidth];
+        UIImage *img1 = [self drawRadius:radius text:text font:font corners:corners imgSize:imgSize textColor:textColor fillColor:fillColor insets:insets margins:margins strokeColor:strokeColor lineWidth:lineWidth];
 
         
         NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
@@ -463,6 +466,7 @@
  @Param font  文字字体
  @Param corners  圆角属性
  @Param imgSize  固定宽高(size.width=0/size.height=0表示不固定，文本水平/垂直居中)
+ @Param textColor 文字颜色
  @Param fillColor 背景颜色
  @Param insets  文本边距(设置固定宽size.width之后left/right失效，设置固定高size.height之后top/bottom失效)
  @Param margins  边框以外的边距
@@ -470,11 +474,14 @@
  @Param lineWidth   宽度
  
  */
-- (UIImage*)drawRadius:(CGFloat)radius text:(NSString *)text font:(UIFont *)font corners:(UIRectCorner)corners imgSize:(CGSize)imgSize fillColor:(UIColor *)fillColor insets:(UIEdgeInsets)insets margins:(UIEdgeInsets)margins strokeColor:(UIColor *)strokeColor lineWidth:(CGFloat)lineWidth {
+- (UIImage*)drawRadius:(CGFloat)radius text:(NSString *)text font:(UIFont *)font corners:(UIRectCorner)corners imgSize:(CGSize)imgSize textColor:(UIColor *)textColor fillColor:(UIColor *)fillColor insets:(UIEdgeInsets)insets margins:(UIEdgeInsets)margins strokeColor:(UIColor *)strokeColor lineWidth:(CGFloat)lineWidth {
 
     NSMutableAttributedString *attrStr = [[NSMutableAttributedString alloc] initWithString:text];
     if (font) {
         [attrStr addAttribute:NSFontAttributeName value:font range:NSMakeRange(0, text.length)];
+    }
+    if (textColor) {
+        [attrStr addAttribute:NSForegroundColorAttributeName value:textColor range:NSMakeRange(0, text.length)];
     }
     
     CGFloat radiusTopLeft = 0.0;
