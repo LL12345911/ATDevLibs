@@ -158,11 +158,34 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion textColor  文字颜色
  @discussion fillColor  填充背景色
  @discussion radius  圆角
+ @discussion imgSize  固定宽高(size.width=0/size.height=0表示不固定，文本水平/垂直居中)
+ */
+- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, CGSize imgSize))appendBackgroundSize;
+
+
+/**
+ 背景圆角
+ 
+ @discussion string  背景文字
+ @discussion font  文字字体
+ @discussion textColor  文字颜色
+ @discussion fillColor  填充背景色
+ @discussion radius  圆角
  @discussion corners  圆角属性
  */
 - (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, UIRectCorner corners))appendBackgroundCornerColor;
 
-
+/**
+ 背景圆角
+ 
+ @discussion string  背景文字
+ @discussion font  文字字体
+ @discussion textColor  文字颜色
+ @discussion fillColor  填充背景色
+ @discussion radius  圆角
+ @discussion corners  圆角属性
+ */
+- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, UIRectCorner corners, CGSize imgSize))appendBackgroundCornerSize;
 
 /**
  背景圆角
