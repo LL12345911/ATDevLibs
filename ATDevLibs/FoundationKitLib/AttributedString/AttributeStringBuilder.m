@@ -399,7 +399,7 @@
  @discussion textColor  文字颜色
  @discussion fillColor  填充背景色
  @discussion radius  圆角
- @discussion offsetY  偏移量
+ @discussion offsetY  偏移量 ， offsetY < 0 向上偏移，offsetY > 0  向下偏移，offsetY = 0  不偏移
  */
 - (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, CGFloat offsetY))appendBackgroundColor {
     return ^(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, CGFloat offsetY) {
@@ -413,7 +413,7 @@
         
         NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
         attachment.image = img1;
-        attachment.bounds = CGRectMake(0, -offsetY, attachment.image.size.width, attachment.image.size.height);
+        attachment.bounds = CGRectMake(0, offsetY, attachment.image.size.width, attachment.image.size.height);
         [self.source appendAttributedString:[NSAttributedString attributedStringWithAttachment:attachment]];
         
         return self;
@@ -431,7 +431,7 @@
  @discussion fillColor  填充背景色
  @discussion radius  圆角
  @discussion imgSize  固定宽高(size.width=0/size.height=0表示不固定，文本水平/垂直居中)
- @discussion offsetY  偏移量
+ @discussion offsetY  偏移量 ， offsetY < 0 向上偏移，offsetY > 0  向下偏移，offsetY = 0  不偏移
  */
 - (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, CGSize imgSize, CGFloat offsetY))appendBackgroundSize {
     return ^(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, CGSize imgSize, CGFloat offsetY) {
@@ -445,7 +445,7 @@
         
         NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
         attachment.image = img1;
-        attachment.bounds = CGRectMake(0, 0, attachment.image.size.width, attachment.image.size.height);
+        attachment.bounds = CGRectMake(0, offsetY, attachment.image.size.width, attachment.image.size.height);
         [self.source appendAttributedString:[NSAttributedString attributedStringWithAttachment:attachment]];
         
         return self;
@@ -461,7 +461,7 @@
  @discussion fillColor  填充背景色
  @discussion radius  圆角
  @discussion corners  圆角属性
- @discussion offsetY  偏移量
+ @discussion offsetY  偏移量 ， offsetY < 0 向上偏移，offsetY > 0  向下偏移，offsetY = 0  不偏移
  */
 - (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, UIRectCorner corners, CGFloat offsetY))appendBackgroundCornerColor {
     return ^(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, UIRectCorner corners, CGFloat offsetY) {
@@ -475,7 +475,7 @@
         
         NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
         attachment.image = img1;
-        attachment.bounds = CGRectMake(0, 0, attachment.image.size.width, attachment.image.size.height);
+        attachment.bounds = CGRectMake(0, offsetY, attachment.image.size.width, attachment.image.size.height);
         [self.source appendAttributedString:[NSAttributedString attributedStringWithAttachment:attachment]];
         
         return self;
@@ -491,7 +491,7 @@
  @discussion fillColor  填充背景色
  @discussion radius  圆角
  @discussion corners  圆角属性
- @discussion offsetY  偏移量
+ @discussion offsetY  偏移量 ， offsetY < 0 向上偏移，offsetY > 0  向下偏移，offsetY = 0  不偏移
  */
 - (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, UIRectCorner corners, CGSize imgSize, CGFloat offsetY))appendBackgroundCornerSize {
     return ^(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, UIRectCorner corners, CGSize imgSize, CGFloat offsetY) {
@@ -505,7 +505,7 @@
         
         NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
         attachment.image = img1;
-        attachment.bounds = CGRectMake(0, 0, attachment.image.size.width, attachment.image.size.height);
+        attachment.bounds = CGRectMake(0, offsetY, attachment.image.size.width, attachment.image.size.height);
         [self.source appendAttributedString:[NSAttributedString attributedStringWithAttachment:attachment]];
         
         return self;
@@ -527,7 +527,7 @@
  @discussion margins  边框以外的边距
  @discussion strokeColor  边框线颜色
  @discussion lineWidth   宽度
- @discussion offsetY  偏移量
+ @discussion offsetY  偏移量 ， offsetY < 0 向上偏移，offsetY > 0  向下偏移，offsetY = 0  不偏移
  */
 - (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, UIRectCorner corners, CGSize imgSize, UIEdgeInsets insets, UIEdgeInsets margins, UIColor *strokeColor, CGFloat lineWidth, CGFloat offsetY))appendBackgroundRadiusColor {
     
@@ -542,7 +542,7 @@
         
         NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
         attachment.image = img1;
-        attachment.bounds = CGRectMake(0, 0, attachment.image.size.width, attachment.image.size.height);
+        attachment.bounds = CGRectMake(0, offsetY, attachment.image.size.width, attachment.image.size.height);
         [self.source appendAttributedString:[NSAttributedString attributedStringWithAttachment:attachment]];
         
         return self;

@@ -158,7 +158,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion textColor  文字颜色
  @discussion fillColor  填充背景色
  @discussion radius  圆角
- @discussion offsetY  偏移量
+ @discussion offsetY  偏移量 ， offsetY < 0 向上偏移，offsetY > 0  向下偏移，offsetY = 0  不偏移
  */
 - (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, CGFloat offsetY))appendBackgroundColor;
 
@@ -171,7 +171,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion fillColor  填充背景色
  @discussion radius  圆角
  @discussion imgSize  固定宽高(size.width=0/size.height=0表示不固定，文本水平/垂直居中)
- @discussion offsetY  偏移量
+ @discussion offsetY  偏移量 ， offsetY < 0 向上偏移，offsetY > 0  向下偏移，offsetY = 0  不偏移
  */
 - (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, CGSize imgSize, CGFloat offsetY))appendBackgroundSize;
 
@@ -184,7 +184,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion fillColor  填充背景色
  @discussion radius  圆角
  @discussion corners  圆角属性
- @discussion offsetY  偏移量
+ @discussion offsetY  偏移量 ， offsetY < 0 向上偏移，offsetY > 0  向下偏移，offsetY = 0  不偏移
  */
 - (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, UIRectCorner corners, CGFloat offsetY))appendBackgroundCornerColor;
 
@@ -197,7 +197,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion fillColor  填充背景色
  @discussion radius  圆角
  @discussion corners  圆角属性
- @discussion offsetY  偏移量
+ @discussion offsetY  偏移量 ， offsetY < 0 向上偏移，offsetY > 0  向下偏移，offsetY = 0  不偏移
  */
 - (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, UIRectCorner corners, CGSize imgSize, CGFloat offsetY))appendBackgroundCornerSize;
 
@@ -215,7 +215,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion margins  边框以外的边距
  @discussion strokeColor  边框线颜色
  @discussion lineWidth   宽度
- @discussion offsetY  偏移量
+ @discussion offsetY  偏移量 ， offsetY < 0 向上偏移，offsetY > 0  向下偏移，offsetY = 0  不偏移
  */
 - (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, UIRectCorner corners, CGSize imgSize, UIEdgeInsets insets, UIEdgeInsets margins, UIColor *strokeColor, CGFloat lineWidth, CGFloat offsetY))appendBackgroundRadiusColor;
 
