@@ -363,6 +363,34 @@
     };
 }
 
+///**
+// 背景圆角
+//
+// @discussion string  背景文字
+// @discussion font  文字字体
+// @discussion textColor  文字颜色
+// @discussion fillColor  填充背景色
+// @discussion radius  圆角
+// */
+//- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius))appendBackgroundColor {
+//    return ^(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius) {
+//
+//        NSRange range = NSMakeRange(self.source.length, text.length);
+//        self.scr_ranges = @[ [NSValue valueWithRange:range] ];
+//
+//
+//        UIImage *img1 = [self drawRadius:radius text:text font:font corners:UIRectCornerAllCorners imgSize:CGSizeMake(0, 0) textColor:textColor fillColor:fillColor insets:UIEdgeInsetsMake(0, 0, 0, 0) margins:UIEdgeInsetsMake(0, 0, 0, 0) strokeColor:nil lineWidth:0];
+//
+//
+//        NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
+//        attachment.image = img1;
+//        attachment.bounds = CGRectMake(0, 0, attachment.image.size.width, attachment.image.size.height);
+//        [self.source appendAttributedString:[NSAttributedString attributedStringWithAttachment:attachment]];
+//
+//        return self;
+//    };
+//}
+
 /**
  背景圆角
  
@@ -371,9 +399,10 @@
  @discussion textColor  文字颜色
  @discussion fillColor  填充背景色
  @discussion radius  圆角
+ @discussion offsetY  偏移量
  */
-- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius))appendBackgroundColor {
-    return ^(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius) {
+- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, CGFloat offsetY))appendBackgroundColor {
+    return ^(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, CGFloat offsetY) {
         
         NSRange range = NSMakeRange(self.source.length, text.length);
         self.scr_ranges = @[ [NSValue valueWithRange:range] ];
@@ -384,12 +413,14 @@
         
         NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
         attachment.image = img1;
-        attachment.bounds = CGRectMake(0, 0, attachment.image.size.width, attachment.image.size.height);
+        attachment.bounds = CGRectMake(0, -offsetY, attachment.image.size.width, attachment.image.size.height);
         [self.source appendAttributedString:[NSAttributedString attributedStringWithAttachment:attachment]];
         
         return self;
     };
 }
+
+
 
 /**
  背景圆角
@@ -400,9 +431,10 @@
  @discussion fillColor  填充背景色
  @discussion radius  圆角
  @discussion imgSize  固定宽高(size.width=0/size.height=0表示不固定，文本水平/垂直居中)
+ @discussion offsetY  偏移量
  */
-- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, CGSize imgSize))appendBackgroundSize {
-    return ^(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, CGSize imgSize) {
+- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, CGSize imgSize, CGFloat offsetY))appendBackgroundSize {
+    return ^(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, CGSize imgSize, CGFloat offsetY) {
         
         NSRange range = NSMakeRange(self.source.length, text.length);
         self.scr_ranges = @[ [NSValue valueWithRange:range] ];
@@ -429,9 +461,10 @@
  @discussion fillColor  填充背景色
  @discussion radius  圆角
  @discussion corners  圆角属性
+ @discussion offsetY  偏移量
  */
-- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, UIRectCorner corners))appendBackgroundCornerColor {
-    return ^(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, UIRectCorner corners) {
+- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, UIRectCorner corners, CGFloat offsetY))appendBackgroundCornerColor {
+    return ^(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, UIRectCorner corners, CGFloat offsetY) {
         
         NSRange range = NSMakeRange(self.source.length, text.length);
         self.scr_ranges = @[ [NSValue valueWithRange:range] ];
@@ -458,9 +491,10 @@
  @discussion fillColor  填充背景色
  @discussion radius  圆角
  @discussion corners  圆角属性
+ @discussion offsetY  偏移量
  */
-- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, UIRectCorner corners, CGSize imgSize))appendBackgroundCornerSize {
-    return ^(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, UIRectCorner corners, CGSize imgSize) {
+- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, UIRectCorner corners, CGSize imgSize, CGFloat offsetY))appendBackgroundCornerSize {
+    return ^(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, UIRectCorner corners, CGSize imgSize, CGFloat offsetY) {
         
         NSRange range = NSMakeRange(self.source.length, text.length);
         self.scr_ranges = @[ [NSValue valueWithRange:range] ];
@@ -493,10 +527,11 @@
  @discussion margins  边框以外的边距
  @discussion strokeColor  边框线颜色
  @discussion lineWidth   宽度
+ @discussion offsetY  偏移量
  */
-- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, UIRectCorner corners, CGSize imgSize, UIEdgeInsets insets, UIEdgeInsets margins, UIColor *strokeColor, CGFloat lineWidth))appendBackgroundRadiusColor {
+- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, UIRectCorner corners, CGSize imgSize, UIEdgeInsets insets, UIEdgeInsets margins, UIColor *strokeColor, CGFloat lineWidth, CGFloat offsetY))appendBackgroundRadiusColor {
     
-    return ^(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, UIRectCorner corners, CGSize imgSize, UIEdgeInsets insets, UIEdgeInsets margins, UIColor *strokeColor, CGFloat lineWidth) {
+    return ^(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, UIRectCorner corners, CGSize imgSize, UIEdgeInsets insets, UIEdgeInsets margins, UIColor *strokeColor, CGFloat lineWidth, CGFloat offsetY) {
         
         NSRange range = NSMakeRange(self.source.length, text.length);
         self.scr_ranges = @[ [NSValue valueWithRange:range] ];
@@ -629,6 +664,7 @@
     
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
+    
     
     return image;
 

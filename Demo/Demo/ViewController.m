@@ -40,7 +40,7 @@
     AttributeStringBuilder *build = AttributeStringBuilder.build(@"NSBackgroundColorAttributeName 圆角")
         //.append(@"背景颜色").font(AutoFont(15)).color([UIColor yellowColor])
         .
-    appendBackgroundColor(@"背景颜色", [UIFont systemFontOfSize:34], [UIColor greenColor],[UIColor redColor],3)
+    appendBackgroundColor(@"背景颜色", [UIFont systemFontOfSize:34], [UIColor greenColor],[UIColor redColor],3, 0)
         .all.lineSpacing(3);
     
     label.attributedText = [build commit];
