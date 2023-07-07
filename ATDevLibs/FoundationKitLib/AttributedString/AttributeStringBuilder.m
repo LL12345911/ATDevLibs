@@ -363,33 +363,6 @@
     };
 }
 
-///**
-// 背景圆角
-//
-// @discussion string  背景文字
-// @discussion font  文字字体
-// @discussion textColor  文字颜色
-// @discussion fillColor  填充背景色
-// @discussion radius  圆角
-// */
-//- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius))appendBackgroundColor {
-//    return ^(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius) {
-//
-//        NSRange range = NSMakeRange(self.source.length, text.length);
-//        self.scr_ranges = @[ [NSValue valueWithRange:range] ];
-//
-//
-//        UIImage *img1 = [self drawRadius:radius text:text font:font corners:UIRectCornerAllCorners imgSize:CGSizeMake(0, 0) textColor:textColor fillColor:fillColor insets:UIEdgeInsetsMake(0, 0, 0, 0) margins:UIEdgeInsetsMake(0, 0, 0, 0) strokeColor:nil lineWidth:0];
-//
-//
-//        NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
-//        attachment.image = img1;
-//        attachment.bounds = CGRectMake(0, 0, attachment.image.size.width, attachment.image.size.height);
-//        [self.source appendAttributedString:[NSAttributedString attributedStringWithAttachment:attachment]];
-//
-//        return self;
-//    };
-//}
 
 /**
  背景圆角
