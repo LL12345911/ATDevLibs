@@ -386,7 +386,7 @@
         
         NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
         attachment.image = img1;
-        attachment.bounds = CGRectMake(0, offsetY, attachment.image.size.width, attachment.image.size.height);
+        attachment.bounds = CGRectMake(0, -offsetY, attachment.image.size.width, attachment.image.size.height);
         [self.source appendAttributedString:[NSAttributedString attributedStringWithAttachment:attachment]];
         
         return self;
@@ -418,7 +418,7 @@
         
         NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
         attachment.image = img1;
-        attachment.bounds = CGRectMake(0, offsetY, attachment.image.size.width, attachment.image.size.height);
+        attachment.bounds = CGRectMake(0, -offsetY, attachment.image.size.width, attachment.image.size.height);
         [self.source appendAttributedString:[NSAttributedString attributedStringWithAttachment:attachment]];
         
         return self;
@@ -448,7 +448,7 @@
         
         NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
         attachment.image = img1;
-        attachment.bounds = CGRectMake(0, offsetY, attachment.image.size.width, attachment.image.size.height);
+        attachment.bounds = CGRectMake(0, -offsetY, attachment.image.size.width, attachment.image.size.height);
         [self.source appendAttributedString:[NSAttributedString attributedStringWithAttachment:attachment]];
         
         return self;
@@ -478,7 +478,7 @@
         
         NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
         attachment.image = img1;
-        attachment.bounds = CGRectMake(0, offsetY, attachment.image.size.width, attachment.image.size.height);
+        attachment.bounds = CGRectMake(0, -offsetY, attachment.image.size.width, attachment.image.size.height);
         [self.source appendAttributedString:[NSAttributedString attributedStringWithAttachment:attachment]];
         
         return self;
@@ -515,7 +515,7 @@
         
         NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
         attachment.image = img1;
-        attachment.bounds = CGRectMake(0, offsetY, attachment.image.size.width, attachment.image.size.height);
+        attachment.bounds = CGRectMake(0, -offsetY, attachment.image.size.width, attachment.image.size.height);
         [self.source appendAttributedString:[NSAttributedString attributedStringWithAttachment:attachment]];
         
         return self;
