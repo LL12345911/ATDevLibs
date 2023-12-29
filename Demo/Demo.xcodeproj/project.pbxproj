@@ -62,6 +62,13 @@
 		41D325E829CD969400F9E976 /* AttributeStringBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 41D325E529CD969400F9E976 /* AttributeStringBuilder.m */; };
 		41D325EC29CD97A700F9E976 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41D325EB29CD97A600F9E976 /* UIKit.framework */; };
 		41D325EE29CD97B000F9E976 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41D325ED29CD97B000F9E976 /* Foundation.framework */; };
+		41FA86202B3EBA6D0016CFF1 /* CameraPermission.m in Sources */ = {isa = PBXBuildFile; fileRef = 41FA86122B3EBA6D0016CFF1 /* CameraPermission.m */; };
+		41FA86212B3EBA6D0016CFF1 /* LocationAlwaysPermission.m in Sources */ = {isa = PBXBuildFile; fileRef = 41FA86152B3EBA6D0016CFF1 /* LocationAlwaysPermission.m */; };
+		41FA86222B3EBA6D0016CFF1 /* LocationInUsePermission.m in Sources */ = {isa = PBXBuildFile; fileRef = 41FA86172B3EBA6D0016CFF1 /* LocationInUsePermission.m */; };
+		41FA86232B3EBA6D0016CFF1 /* PhotosPermission.m in Sources */ = {isa = PBXBuildFile; fileRef = 41FA86182B3EBA6D0016CFF1 /* PhotosPermission.m */; };
+		41FA86242B3EBA6D0016CFF1 /* NotificationPermission.m in Sources */ = {isa = PBXBuildFile; fileRef = 41FA86192B3EBA6D0016CFF1 /* NotificationPermission.m */; };
+		41FA86252B3EBA6D0016CFF1 /* AuthorizationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 41FA861A2B3EBA6D0016CFF1 /* AuthorizationManager.m */; };
+		41FA86262B3EBA6D0016CFF1 /* BasePermisssion.m in Sources */ = {isa = PBXBuildFile; fileRef = 41FA861D2B3EBA6D0016CFF1 /* BasePermisssion.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -196,6 +203,22 @@
 		41D325E529CD969400F9E976 /* AttributeStringBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AttributeStringBuilder.m; sourceTree = "<group>"; };
 		41D325EB29CD97A600F9E976 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		41D325ED29CD97B000F9E976 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		41FA860E2B3EBA6D0016CFF1 /* AuthorizationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AuthorizationManager.h; sourceTree = "<group>"; };
+		41FA86102B3EBA6D0016CFF1 /* LocationAlwaysPermission.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationAlwaysPermission.h; sourceTree = "<group>"; };
+		41FA86112B3EBA6D0016CFF1 /* LocationInUsePermission.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationInUsePermission.h; sourceTree = "<group>"; };
+		41FA86122B3EBA6D0016CFF1 /* CameraPermission.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraPermission.m; sourceTree = "<group>"; };
+		41FA86132B3EBA6D0016CFF1 /* NotificationPermission.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationPermission.h; sourceTree = "<group>"; };
+		41FA86142B3EBA6D0016CFF1 /* PhotosPermission.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotosPermission.h; sourceTree = "<group>"; };
+		41FA86152B3EBA6D0016CFF1 /* LocationAlwaysPermission.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationAlwaysPermission.m; sourceTree = "<group>"; };
+		41FA86162B3EBA6D0016CFF1 /* CameraPermission.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraPermission.h; sourceTree = "<group>"; };
+		41FA86172B3EBA6D0016CFF1 /* LocationInUsePermission.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationInUsePermission.m; sourceTree = "<group>"; };
+		41FA86182B3EBA6D0016CFF1 /* PhotosPermission.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotosPermission.m; sourceTree = "<group>"; };
+		41FA86192B3EBA6D0016CFF1 /* NotificationPermission.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationPermission.m; sourceTree = "<group>"; };
+		41FA861A2B3EBA6D0016CFF1 /* AuthorizationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AuthorizationManager.m; sourceTree = "<group>"; };
+		41FA861C2B3EBA6D0016CFF1 /* Constant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constant.h; sourceTree = "<group>"; };
+		41FA861D2B3EBA6D0016CFF1 /* BasePermisssion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BasePermisssion.m; sourceTree = "<group>"; };
+		41FA861E2B3EBA6D0016CFF1 /* AuthorizationProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AuthorizationProtocol.h; sourceTree = "<group>"; };
+		41FA861F2B3EBA6D0016CFF1 /* BasePermisssion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BasePermisssion.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -293,6 +316,7 @@
 		41D0ECD92799332D004F2A31 /* ATDevLibs */ = {
 			isa = PBXGroup;
 			children = (
+				41FA860D2B3EBA6D0016CFF1 /* AuthorizeRequestLib */,
 				41D0ECDA2799332D004F2A31 /* FoundationKitLib */,
 				41D0ECF92799332D004F2A31 /* ATKitBaseLibs.h */,
 				41D0ECFA2799332D004F2A31 /* UIKitLib */,
@@ -658,6 +682,45 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		41FA860D2B3EBA6D0016CFF1 /* AuthorizeRequestLib */ = {
+			isa = PBXGroup;
+			children = (
+				41FA860E2B3EBA6D0016CFF1 /* AuthorizationManager.h */,
+				41FA860F2B3EBA6D0016CFF1 /* Permissions */,
+				41FA861A2B3EBA6D0016CFF1 /* AuthorizationManager.m */,
+				41FA861B2B3EBA6D0016CFF1 /* Base */,
+			);
+			path = AuthorizeRequestLib;
+			sourceTree = "<group>";
+		};
+		41FA860F2B3EBA6D0016CFF1 /* Permissions */ = {
+			isa = PBXGroup;
+			children = (
+				41FA86102B3EBA6D0016CFF1 /* LocationAlwaysPermission.h */,
+				41FA86112B3EBA6D0016CFF1 /* LocationInUsePermission.h */,
+				41FA86122B3EBA6D0016CFF1 /* CameraPermission.m */,
+				41FA86132B3EBA6D0016CFF1 /* NotificationPermission.h */,
+				41FA86142B3EBA6D0016CFF1 /* PhotosPermission.h */,
+				41FA86152B3EBA6D0016CFF1 /* LocationAlwaysPermission.m */,
+				41FA86162B3EBA6D0016CFF1 /* CameraPermission.h */,
+				41FA86172B3EBA6D0016CFF1 /* LocationInUsePermission.m */,
+				41FA86182B3EBA6D0016CFF1 /* PhotosPermission.m */,
+				41FA86192B3EBA6D0016CFF1 /* NotificationPermission.m */,
+			);
+			path = Permissions;
+			sourceTree = "<group>";
+		};
+		41FA861B2B3EBA6D0016CFF1 /* Base */ = {
+			isa = PBXGroup;
+			children = (
+				41FA861C2B3EBA6D0016CFF1 /* Constant.h */,
+				41FA861D2B3EBA6D0016CFF1 /* BasePermisssion.m */,
+				41FA861E2B3EBA6D0016CFF1 /* AuthorizationProtocol.h */,
+				41FA861F2B3EBA6D0016CFF1 /* BasePermisssion.h */,
+			);
+			path = Base;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -867,10 +930,12 @@
 				41D0ED5E2799332D004F2A31 /* CoordinateConverter.m in Sources */,
 				41D0ED7E2799332D004F2A31 /* ATFPSView.m in Sources */,
 				41D0ED7D2799332D004F2A31 /* ATSearchBar.m in Sources */,
+				41FA86252B3EBA6D0016CFF1 /* AuthorizationManager.m in Sources */,
 				41D325DC29CD968E00F9E976 /* YHDrawModel.m in Sources */,
 				41D0ED6F2799332D004F2A31 /* UIButton+ATImagePosition.m in Sources */,
 				41D0ED6C2799332D004F2A31 /* AlignmentLabel.m in Sources */,
 				412CD9DA251B282F000411B6 /* ViewController.m in Sources */,
+				41FA86202B3EBA6D0016CFF1 /* CameraPermission.m in Sources */,
 				41D0ED6B2799332D004F2A31 /* Helper.m in Sources */,
 				41D0ED612799332D004F2A31 /* NSString+ATKit.m in Sources */,
 				41D0ED642799332D004F2A31 /* XTimer.m in Sources */,
@@ -882,18 +947,23 @@
 				41D0ED782799332D004F2A31 /* ATPlaceholdTextView.m in Sources */,
 				41D0ED682799332D004F2A31 /* UIImage+ATKit.m in Sources */,
 				41D0ED652799332D004F2A31 /* NSObject+Json.m in Sources */,
+				41FA86232B3EBA6D0016CFF1 /* PhotosPermission.m in Sources */,
 				41D0ED602799332D004F2A31 /* ATMacro.m in Sources */,
 				41D0ED832799332D004F2A31 /* UIButton+PPCounter.m in Sources */,
 				41D0ED692799332D004F2A31 /* UIImage+QRCode.m in Sources */,
 				41D0ED5F2799332D004F2A31 /* MarsEventBus.m in Sources */,
 				41D0ED802799332D004F2A31 /* Toast.m in Sources */,
 				41D325DE29CD968E00F9E976 /* JsonTransForm.m in Sources */,
+				41FA86262B3EBA6D0016CFF1 /* BasePermisssion.m in Sources */,
 				41D325E829CD969400F9E976 /* AttributeStringBuilder.m in Sources */,
 				41D0ED702799332D004F2A31 /* UIColor+HexColor.m in Sources */,
 				4175D4162829F8D800071C04 /* WindowsManager.m in Sources */,
+				41FA86212B3EBA6D0016CFF1 /* LocationAlwaysPermission.m in Sources */,
 				41D0ED6E2799332D004F2A31 /* UIButton+ATIndicator.m in Sources */,
+				41FA86242B3EBA6D0016CFF1 /* NotificationPermission.m in Sources */,
 				41D0ED7A2799332D004F2A31 /* UIViewController+Util.m in Sources */,
 				41D0ED742799332D004F2A31 /* UINavigationSXFixSpace.m in Sources */,
+				41FA86222B3EBA6D0016CFF1 /* LocationInUsePermission.m in Sources */,
 				41D0ED812799332D004F2A31 /* PPCounterEngine.m in Sources */,
 				41D0ED712799332D004F2A31 /* UIView+Util.m in Sources */,
 				41D0ED822799332D004F2A31 /* PPCounterConst.m in Sources */,

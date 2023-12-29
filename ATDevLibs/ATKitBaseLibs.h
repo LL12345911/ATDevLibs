@@ -12,6 +12,6 @@
 #import "OpenShareManager.h"
 #import "UIKitMacro.h"
 #import "FoundationMacro.h"
-//#import "AuthorizationManager.h"
+#import "AuthorizationManager.h"
 
 #endif /* DelevopLibs_h */
