@@ -46,11 +46,11 @@
     label.attributedText = [build commit];
     
     
-    //判断 App是否开启定位权限
-    [[AuthorizationManager defaultManager] requestAuthorizationWithAuthorizationType:AuthorizationTypeMapWhenInUseOrMapAlways authorizedHandler:^{
-        NSLog(@" =================== ");
-        
-    } unAuthorizedHandler:^{
+//    //判断 App是否开启定位权限
+//    [[AuthorizationManager defaultManager] requestAuthorizationWithAuthorizationType:AuthorizationTypeMapWhenInUseOrMapAlways authorizedHandler:^{
+//        NSLog(@" =================== ");
+//        
+//    } unAuthorizedHandler:^{
 
         //  NSLog(@"Not granted:%@", _authDataArray[indexPath.row]);
 //        [NSObject at_showAlertViewWithTitle:@"提示" message:@"此功能,需要App访问你的位置！\n否则无法正常使用此功能！" confirmTitle:@"开启" cancelTitle:@"取消" confirmAction:^{
@@ -67,7 +67,7 @@
 //
 //        } cancelAction:^{
 //        }];
-    }];
+//    }];
 }
 
 //- (ATBlock)infoCallback{

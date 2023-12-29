@@ -52,7 +52,7 @@ typedef NS_ENUM(NSUInteger ,GradientType) {
 
 - (UIImage *) imageTintedWithColor:(UIColor *)color;
 - (UIImage *) imageTintedWithColor:(UIColor *)color fraction:(CGFloat)fraction;
-//渐变
+// 通过一组颜色生成一个渐变色的图片
 +(UIImage*) imageWithFrame:(CGSize)size Colors:(NSArray*)colors GradientType:(GradientType)gradientType;
 
 - (id)roundedSize:(CGSize)size radius:(NSInteger)r;
