@@ -14,7 +14,7 @@
 /// @param Heigth 图片的真实高度
 /// @param boundWidth 图片视图容器的真实宽度
 /// @param boundHeight 图片视图容器的真实高度
-NS_INLINE CGSize getImageSize(CGFloat Width,CGFloat Heigth,CGFloat boundWidth,CGFloat boundHeight){
+CG_INLINE CGSize getImageSize(CGFloat Width,CGFloat Heigth,CGFloat boundWidth,CGFloat boundHeight){
     if (Heigth == 0 || Width == 0) {
         return CGSizeMake(boundWidth, boundHeight);
     }else{
@@ -33,19 +33,19 @@ NS_INLINE CGSize getImageSize(CGFloat Width,CGFloat Heigth,CGFloat boundWidth,CG
 #pragma mark -
 #pragma mark - 颜色
 //*************十六进制颜色*************//  //RGBCOLOR(0x444444)
-NS_INLINE UIColor* RGBCOLOR(NSInteger color){
+CG_INLINE UIColor* RGBCOLOR(NSInteger color){
     return [UIColor colorWithRed:(((color)>>16)&0xff)*1.0/255.0 green:(((color)>>8)&0xff)*1.0/255.0 blue:((color)&0xff)*1.0/255.0 alpha:1.0];
 }
 
-NS_INLINE UIColor* RGBCOLORAlpha(NSInteger color, CGFloat alpha){
+CG_INLINE UIColor* RGBCOLORAlpha(NSInteger color, CGFloat alpha){
     return [UIColor colorWithRed:(((color)>>16)&0xff)*1.0/255.0 green:(((color)>>8)&0xff)*1.0/255.0 blue:((color)&0xff)*1.0/255.0 alpha:alpha];
 }
 
-NS_INLINE UIColor* kRGBAColor(NSInteger r,NSInteger g,NSInteger b,float a){
+CG_INLINE UIColor* kRGBAColor(NSInteger r,NSInteger g,NSInteger b,float a){
     return [UIColor colorWithRed:(r)/255.0 green:(r)/255.0 blue:(r)/255.0 alpha:a];
 }
 
-NS_INLINE UIColor* kRandomColor(){
+CG_INLINE UIColor* kRandomColor(void){
     return [UIColor colorWithRed:(arc4random()%256)/255.0 green:(arc4random()%256)/255.0 blue:(arc4random()%256)/255.0 alpha:1];//随机色生成
 }
 ////颜色 色值
@@ -56,7 +56,7 @@ NS_INLINE UIColor* kRandomColor(){
 #pragma mark -
 #pragma mark - 正则匹配用户密码6-18位数字和字母组合
 
-//NS_INLINE BOOL checkPassword(NSString *password){
+//CG_INLINE BOOL checkPassword(NSString *password){
 //    NSString *pattern = @"^(?![0-9]+$)(?![a-zA-Z]+$)[a-zA-Z0-9]{6,18}";
 //    NSPredicate *pred = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", pattern];
 //    BOOL isMatch = [pred evaluateWithObject:password];
@@ -66,57 +66,57 @@ NS_INLINE UIColor* kRandomColor(){
 #pragma mark -
 #pragma mark - 数据验证 是否 为空
 //*************数据验证*************//
-NS_INLINE BOOL StrValid(NSString *f){
+CG_INLINE BOOL StrValid(NSString *f){
     return (f!=nil && [f isKindOfClass:[NSString class]] && ![f isEqualToString:@""]);
 }
 //字符串是否存在
-NS_INLINE BOOL HasString(NSString *allStr,NSString *keyStr){
+CG_INLINE BOOL HasString(NSString *allStr,NSString *keyStr){
     return [allStr rangeOfString:keyStr].location != NSNotFound;
 }
 //判断字符串是否为空
-NS_INLINE BOOL kValidStr(NSString *f){
+CG_INLINE BOOL kValidStr(NSString *f){
     return (f!=nil && [f isKindOfClass:[NSString class]] && ![f isEqualToString:@""]);
 }
-NS_INLINE NSString* kSafeStr(NSString *f){
+CG_INLINE NSString* kSafeStr(NSString *f){
     return StrValid(f) ? f : @"";
 }
 //判断字典是否为空
-NS_INLINE BOOL kValidDict(NSDictionary *f){
+CG_INLINE BOOL kValidDict(NSDictionary *f){
     return (f!=nil &&[f isKindOfClass:[NSDictionary class]]);
 }
-NS_INLINE NSDictionary* kIfDictNull(NSDictionary *f){
+CG_INLINE NSDictionary* kIfDictNull(NSDictionary *f){
     return kValidDict(f) ? f : @{};
 }
 //判断数组是否为空
-NS_INLINE BOOL kValidArray(NSArray *f){
+CG_INLINE BOOL kValidArray(NSArray *f){
     return  (f!=nil &&[f isKindOfClass:[NSArray class]]&&[f count]>0);
 }
 
 
 
 //判断Number是否为空
-NS_INLINE BOOL kValidNum(NSNumber *f){
+CG_INLINE BOOL kValidNum(NSNumber *f){
     return (f!=nil &&[f isKindOfClass:[NSNumber class]]);
 }
 //判断Data是否为空
-NS_INLINE BOOL kValidData(NSData *f){
+CG_INLINE BOOL kValidData(NSData *f){
     return (f!=nil &&[f isKindOfClass:[NSData class]]);
 }
 //如果 不为空 返回原字符串 为空返回空字符串
-NS_INLINE NSString* kIfNull(NSString *f){
+CG_INLINE NSString* kIfNull(NSString *f){
     return kValidStr(f) ? f : @"";
 }
-NS_INLINE NSString* kIfNullStr(NSString *f,NSString *tempStr){
+CG_INLINE NSString* kIfNullStr(NSString *f,NSString *tempStr){
     return kValidStr(f) ? f : tempStr;
 }
 
 
-//NS_INLINE NSString* kIfNullSpace(NSString *f){
+//CG_INLINE NSString* kIfNullSpace(NSString *f){
 //    return kValidStr(f) ? f : @"  ";
 //}
 
 //
-NS_INLINE NSString* kIfNullForZero(NSString *f){
+CG_INLINE NSString* kIfNullForZero(NSString *f){
     return kValidStr(f) ? f : @"0";
 }
 
@@ -150,7 +150,7 @@ NS_INLINE NSString* kIfNullForZero(NSString *f){
 //#define kRadianToDegrees(radian) (radian * 180.0) / (M_PI)
 //
 ///// 判断是否是横屏Judge whether current orientation is landscape.
-//NS_INLINE BOOL kIsLandscape(){
+//CG_INLINE BOOL kIsLandscape(){
 //    return (UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]));
 //}
 
@@ -163,10 +163,10 @@ NS_INLINE NSString* kIfNullForZero(NSString *f){
 
 
 /** 弱引用 */
-#define WEAK __weak typeof(self) weakSelf = self
+#define WEAK __weak typeof(self) weakSelf = self;
 //#define Weak(weakSelf) __weak __typeof(&*self) weakSelf = self;
 /** 避免self的提前释放 */
-#define STRONG __strong typeof(weakSelf) strongSelf = weakSelf
+#define STRONG __strong typeof(weakSelf) strongSelf = weakSelf;
 
 //弱引用/强引用
 #define kWeakSelf(type)   __weak typeof(type) weak##type = type;
@@ -178,16 +178,16 @@ NS_INLINE NSString* kIfNullForZero(NSString *f){
 //#define LRStrongSelf(type)  __strong typeof(type) type = weak##type;
 
 /**
- 是否模拟器
+ 是否模拟器 NS_INLINE
  */
-NS_INLINE BOOL isSimulator(){
+CG_INLINE BOOL isSimulator(void){
     return ([[[UIDevice currentDevice] model] rangeOfString:@"Simulator"].location != NSNotFound);
 }
 
 
-/// 显示 错误原因
+/// 显示 错误原因 NS_INLINE
 /// @param error 错误
-NS_INLINE NSString* debugReason(NSError * error){
+CG_INLINE NSString* debugReason(NSError * error){
     NSLog(@"🔥🔥🔥🔥🔥  错误代码：%ld  🔥🔥🔥🔥🔥",(long)error.code);
     
     

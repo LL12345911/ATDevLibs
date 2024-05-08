@@ -31,16 +31,16 @@
 // 基准屏幕宽度
 #define kRefereWidth 375.0
 
-NS_INLINE CGFloat minWidth(){
+CG_INLINE CGFloat minWidth(void){
     return (MIN([UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height));
 }
-NS_INLINE CGFloat maxWidth(){
+CG_INLINE CGFloat maxWidth(void){
     return (MAX([UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height));
 }
-NS_INLINE CGFloat maxHeight(){
+CG_INLINE CGFloat maxHeight(void){
     return (MAX([UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height));
 }
-NS_INLINE CGFloat minHeight(){
+CG_INLINE CGFloat minHeight(void){
     return (MIN([UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height));
 }
 
@@ -52,11 +52,11 @@ CGRect rectStatus = [[UIApplication sharedApplication] statusBarFrame];\    CGRe
 })\
 
 ////************ 屏幕的高度 ************//
-//NS_INLINE CGFloat Scale_Width(CGFloat value){
+//CG_INLINE CGFloat Scale_Width(CGFloat value){
 //    return ((CGFloat)((minWidth() * (value) / 375.0f)));
 //}
 //刘海屏 isNotchScreen
-NS_INLINE BOOL isIphoneX(){
+CG_INLINE BOOL isIphoneX(){
     //return [ATMacro iPhoneX] || [ATMacro iPhoneXR] || [ATMacro iPhoneXMax];
     BOOL iPhoneXSeries = NO;
     if (UIDevice.currentDevice.userInterfaceIdiom != UIUserInterfaceIdiomPhone) {
@@ -78,7 +78,7 @@ NS_INLINE BOOL isIphoneX(){
 }
 
 
-NS_INLINE UIEdgeInsets safeAreaInsets(void) {
+CG_INLINE UIEdgeInsets safeAreaInsets(void) {
     UIEdgeInsets safeAreaInsets = UIEdgeInsetsZero;
     if (@available(iOS 11.0, *)) {
         safeAreaInsets = [[[[UIApplication sharedApplication] delegate] window] safeAreaInsets];
@@ -90,7 +90,7 @@ NS_INLINE UIEdgeInsets safeAreaInsets(void) {
 
  @return 不是刘海屏默认20，是的话44
  */
-NS_INLINE CGFloat kStatusBar(){
+CG_INLINE CGFloat kStatusBar(){
 //    //获取状态栏的rect
 //    CGRect statusRect = [[UIApplication sharedApplication] statusBarFrame];
 //    return statusRect.size.height;
@@ -109,7 +109,7 @@ NS_INLINE CGFloat kStatusBar(){
 
  @return 不是刘海屏默认64，是的话88
  */
-NS_INLINE CGFloat kNavHeight(){
+CG_INLINE CGFloat kNavHeight(){
    // return kStatusBar() + 44;
     //return (isIphoneX() ? 88.0 : 64.0);//导航栏
     
@@ -121,7 +121,7 @@ NS_INLINE CGFloat kNavHeight(){
 
  @return 不是刘海屏默认0，是的话34
  */
-NS_INLINE CGFloat kBottom(){
+CG_INLINE CGFloat kBottom(){
     //return (isIphoneX() ? 34 : 0);//iphoneX斜刘海
     if (@available(iOS 13.0, *)) {
         NSSet *set = [UIApplication sharedApplication].connectedScenes;
@@ -140,7 +140,7 @@ NS_INLINE CGFloat kBottom(){
 
  @return 不是刘海屏默认49，是的话83
  */
-NS_INLINE CGFloat kTabBarHeight(){
+CG_INLINE CGFloat kTabBarHeight(){
     //return (isIphoneX() ? 83.0 : 49.0);
     return kBottom() + 49;
 }
@@ -150,7 +150,7 @@ NS_INLINE CGFloat kTabBarHeight(){
 
  @return 顶部安全区高度
  */
-NS_INLINE CGFloat kSafeDistanceTop(){
+CG_INLINE CGFloat kSafeDistanceTop(){
     if (@available(iOS 13.0, *)) {
            NSSet *set = [UIApplication sharedApplication].connectedScenes;
            UIWindowScene *windowScene = [set anyObject];
@@ -169,7 +169,7 @@ NS_INLINE CGFloat kSafeDistanceTop(){
  
  @return kHeight-kNavHeight()-kBottomHeight();
  */
-NS_INLINE CGFloat kSafeHeight(){
+CG_INLINE CGFloat kSafeHeight(){
     return [UIScreen mainScreen].bounds.size.height-kNavHeight()-kBottom();//kHeight-kNavHeight()-kBottom();
 }
 
@@ -178,7 +178,7 @@ NS_INLINE CGFloat kSafeHeight(){
  
  @return CGRect CGRectMake(0, kNavHeight(), kWidth, kHeight-kNavHeight()-kBottomHeight())
  */
-NS_INLINE CGRect kRect(){
+CG_INLINE CGRect kRect(){
     return CGRectMake(0, kNavHeight(), [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height-kNavHeight()-kBottom());
 }
 /**
@@ -187,7 +187,7 @@ NS_INLINE CGRect kRect(){
  @param original 要设置的字体大小
  @return 自动适应后的字体（UIFont）
  */
-NS_INLINE UIFont* AutoFont(CGFloat original){
+CG_INLINE UIFont* AutoFont(CGFloat original){
     CGFloat autoSize = original * minWidth() / kRefereWidth;
     UIFont *font = [UIFont systemFontOfSize:autoSize];
     return font;
@@ -198,7 +198,7 @@ NS_INLINE UIFont* AutoFont(CGFloat original){
  @param original 要设置的字体大小
  @return 自动适应后的字体（UIFont）
  */
-NS_INLINE UIFont* Font(CGFloat original){
+CG_INLINE UIFont* Font(CGFloat original){
     UIFont *font = [UIFont systemFontOfSize:original];
     return font;
 }
@@ -208,7 +208,7 @@ NS_INLINE UIFont* Font(CGFloat original){
  @param original 要设置的字体大小
  @return 自动适应后的字体（UIFont）
  */
-NS_INLINE UIFont* AutoBlodFont(CGFloat original){
+CG_INLINE UIFont* AutoBlodFont(CGFloat original){
     CGFloat autoSize = original * minWidth() / kRefereWidth;
     UIFont *font = [UIFont boldSystemFontOfSize:autoSize];
     return font;
@@ -219,7 +219,7 @@ NS_INLINE UIFont* AutoBlodFont(CGFloat original){
  @param original 要设置的字体大小
  @return 自动适应后的字体（UIFont）
  */
-NS_INLINE UIFont* BlodFont(CGFloat original){
+CG_INLINE UIFont* BlodFont(CGFloat original){
     UIFont *font = [UIFont boldSystemFontOfSize:original];
     return font;
 }
@@ -229,7 +229,7 @@ NS_INLINE UIFont* BlodFont(CGFloat original){
  @param original 要设置的屏幕尺寸
  @return 自动适应后的屏幕尺寸
  */
-NS_INLINE CGFloat Inch(CGFloat original){
+CG_INLINE CGFloat Inch(CGFloat original){
     return original * minWidth() / kRefereWidth;
 }
 /**
@@ -237,7 +237,7 @@ NS_INLINE CGFloat Inch(CGFloat original){
  
  @return 自动适应后的屏幕尺寸
  */
-NS_INLINE CGFloat AutoScale(){
+CG_INLINE CGFloat AutoScale(){
     return  minWidth() / kRefereWidth;
 }
 /**
@@ -245,7 +245,7 @@ NS_INLINE CGFloat AutoScale(){
 
  @return UIFont(默认是15号字体)
  */
-NS_INLINE UIFont* ATFont(){
+CG_INLINE UIFont* ATFont(){
     return AutoFont(15);
 }
 
@@ -254,14 +254,14 @@ NS_INLINE UIFont* ATFont(){
 
  @return UIFont(默认是15号字体)
  */
-NS_INLINE UIFont* ATBoldFont(){
+CG_INLINE UIFont* ATBoldFont(){
     return AutoBlodFont(15);
 }
-//NS_INLINE CGFloat screenWidth() {
+//CG_INLINE CGFloat screenWidth() {
 //    return [UIScreen mainScreen].bounds.size.width;
 //}
 //
-//NS_INLINE CGFloat screenHeight() {
+//CG_INLINE CGFloat screenHeight() {
 //    return [UIScreen mainScreen].bounds.size.height;
 //}
 ///**
@@ -269,12 +269,12 @@ NS_INLINE UIFont* ATBoldFont(){
 //
 // @return kHeight-kNavHeight()-kTabBarHeigh();
 // */
-//NS_INLINE CGFloat kNoBarHeight(){
+//CG_INLINE CGFloat kNoBarHeight(){
 //    return kHeight-kNavHeight()-kTabBarHeight();
 //}
 
 ///// 获取当前控制器
-//NS_INLINE UIViewController* GetController(){
+//CG_INLINE UIViewController* GetController(){
 //    //获取当前控制器
 //    UIViewController* vc = [UIApplication sharedApplication].keyWindow.rootViewController;
 //    while (1) {

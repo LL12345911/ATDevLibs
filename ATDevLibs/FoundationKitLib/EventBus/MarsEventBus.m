@@ -122,7 +122,7 @@
 }
 
 #pragma mark --- tool func ---
-NS_INLINE NSString * keyForEvent(__kindof MarsEvent * event) {
+CG_INLINE NSString * keyForEvent(__kindof MarsEvent * event) {
     return [NSString stringWithFormat:@"%@|%ld",event.eventName,(long)event.subType];
 }
 

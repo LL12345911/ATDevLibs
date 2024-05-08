@@ -105,6 +105,7 @@
 		412CD9F5251B2834000411B6 /* DemoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DemoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		412CD9F9251B2834000411B6 /* DemoUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DemoUITests.m; sourceTree = "<group>"; };
 		412CD9FB251B2834000411B6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		416477BE2BEB42E000100F7F /* ATDevLibs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ATDevLibs.h; sourceTree = "<group>"; };
 		4175D4142829F8D700071C04 /* WindowsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WindowsManager.m; sourceTree = "<group>"; };
 		4175D4152829F8D700071C04 /* WindowsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WindowsManager.h; sourceTree = "<group>"; };
 		41D0ECDC2799332D004F2A31 /* CoordinateConverter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoordinateConverter.m; sourceTree = "<group>"; };
@@ -127,7 +128,6 @@
 		41D0ECF62799332D004F2A31 /* NSDate+Util.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Util.m"; sourceTree = "<group>"; };
 		41D0ECF72799332D004F2A31 /* NSDate+Util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Util.h"; sourceTree = "<group>"; };
 		41D0ECF82799332D004F2A31 /* AutoInch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AutoInch.h; sourceTree = "<group>"; };
-		41D0ECF92799332D004F2A31 /* ATKitBaseLibs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ATKitBaseLibs.h; sourceTree = "<group>"; };
 		41D0ECFC2799332D004F2A31 /* UIImage+ATKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ATKit.m"; sourceTree = "<group>"; };
 		41D0ECFD2799332D004F2A31 /* UIImage+QRCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+QRCode.h"; sourceTree = "<group>"; };
 		41D0ECFE2799332D004F2A31 /* UIImage+QRCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+QRCode.m"; sourceTree = "<group>"; };
@@ -318,7 +318,7 @@
 			children = (
 				41FA860D2B3EBA6D0016CFF1 /* AuthorizeRequestLib */,
 				41D0ECDA2799332D004F2A31 /* FoundationKitLib */,
-				41D0ECF92799332D004F2A31 /* ATKitBaseLibs.h */,
+				416477BE2BEB42E000100F7F /* ATDevLibs.h */,
 				41D0ECFA2799332D004F2A31 /* UIKitLib */,
 				41D0ED3A2799332D004F2A31 /* ShareLib */,
 				41D0ED3F2799332D004F2A31 /* PPCounter */,

@@ -131,12 +131,12 @@
 
 
 //判断字符串是否为空
-NS_INLINE BOOL ATValidStr(NSString *f){
+CG_INLINE BOOL ATValidStr(NSString *f){
     return (f!=nil && [f isKindOfClass:[NSString class]] && ![f isEqualToString:@""]);
 }
 
 //如果 不为空 返回原字符串 为空返回空字符串
-NS_INLINE NSString* kIfNullString(NSString *f){
+CG_INLINE NSString* kIfNullString(NSString *f){
     return ATValidStr(f) ? f : @"";
 }
 
