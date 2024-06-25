@@ -32,6 +32,17 @@
     return _source;
 }
 
+/**
+ 获取当前 NSRange，当append、及获取range时
+ */
+- (NSRange)currentRange {
+    if (self.scr_ranges.count > 0) {
+        NSValue *rangeValue = self.scr_ranges[0];
+        return [rangeValue rangeValue];
+    }
+    return NSMakeRange(NSNotFound, NSNotFound);
+}
+
 
 #pragma mark - Content
 /// 创建一个 Attributed String
@@ -203,6 +214,17 @@
     };
 }
 
+/// 从结尾倒数location 、 length 设置范围
+- (AttributeStringBuilder *(^)(NSInteger, NSInteger))lastRange {
+    return ^(NSInteger location, NSInteger length) {
+        if (location < 0 || length <= 0 || self.source.length - location + length > self.source.length) {
+            return self;
+        }
+        NSRange range = NSMakeRange(self.source.length - location, length);
+        self.scr_ranges = @[ [NSValue valueWithRange:range] ];
+        return self;
+    };
+}
 
 /// 将范围设置为当前字符串全部
 - (AttributeStringBuilder *)all {
@@ -732,10 +754,18 @@
     };
 }
 
-/// 链接
+/// 链接URL对象 NSURL
 - (AttributeStringBuilder *(^)(NSURL *))link {
     return ^(NSURL *url) {
         [self addAttribute:NSLinkAttributeName value:url];
+        return self;
+    };
+}
+
+/// 链接URL 字符串
+- (AttributeStringBuilder *(^)(NSString *))linkUrlStr {
+    return ^(NSString *linkUrlStr) {
+        [self addAttribute:NSLinkAttributeName value:linkUrlStr];
         return self;
     };
 }

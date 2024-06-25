@@ -54,6 +54,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)init NS_UNAVAILABLE;
 
 - (NSAttributedString*)commit;
+/**
+ 获取当前 NSRange，当append、及获取range时
+ */
+- (NSRange)currentRange;
 
 #pragma mark - Content
 
@@ -97,6 +101,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 根据 start 和 length 设置范围
 - (AttributeStringBuilder *(^)(NSInteger location, NSInteger length))range;
+
+/// 从结尾倒数location 、 length 设置范围
+- (AttributeStringBuilder *(^)(NSInteger location, NSInteger length))lastRange;
 
 /// 将范围设置为当前字符串全部
 - (AttributeStringBuilder *)all;
@@ -255,8 +262,11 @@ NS_ASSUME_NONNULL_BEGIN
 /// 阴影
 - (AttributeStringBuilder *(^)(NSShadow *shadow))shadow;
 
-/// 链接
+/// 链接URL对象 NSURL
 - (AttributeStringBuilder *(^)(NSURL *url))link;
+
+/// 链接URL 字符串
+- (AttributeStringBuilder *(^)(NSString *))linkUrlStr;
 
 #pragma mark - Paragraph
 
@@ -275,10 +285,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// 段第一行头部缩进
 - (AttributeStringBuilder *(^)(CGFloat indent))firstLineHeadIndent;
 
-/// 段头部缩进
+/// 段头部缩进 后续行的左边距
 - (AttributeStringBuilder *(^)(CGFloat indent))headIndent;
 
-/// 段尾部缩进
+/// 段尾部缩进 后续行相对于左边距的缩进量，负值表示超出左边距 如果setTailIndent:是负值，那么文本将会超出左边距，从而实现左边不超过起始左边点的效果。
 - (AttributeStringBuilder *(^)(CGFloat indent))tailIndent;
 
 /// 行高，iOS 的行高会在顶部增加空隙，效果一般不符合 UI 的认知，很少使用
