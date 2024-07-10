@@ -20,6 +20,29 @@
 
 @implementation AttributeStringBuilder
 
+
+/// 计算文本高度
+/// - Parameters:
+///   - attributedString: 富文本
+///   - width: 宽度
++ (CGSize)calculateForAttributedString:(NSAttributedString *)attributedString withWidth:(CGFloat)width {
+    NSTextStorage *textStorage = [[NSTextStorage alloc] initWithAttributedString:attributedString];
+    NSLayoutManager *layoutManager = [[NSLayoutManager alloc] init];
+    [textStorage addLayoutManager:layoutManager];
+    
+    NSTextContainer *textContainer = [[NSTextContainer alloc] initWithSize:CGSizeMake(width, CGFLOAT_MAX)];
+    textContainer.lineBreakMode = NSLineBreakByWordWrapping; // Set appropriate line break mode
+    
+    [layoutManager addTextContainer:textContainer];
+    
+    // Force layout
+    NSRange glyphRange = [layoutManager glyphRangeForTextContainer:textContainer];
+    CGRect textRect = [layoutManager usedRectForTextContainer:textContainer];
+    
+//    CGFloat height = CGRectGetHeight(textRect);
+    return textRect.size;
+}
+
 - (instancetype)init {
     if (self = [super init]) {
         self.attributes = [[NSMutableDictionary alloc] init];

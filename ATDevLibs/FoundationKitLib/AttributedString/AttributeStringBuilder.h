@@ -24,7 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion shadow.shadowOffset = CGSizeMake(2, 2);
  @discussion NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
  
- @discussion attachment.image = [UIImage imageNamed:@"luffer"];
+ @discussion attachment.image = [UIImage custom_imageNamed:@"appIcon_luffer"];
  @discussion attachment.bounds = CGRectMake(0, 0, 50, 50);
  @discussion NSString *text = @"测试多行文字测试多行文字测试多行文字链接测试多行文字测试多行文字链接测试多行文字测试多行文字测试多行文字链接测试多行文字测试多行文字测试多行文字\n";
  
@@ -37,19 +37,26 @@ NS_ASSUME_NONNULL_BEGIN
      .matchLast(@"链接").strikethroughStyle(NSUnderlineStyleSingle).strikethroughColor([UIColor yellowColor])
      .append(text).alignment(NSTextAlignmentCenter).headIndent(20).tailIndent(-20).lineSpacing(10)
      .append(@"路飞").font([UIFont systemFontOfSize:25]).strokeWidth(2).strokeColor([UIColor darkGrayColor])
-     .headInsertImage([UIImage imageNamed:@"luffer"], CGSizeMake(50, 50), [UIFont systemFontOfSize:25])
-     .appendSizeImage([UIImage imageNamed:@"luffer"], CGSizeMake(50, 50))
-     .appendCustomImage([UIImage imageNamed:@"luffer"], CGSizeMake(50, 50), [UIFont systemFontOfSize:15])
+     .headInsertImage([UIImage custom_imageNamed:@"appIcon_luffer"], CGSizeMake(50, 50), [UIFont systemFontOfSize:25])
+     .appendSizeImage([UIImage custom_imageNamed:@"appIcon_luffer"], CGSizeMake(50, 50))
+     .appendCustomImage([UIImage custom_imageNamed:@"appIcon_luffer"], CGSizeMake(50, 50), [UIFont systemFontOfSize:15])
      .append(@"路飞").font([UIFont systemFontOfSize:15])
      .appendSpacing(20)
      .appendAttachment(attachment)
-     .insertImage([UIImage imageNamed:@"luffer"], CGSizeMake(50, 50), 0, [UIFont systemFontOfSize:30])
+     .insertImage([UIImage custom_imageNamed:@"appIcon_luffer"], CGSizeMake(50, 50), 0, [UIFont systemFontOfSize:30])
      .append(@"\n阴影").shadow(shadow).append(@"基线偏移\n").baselineOffset(-5)
      .append(@" ").backgroundColor([UIColor redColor]).fontSize(2);
  
  @discussion self.label.attributedText = [build commit];
  */
 @interface AttributeStringBuilder : NSObject
+
+/// 计算文本高度
+/// - Parameters:
+///   - attributedString: 富文本
+///   - width: 宽度
++ (CGSize)calculateForAttributedString:(NSAttributedString *)attributedString withWidth:(CGFloat)width;
+
 
 - (instancetype)init NS_UNAVAILABLE;
 
