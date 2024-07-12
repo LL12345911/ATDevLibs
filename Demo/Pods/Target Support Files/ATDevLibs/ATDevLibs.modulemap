@@ -1,0 +1,6 @@
+framework module ATDevLibs {
+  umbrella header "ATDevLibs-umbrella.h"
+
+  export *
+  module * { export * }
+}

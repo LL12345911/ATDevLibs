@@ -1,0 +1,53 @@
+{
+  "name": "ATDevLibs",
+  "version": "1.0.4",
+  "summary": "iOS开发基本库",
+  "description": "***\niOS开发基本库\n***",
+  "homepage": "https://github.com/LL12345911/ATDevLibs",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "Mars": "sky12345911@163.com"
+  },
+  "platforms": {
+    "ios": "9.0"
+  },
+  "source": {
+    "git": "https://github.com/LL12345911/ATDevLibs.git",
+    "tag": "1.0.4"
+  },
+  "social_media_url": "https://github.com/LL12345911/ATDevLibs",
+  "source_files": "ATDevLibs/*.{h,m}",
+  "public_header_files": "ATDevLibs/ATDevLibs.h",
+  "requires_arc": true,
+  "ios": {
+    "frameworks": [
+      "UIKit",
+      "Foundation"
+    ]
+  },
+  "subspecs": [
+    {
+      "name": "UIKitLib",
+      "source_files": "ATDevLibs/UIKitLib/**/*.{h,m}"
+    },
+    {
+      "name": "FoundationKitLib",
+      "source_files": "ATDevLibs/FoundationKitLib/**/*.{h,m}"
+    },
+    {
+      "name": "ShareLib",
+      "source_files": "ATDevLibs/ShareLib/**/*.{h,m}"
+    },
+    {
+      "name": "AuthorizeRequestLib",
+      "source_files": "ATDevLibs/AuthorizeRequestLib/**/*.{h,m}"
+    },
+    {
+      "name": "PPCounter",
+      "source_files": "ATDevLibs/PPCounter/**/*.{h,m}"
+    }
+  ]
+}

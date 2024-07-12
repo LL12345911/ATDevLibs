@@ -1,10 +1,11 @@
 //
 //  MarsEventBus.h
-//  MarsEventBus
+//  DWEventBus
 //
 //  Created by Wicky on 2018/10/22.
 //  Copyright © 2018年 Wicky. All rights reserved.
 //
+#import <Foundation/Foundation.h>
 
 /**
  MarsEventBus
@@ -17,8 +18,13 @@
  此外，当订阅者销毁时，可以自动移除订阅关系。
  可以存在多个总线，多个总线中相互独立，互不影响
  
- sample:
  
+ @version 1.0.0
+ @discussion 提供强弱类型支持、提供队列支持、提供联合事件和批量事件支持、提供销毁时自动移除订阅支持
+ @discussion 多总线独立分发消息
+ 
+ sample:
+ @code
  [[MarsEventBus defaultEventBus] subscribe:^(MarsEventMaker *maker) {
     maker.EventName(@"Login").dw_Build();
  } On:^(__kindof MarsEvent *event, id subscribeTarget) {
@@ -29,12 +35,7 @@
     maker.EventName(@"Login").dw_Build();
  }];
  
- version 1.0.0
- 提供强弱类型支持、提供队列支持、提供联合事件和批量事件支持、提供销毁时自动移除订阅支持
- 多总线独立分发消息
  */
-
-#import <Foundation/Foundation.h>
 @interface MarsEvent : NSObject
 
 ///事件名称

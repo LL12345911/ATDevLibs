@@ -1,6 +1,6 @@
 //
 //  MarsEventBus.m
-//  MarsEventBus
+//  DWEventBus
 //
 //  Created by Wicky on 2018/10/22.
 //  Copyright © 2018年 Wicky. All rights reserved.

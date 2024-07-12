@@ -2,8 +2,7 @@
 //  DemoTests.m
 //  DemoTests
 //
-//  Created by Mars on 2020/9/23.
-//  Copyright © 2020 Mars. All rights reserved.
+//  Created by Mars on 2024/7/12.
 //
 
 #import <XCTest/XCTest.h>

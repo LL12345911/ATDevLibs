@@ -912,6 +912,78 @@
     };
 }
 
+/// 动态添加字间距
+/// @Discussion baseText  基准文本 ,   @"道路路路名名称"
+/// @Discussion dynamicText  动态文本 , @"上报人“
+/// @Discussion font 字体
+/// @code  
+///  AttributeStringBuilder *build = AttributeStringBuilder.build(@"NSBackgroundColorAttributeName 圆角")
+///  .append(@"\n").font([UIFont systemFontOfSize:14])
+///  .append(@"道路路路名名称：").font([UIFont systemFontOfSize:14])
+///  .append(@"\n").font([UIFont systemFontOfSize:14])
+///  .append(@"上报人").font([UIFont systemFontOfSize:14]).dynamicKern(@"道路路路名名称", @"上报人", [UIFont systemFontOfSize:14])
+- (AttributeStringBuilder *(^)(NSString *baseText, NSString *dynamicText, UIFont *font))dynamicKern {
+    return ^(NSString *baseText, NSString *dynamicText, UIFont *font) {
+        // 计算基准文本的宽度
+        CGFloat baseTextWidth = [self generateAttributedString:baseText font:font];
+        
+        // 计算动态文本的宽度并调整字间距
+        CGFloat dynamicTextWidth = [self generateAttributedString:dynamicText font:font];
+
+        if (dynamicText.length < 2) {
+            return self;
+        }
+        CGFloat kerningAdjustment = (baseTextWidth - dynamicTextWidth) / (dynamicText.length - 1);
+
+        // 调整动态文本的字间距
+        [self addAttribute:NSKernAttributeName value:@(kerningAdjustment)];
+
+        return self;
+    };
+}
+
+/// 添加文字并设置字间距
+/// @Discussion baseText  基准文本 ,   @"道路路路名名称："
+/// @Discussion dynamicText  动态文本 , @"上报人：“
+/// @Discussion font 字体
+/// @code
+///  AttributeStringBuilder *build = AttributeStringBuilder.build(@"NSBackgroundColorAttributeName 圆角")
+///  .append(@"\n").font([UIFont systemFontOfSize:14])
+///  .append(@"道路路路名名称：").font([UIFont systemFontOfSize:14])
+///  .append(@"\n").font([UIFont systemFontOfSize:14])
+///  .append(@"上报人").font([UIFont systemFontOfSize:14]).dynamicKern(@"道路路路名名称", @"上报人", [UIFont systemFontOfSize:14])
+///  .append(@"\n").font([UIFont systemFontOfSize:14])
+///  .appendDynamicKern(@"道路路路名名称：", @"上报人：", [UIFont systemFontOfSize:14]).font([UIFont systemFontOfSize:14])
+///  .append(@"\n").font([UIFont systemFontOfSize:14])
+- (AttributeStringBuilder *(^)(NSString *baseText, NSString *dynamicText, UIFont *font))appendDynamicKern {
+    return ^(NSString *baseText, NSString *dynamicText, UIFont *font) {
+        
+        /// 尾部追加一个新的 Attributed String
+        NSRange range = NSMakeRange(self.source.length, dynamicText.length);
+        [self.source appendAttributedString:[[NSAttributedString alloc] initWithString:dynamicText]];
+        self.scr_ranges = @[ [NSValue valueWithRange:range] ];
+
+        // 计算基准文本的宽度
+        CGFloat baseTextWidth = [self generateAttributedString:baseText font:font];
+        
+        // 计算动态文本的宽度并调整字间距
+        CGFloat dynamicTextWidth = [self generateAttributedString:dynamicText font:font];
+
+        if (dynamicText.length <= 2) {
+            return self;
+        }
+        CGFloat kerningAdjustment = (baseTextWidth - dynamicTextWidth) / (dynamicText.length - 2);
+
+        // 调整动态文本的字间距
+        for (NSValue *rangeValue in self.scr_ranges) {
+            NSRange range = [rangeValue rangeValue];
+            [self.source addAttribute:NSKernAttributeName value:@(kerningAdjustment) range:NSMakeRange(range.location, range.length-2)];
+        }
+        return self;
+    };
+}
+
+
 /// 倾斜
 - (AttributeStringBuilder *(^)(CGFloat))obliqueness {
     return ^(CGFloat obliqueness) {
@@ -929,6 +1001,22 @@
 }
 
 #pragma mark - Private
+
+
+/// 返回 富文本宽度
+/// - Parameters:
+///   - baseText:  基准文本
+///   - font: 字体
+- (CGFloat)generateAttributedString:(NSString *)baseText font:(UIFont *)font {
+    NSMutableAttributedString *baseAttributedString = [[NSMutableAttributedString alloc] initWithString:baseText];
+    [baseAttributedString addAttribute:NSFontAttributeName value:font range:NSMakeRange(0, baseText.length)];
+
+    // 计算基准文本的宽度
+    CGRect baseTextRect = [baseText boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName:font} context:nil];
+    CGFloat baseTextWidth = baseTextRect.size.width;
+    return baseTextWidth;
+    
+}
 
 - (void)addAttribute:(NSAttributedStringKey)name value:(id)value {
     for (NSValue *rangeValue in self.scr_ranges) {

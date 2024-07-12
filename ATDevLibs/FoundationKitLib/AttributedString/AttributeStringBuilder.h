@@ -314,6 +314,35 @@ NS_ASSUME_NONNULL_BEGIN
 /// 字间距
 - (AttributeStringBuilder *(^)(CGFloat kern))kern;
 
+
+/// 动态添加字间距
+/// @Discussion baseText  基准文本 ,   @"道路路路名名称"
+/// @Discussion dynamicText  动态文本 , @"上报人“
+/// @Discussion font 字体
+/// @code
+///  AttributeStringBuilder *build = AttributeStringBuilder.build(@"NSBackgroundColorAttributeName 圆角")
+///  .append(@"\n").font([UIFont systemFontOfSize:14])
+///  .append(@"道路路路名名称：").font([UIFont systemFontOfSize:14])
+///  .append(@"\n").font([UIFont systemFontOfSize:14])
+///  .append(@"上报人").font([UIFont systemFontOfSize:14]).dynamicKern(@"道路路路名名称", @"上报人", [UIFont systemFontOfSize:14])
+- (AttributeStringBuilder *(^)(NSString *baseText, NSString *dynamicText, UIFont *font))dynamicKern;
+
+
+/// 添加文字并设置字间距
+/// @Discussion baseText  基准文本 ,   @"道路路路名名称："
+/// @Discussion dynamicText  动态文本 , @"上报人：“
+/// @Discussion font 字体
+/// @code
+///  AttributeStringBuilder *build = AttributeStringBuilder.build(@"NSBackgroundColorAttributeName 圆角")
+///  .append(@"\n").font([UIFont systemFontOfSize:14])
+///  .append(@"道路路路名名称：").font([UIFont systemFontOfSize:14])
+///  .append(@"\n").font([UIFont systemFontOfSize:14])
+///  .append(@"上报人").font([UIFont systemFontOfSize:14]).dynamicKern(@"道路路路名名称", @"上报人", [UIFont systemFontOfSize:14])
+///  .append(@"\n").font([UIFont systemFontOfSize:14])
+///  .appendDynamicKern(@"道路路路名名称：", @"上报人：", [UIFont systemFontOfSize:14]).font([UIFont systemFontOfSize:14])
+///  .append(@"\n").font([UIFont systemFontOfSize:14])
+- (AttributeStringBuilder *(^)(NSString *baseText, NSString *dynamicText, UIFont *font))appendDynamicKern;
+
 /// 倾斜
 - (AttributeStringBuilder *(^)(CGFloat obliqueness))obliqueness;
 

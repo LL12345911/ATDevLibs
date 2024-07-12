@@ -1,0 +1,26 @@
+PODS:
+  - ATDevLibs (1.0.4):
+    - ATDevLibs/AuthorizeRequestLib (= 1.0.4)
+    - ATDevLibs/FoundationKitLib (= 1.0.4)
+    - ATDevLibs/PPCounter (= 1.0.4)
+    - ATDevLibs/ShareLib (= 1.0.4)
+    - ATDevLibs/UIKitLib (= 1.0.4)
+  - ATDevLibs/AuthorizeRequestLib (1.0.4)
+  - ATDevLibs/FoundationKitLib (1.0.4)
+  - ATDevLibs/PPCounter (1.0.4)
+  - ATDevLibs/ShareLib (1.0.4)
+  - ATDevLibs/UIKitLib (1.0.4)
+
+DEPENDENCIES:
+  - ATDevLibs (from `../`)
+
+EXTERNAL SOURCES:
+  ATDevLibs:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  ATDevLibs: 23bf15afbd790ebbd74c8792ea522aa82dae1a84
+
+PODFILE CHECKSUM: 04fe120f7ed7630c774d3e33c80a93db0878f091
+
+COCOAPODS: 1.15.2
