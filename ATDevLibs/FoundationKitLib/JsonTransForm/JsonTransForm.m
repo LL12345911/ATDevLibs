@@ -39,9 +39,9 @@
     NSRange range = NSMakeRange(0, jsonString.length);
     [mutStr replaceOccurrencesOfString:@" : " withString:@":" options:NSLiteralSearch range:range];
     
-    //去掉字符串中的换行符
-    NSRange range2 = NSMakeRange(0, mutStr.length);
-    [mutStr replaceOccurrencesOfString:@" " withString:@"" options:NSLiteralSearch range:range2];
+//    //去掉字符串中的换行符
+//    NSRange range2 = NSMakeRange(0, mutStr.length);
+//    [mutStr replaceOccurrencesOfString:@" " withString:@"" options:NSLiteralSearch range:range2];
     
     //去掉字符串中的换行符
     NSRange range4 = NSMakeRange(0, mutStr.length);
@@ -75,9 +75,9 @@
     
     NSMutableString *mutStr = [NSMutableString stringWithString:jsonString];
     
-    //去掉字符串中的空格
-    NSRange range = NSMakeRange(0, jsonString.length);
-    [mutStr replaceOccurrencesOfString:@" " withString:@"" options:NSLiteralSearch range:range];
+//    //去掉字符串中的空格
+//    NSRange range = NSMakeRange(0, jsonString.length);
+//    [mutStr replaceOccurrencesOfString:@" " withString:@"" options:NSLiteralSearch range:range];
     
     //去掉字符串中的换行符
     NSRange range2 = NSMakeRange(0, mutStr.length);
