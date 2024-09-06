@@ -45,8 +45,6 @@ typedef NS_ENUM(NSUInteger,TextAlignType)
                     textAlign:(void(^)(ATMaker *make))alignType;
 
 
-@property(nonatomic, assign) UIEdgeInsets edgeInsets;
-
 
 @end
 
