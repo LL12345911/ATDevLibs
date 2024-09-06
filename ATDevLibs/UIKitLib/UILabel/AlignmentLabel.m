@@ -26,7 +26,8 @@
 
 
 - (CGRect)textRectForBounds:(CGRect)bounds limitedToNumberOfLines:(NSInteger)numberOfLines {
-    CGRect textRect = [super textRectForBounds:bounds limitedToNumberOfLines:numberOfLines];
+    //CGRect textRect = [super textRectForBounds:bounds limitedToNumberOfLines:numberOfLines];
+    CGRect textRect = [super textRectForBounds:UIEdgeInsetsInsetRect(bounds, _edgeInsets) limitedToNumberOfLines:numberOfLines];
     if (self.typeArray){
         for (int i=0; i<self.typeArray.count; i++) {
             TextAlignType type = [self.typeArray[i] integerValue];
@@ -77,6 +78,8 @@
     CGRect actualRect = requestedRect;
     if (self.typeArray) {
         actualRect = [self textRectForBounds:requestedRect limitedToNumberOfLines:self.numberOfLines];
+        
+//        actualRect = [self drawTextInRect:UIEdgeInsetsInsetRect(rect, _edgeInsets)];
     }
     [super drawTextInRect:actualRect];
 }
