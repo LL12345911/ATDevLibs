@@ -7,6 +7,8 @@
 //
 
 #import "ATMacro.h"
+#import <UIKit/UIKit.h>
+
 
 #ifndef AutoInch_h
 #define AutoInch_h
@@ -95,14 +97,23 @@ CG_INLINE CGFloat kStatusBar(){
 //    CGRect statusRect = [[UIApplication sharedApplication] statusBarFrame];
 //    return statusRect.size.height;
     //return (isIphoneX() ? 44.0 : 20.0);//状态栏;
+//    if (@available(iOS 13.0, *)) {
+//        NSSet *set = [UIApplication sharedApplication].connectedScenes;
+//        UIWindowScene *windowScene = [set anyObject];
+//        UIStatusBarManager *statusBarManager = windowScene.statusBarManager;
+//        return statusBarManager.statusBarFrame.size.height;
+//    } else {
+//        return [UIApplication sharedApplication].statusBarFrame.size.height;
+//    }
     if (@available(iOS 13.0, *)) {
-        NSSet *set = [UIApplication sharedApplication].connectedScenes;
-        UIWindowScene *windowScene = [set anyObject];
-        UIStatusBarManager *statusBarManager = windowScene.statusBarManager;
-        return statusBarManager.statusBarFrame.size.height;
+        UIWindowScene *windowScene = (UIWindowScene *)[UIApplication.sharedApplication.connectedScenes anyObject];
+        if (windowScene) {
+            return windowScene.statusBarManager.statusBarFrame.size.height;
+        }
     } else {
-        return [UIApplication sharedApplication].statusBarFrame.size.height;
+        return UIApplication.sharedApplication.statusBarFrame.size.height;
     }
+    
 }
 /**
  导航栏的高度
@@ -112,8 +123,10 @@ CG_INLINE CGFloat kStatusBar(){
 CG_INLINE CGFloat kNavHeight(){
    // return kStatusBar() + 44;
     //return (isIphoneX() ? 88.0 : 64.0);//导航栏
-    
     return kStatusBar() + 44;
+    
+ 
+
 }
 
 /**
