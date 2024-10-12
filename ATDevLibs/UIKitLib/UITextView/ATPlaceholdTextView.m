@@ -28,18 +28,25 @@
 }
 
 - (void)textChange{
+    // 会重新调用drawRect:方法
     [self setNeedsDisplay];
 }
 
 // 调用drawRect时,会将之前的图像擦除掉,重新绘制
 - (void)drawRect:(CGRect)rect {
-    
+    // 如果有文字，就直接返回，不需要画占位文字
     if ([self hasText]) return;
     
-    rect.origin.y += (0 + 7);
-    rect.origin.x += 5;
-    rect.size.width -= 2 * rect.origin.x;
+//    rect.origin.y += (0 + 7);
+//    rect.origin.x += 5;
+//    rect.size.width -= 2 * rect.origin.x;
     
+    // 画文字
+        rect.origin.x = 5;
+        rect.origin.y = 8;
+        rect.size.width -= 2 * rect.origin.x;
+    
+    // 属性
     NSMutableDictionary *attrs = [NSMutableDictionary dictionary];
     attrs[NSForegroundColorAttributeName] = self.placeholdColor;
     attrs[NSFontAttributeName] = [UIFont systemFontOfSize:15];
