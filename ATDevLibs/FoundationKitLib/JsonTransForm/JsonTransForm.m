@@ -23,7 +23,7 @@
 + (NSString *)dictToJsonString:(NSDictionary *)dict{
     
     NSError *error;
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:&error];
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingSortedKeys error:&error];
     NSString *jsonString;
     if (!jsonData) {
 #ifdef DEBUG
@@ -63,7 +63,7 @@
 + (NSString *)toJsonStrWithArray:(NSArray *)array {
     
     NSError *error;
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:array options:NSJSONWritingPrettyPrinted error:&error];
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:array options:NSJSONWritingSortedKeys error:&error];
     NSString *jsonString;
     if (!jsonData) {
 #ifdef DEBUG
@@ -243,7 +243,7 @@
  */
 + (NSString *)objectToJsonString:(id)obj {
     NSError *error;
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:[self objectToDict:obj] options:NSJSONWritingPrettyPrinted error:&error];
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:[self objectToDict:obj] options:NSJSONWritingSortedKeys error:&error];
     if (!error) {
         return nil;
     }

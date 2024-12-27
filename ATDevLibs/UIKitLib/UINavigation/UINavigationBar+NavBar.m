@@ -57,6 +57,31 @@ static char overlayImageKey;
 //    return isIPhoneX;
 }
 
++ (CGFloat)kStatusBar{
+//    //获取状态栏的rect
+//    CGRect statusRect = [[UIApplication sharedApplication] statusBarFrame];
+//    return statusRect.size.height;
+    //return (isIphoneX() ? 44.0 : 20.0);//状态栏;
+//    if (@available(iOS 13.0, *)) {
+//        NSSet *set = [UIApplication sharedApplication].connectedScenes;
+//        UIWindowScene *windowScene = [set anyObject];
+//        UIStatusBarManager *statusBarManager = windowScene.statusBarManager;
+//        return statusBarManager.statusBarFrame.size.height;
+//    } else {
+//        return [UIApplication sharedApplication].statusBarFrame.size.height;
+//    }
+    if (@available(iOS 13.0, *)) {
+        UIWindowScene *windowScene = (UIWindowScene *)[UIApplication.sharedApplication.connectedScenes anyObject];
+        if (windowScene) {
+            return windowScene.statusBarManager.statusBarFrame.size.height;
+        }else{
+            return 0;
+        }
+    } else {
+        return UIApplication.sharedApplication.statusBarFrame.size.height;
+    }
+    
+}
 
 /**
  判断 是否是 iPhone X
@@ -114,7 +139,7 @@ static char overlayImageKey;
 //    [self at_reset];
     if (!self.overlay) {
         [self setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
-        CGFloat navHeight = [UINavigationBar isPhoneX] ? 44.0 : 20.0;
+        CGFloat navHeight = [UINavigationBar kStatusBar] + 44;// ? 44.0 : 20.0;
 //        //获取状态栏的rect
 //        CGRect statusRect = [[UIApplication sharedApplication] statusBarFrame];
 //        CGFloat navHeight = statusRect.size.height;
@@ -131,7 +156,7 @@ static char overlayImageKey;
 //    [self at_reset];
     if (!self.overlayImage) {
         [self setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
-        CGFloat navHeight = [UINavigationBar isPhoneX] ? 44.0 : 20.0;
+        CGFloat navHeight = [UINavigationBar kStatusBar] + 44;// ? 44.0 : 20.0;
 //        //获取状态栏的rect
 //        CGRect statusRect = [[UIApplication sharedApplication] statusBarFrame];
 //        CGFloat navHeight = statusRect.size.height;
