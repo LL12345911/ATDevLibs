@@ -23,7 +23,13 @@
 + (NSString *)dictToJsonString:(NSDictionary *)dict{
     
     NSError *error;
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingSortedKeys error:&error];
+    NSData *jsonData;
+    
+    if (@available(iOS 11.0, *)) {
+        jsonData = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingSortedKeys error:&error];
+    } else {
+        jsonData = [NSJSONSerialization dataWithJSONObject:dict options:kNilOptions error:&error];
+    }
     NSString *jsonString;
     if (!jsonData) {
 #ifdef DEBUG
@@ -33,21 +39,21 @@
         jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
     }
     
-    NSMutableString *mutStr = [NSMutableString stringWithString:jsonString];
-    
-    //去掉字符串中的空格
-    NSRange range = NSMakeRange(0, jsonString.length);
-    [mutStr replaceOccurrencesOfString:@" : " withString:@":" options:NSLiteralSearch range:range];
-    
+//    NSMutableString *mutStr = [NSMutableString stringWithString:jsonString];
+//    
+//    //去掉字符串中的空格
+//    NSRange range = NSMakeRange(0, jsonString.length);
+//    [mutStr replaceOccurrencesOfString:@" : " withString:@":" options:NSLiteralSearch range:range];
+//    
+////    //去掉字符串中的换行符
+////    NSRange range2 = NSMakeRange(0, mutStr.length);
+////    [mutStr replaceOccurrencesOfString:@" " withString:@"" options:NSLiteralSearch range:range2];
+//    
 //    //去掉字符串中的换行符
-//    NSRange range2 = NSMakeRange(0, mutStr.length);
-//    [mutStr replaceOccurrencesOfString:@" " withString:@"" options:NSLiteralSearch range:range2];
+//    NSRange range4 = NSMakeRange(0, mutStr.length);
+//    [mutStr replaceOccurrencesOfString:@"\n" withString:@"" options:NSLiteralSearch range:range4];
     
-    //去掉字符串中的换行符
-    NSRange range4 = NSMakeRange(0, mutStr.length);
-    [mutStr replaceOccurrencesOfString:@"\n" withString:@"" options:NSLiteralSearch range:range4];
-    
-    return mutStr;
+    return jsonString;
 }
 
 
@@ -63,7 +69,14 @@
 + (NSString *)toJsonStrWithArray:(NSArray *)array {
     
     NSError *error;
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:array options:NSJSONWritingSortedKeys error:&error];
+    NSData *jsonData;
+    
+    if (@available(iOS 11.0, *)) {
+        jsonData = [NSJSONSerialization dataWithJSONObject:array options:NSJSONWritingSortedKeys error:&error];
+    } else {
+        jsonData = [NSJSONSerialization dataWithJSONObject:array options:kNilOptions error:&error];
+    }
+    
     NSString *jsonString;
     if (!jsonData) {
 #ifdef DEBUG
@@ -73,17 +86,17 @@
         jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
     }
     
-    NSMutableString *mutStr = [NSMutableString stringWithString:jsonString];
+//    NSMutableString *mutStr = [NSMutableString stringWithString:jsonString];
+//    
+////    //去掉字符串中的空格
+////    NSRange range = NSMakeRange(0, jsonString.length);
+////    [mutStr replaceOccurrencesOfString:@" " withString:@"" options:NSLiteralSearch range:range];
+//    
+//    //去掉字符串中的换行符
+//    NSRange range2 = NSMakeRange(0, mutStr.length);
+//    [mutStr replaceOccurrencesOfString:@"\n" withString:@"" options:NSLiteralSearch range:range2];
     
-//    //去掉字符串中的空格
-//    NSRange range = NSMakeRange(0, jsonString.length);
-//    [mutStr replaceOccurrencesOfString:@" " withString:@"" options:NSLiteralSearch range:range];
-    
-    //去掉字符串中的换行符
-    NSRange range2 = NSMakeRange(0, mutStr.length);
-    [mutStr replaceOccurrencesOfString:@"\n" withString:@"" options:NSLiteralSearch range:range2];
-    
-    return mutStr;
+    return jsonString;
 }
 
 
@@ -243,20 +256,25 @@
  */
 + (NSString *)objectToJsonString:(id)obj {
     NSError *error;
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:[self objectToDict:obj] options:NSJSONWritingSortedKeys error:&error];
+    NSData *jsonData;
+    if (@available(iOS 11.0, *)) {
+        jsonData = [NSJSONSerialization dataWithJSONObject:[self objectToDict:obj] options:NSJSONWritingSortedKeys error:&error];
+    } else {
+        jsonData = [NSJSONSerialization dataWithJSONObject:[self objectToDict:obj] options:kNilOptions error:&error];
+    }
     if (!error) {
         return nil;
     }
     
     NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-    NSMutableString *mutStr = [NSMutableString stringWithString:jsonString];
-    //NSRange range = {0,jsonString.length};
-    ////去掉字符串中的空格
-    //[mutStr replaceOccurrencesOfString:@" " withString:@"" options:NSLiteralSearch range:range];
-    NSRange range2 = NSMakeRange(0, mutStr.length);
-    //去掉字符串中的换行符
-    [mutStr replaceOccurrencesOfString:@"\n" withString:@"" options:NSLiteralSearch range:range2];
-    return mutStr;
+//    NSMutableString *mutStr = [NSMutableString stringWithString:jsonString];
+//    //NSRange range = {0,jsonString.length};
+//    ////去掉字符串中的空格
+//    //[mutStr replaceOccurrencesOfString:@" " withString:@"" options:NSLiteralSearch range:range];
+//    NSRange range2 = NSMakeRange(0, mutStr.length);
+//    //去掉字符串中的换行符
+//    [mutStr replaceOccurrencesOfString:@"\n" withString:@"" options:NSLiteralSearch range:range2];
+    return jsonString;
 }
 
 
