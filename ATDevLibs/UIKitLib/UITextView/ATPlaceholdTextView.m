@@ -49,7 +49,7 @@
     // 属性
     NSMutableDictionary *attrs = [NSMutableDictionary dictionary];
     attrs[NSForegroundColorAttributeName] = self.placeholdColor;
-    attrs[NSFontAttributeName] = [UIFont systemFontOfSize:15];
+    attrs[NSFontAttributeName] = self.font;
     [self.placehold drawInRect:rect withAttributes:attrs];
 }
 
