@@ -42,14 +42,17 @@
 //    rect.size.width -= 2 * rect.origin.x;
     
     // 画文字
-        rect.origin.x = 5;
-        rect.origin.y = 8;
+        rect.origin.x += 5;
+        rect.origin.y += 10;
         rect.size.width -= 2 * rect.origin.x;
     
     // 属性
     NSMutableDictionary *attrs = [NSMutableDictionary dictionary];
     attrs[NSForegroundColorAttributeName] = self.placeholdColor;
     attrs[NSFontAttributeName] = self.font;
+    attrs[NSBackgroundColorAttributeName] = [UIColor clearColor];
+
+    
     [self.placehold drawInRect:rect withAttributes:attrs];
 }
 

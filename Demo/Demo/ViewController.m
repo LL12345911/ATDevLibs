@@ -7,6 +7,7 @@
 
 #import "ViewController.h"
 #import "AttributeStringBuilder.h"
+#import "ATPlaceholdTextView.h"
 
 
 @interface ViewController ()
@@ -40,6 +41,16 @@
       
       label.attributedText = [build commit];
       
+    
+    
+    ATPlaceholdTextView *_textView = [[ATPlaceholdTextView alloc] initWithFrame:CGRectMake(10, 400, 300, 200)];
+    _textView.font = [UIFont systemFontOfSize:14];
+    _textView.placehold = @"描述病害情况...";
+    _textView.layer.borderWidth = 1;
+    _textView.layer.borderColor = [UIColor grayColor].CGColor;
+    _textView.layer.cornerRadius = 5;
+    [self.view addSubview:_textView];
+
 
 }
 
