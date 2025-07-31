@@ -121,11 +121,17 @@ CG_INLINE CGFloat kStatusBar(){
  @return 不是刘海屏默认64，是的话88
  */
 CG_INLINE CGFloat kNavHeight(){
-   // return kStatusBar() + 44;
+    if (@available(iOS 13.0, *)) {
+        // Mac Catalyst 环境
+        if ([NSProcessInfo processInfo].isMacCatalystApp) {
+            // 默认 macOS 导航栏高度通常为 50 点，但建议动态获取
+            kStatusBar() + 50.0;
+        }
+    }
+    
+    // iOS 环境：包含状态栏的完整高度
     //return (isIphoneX() ? 88.0 : 64.0);//导航栏
     return kStatusBar() + 44;
-    
- 
 
 }
 
