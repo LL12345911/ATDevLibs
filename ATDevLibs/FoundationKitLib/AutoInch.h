@@ -125,7 +125,7 @@ CG_INLINE CGFloat kNavHeight(){
         // Mac Catalyst 环境
         if ([NSProcessInfo processInfo].isMacCatalystApp) {
             // 默认 macOS 导航栏高度通常为 50 点，但建议动态获取
-            kStatusBar() + 50.0;
+            return kStatusBar() + 50.0;
         }
     }
     
