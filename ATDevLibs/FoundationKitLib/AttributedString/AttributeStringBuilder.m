@@ -394,6 +394,15 @@
     };
 }
 
+/// 字号，默认字体
+- (AttributeStringBuilder *(^)(CGFloat boldFontSize))boldFontSize{
+    return ^(CGFloat boldFontSize) {
+        UIFont *font = [UIFont boldSystemFontOfSize:boldFontSize];
+        [self addAttribute:NSFontAttributeName value:font];
+        return self;
+    };
+}
+
 /// 字体颜色
 - (AttributeStringBuilder *(^)(UIColor *))color {
     return ^(UIColor *color) {

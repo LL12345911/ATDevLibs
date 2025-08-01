@@ -141,6 +141,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// 字号，默认字体
 - (AttributeStringBuilder *(^)(CGFloat fontSize))fontSize;
 
+/// 字号，默认字体
+- (AttributeStringBuilder *(^)(CGFloat boldFontSize))boldFontSize;
+
 /// 字体颜色
 - (AttributeStringBuilder *(^)(UIColor *color))color;
 
