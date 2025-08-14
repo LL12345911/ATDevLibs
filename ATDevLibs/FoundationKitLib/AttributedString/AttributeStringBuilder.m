@@ -433,13 +433,15 @@
 
 
 /**
- 背景圆角
+ 绘制带圆角边框和居中文本的自定义图片
  
- @discussion string  背景文字
- @discussion font  文字字体
- @discussion textColor  文字颜色
- @discussion fillColor  填充背景色
- @discussion radius  圆角
+ @brief 根据参数生成一个带圆角矩形边框的图片，文本内容在图片中自动居中显示。
+ 
+ @discussion text  需要绘制的文本内容
+ @discussion font  文本字体（nil 时使用系统默认）
+ @discussion textColor  文本颜色（nil 时默认黑色）
+ @discussion fillColor  背景填充色（nil 时透明）
+ @discussion radius  基础圆角半径（实际生效半径需结合 corners 参数）
  @discussion offsetY  偏移量 ， offsetY < 0 向上偏移，offsetY > 0  向下偏移，offsetY = 0  不偏移
  */
 - (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, CGFloat offsetY))appendBackgroundColor {
@@ -462,15 +464,18 @@
 }
 
 /**
- 背景圆角（文本边距）
-
- @discussion string  背景文字
- @discussion font  文字字体
- @discussion textColor  文字颜色
- @discussion fillColor  填充背景色
- @discussion radius  圆角
- @discussion insets  文本边距(设置固定宽size.width之后left/right失效，设置固定高size.height之后top/bottom失效)
+ 绘制带圆角边框和居中文本的自定义图片 （文本内边距）
+ 
+ @brief 根据参数生成一个带圆角矩形边框的图片，文本内容在图片中自动居中显示。定义图片大小
+ 
+ @discussion text  需要绘制的文本内容
+ @discussion font  文本字体（nil 时使用系统默认）
+ @discussion textColor  文本颜色（nil 时默认黑色）
+ @discussion fillColor  背景填充色（nil 时透明）
+ @discussion radius  基础圆角半径（实际生效半径需结合 corners 参数）
+ @discussion insets  文本内边距（固定宽高时水平/垂直方向边距失效）文本边距(设置固定宽size.width之后left/right失效，设置固定高size.height之后top/bottom失效)
  @discussion offsetY  偏移量 ， offsetY < 0 向上偏移，offsetY > 0  向下偏移，offsetY = 0  不偏移
+
  */
 - (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *_Nullable textColor, UIColor *_Nullable fillColor, CGFloat radius, UIEdgeInsets insets, CGFloat offsetY))appendBackgroundInsetsColor {
     
@@ -493,16 +498,19 @@
 }
 
 /**
- 背景圆角（文本边距、边框以外的边距）
-
- @discussion string  背景文字
- @discussion font  文字字体
- @discussion textColor  文字颜色
- @discussion fillColor  填充背景色
- @discussion radius  圆角
- @discussion insets  文本边距(设置固定宽size.width之后left/right失效，设置固定高size.height之后top/bottom失效)
- @discussion margins  边框以外的边距
+ 绘制带圆角边框和居中文本的自定义图片 （文本边距、边框以外的边距）
+ 
+ @brief 根据参数生成一个带圆角矩形边框的图片，文本内容在图片中自动居中显示。定义图片大小
+ 
+ @discussion text  需要绘制的文本内容
+ @discussion font  文本字体（nil 时使用系统默认）
+ @discussion textColor  文本颜色（nil 时默认黑色）
+ @discussion fillColor  背景填充色（nil 时透明）
+ @discussion radius  基础圆角半径（实际生效半径需结合 corners 参数）
+ @discussion insets  文本内边距（固定宽高时水平/垂直方向边距失效）文本边距(设置固定宽size.width之后left/right失效，设置固定高size.height之后top/bottom失效)
+ @discussion margins  图片外边框边距（始终生效）
  @discussion offsetY  偏移量 ， offsetY < 0 向上偏移，offsetY > 0  向下偏移，offsetY = 0  不偏移
+
  */
 - (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *_Nullable textColor, UIColor *_Nullable fillColor, CGFloat radius, UIEdgeInsets insets, UIEdgeInsets margins, CGFloat offsetY))appendBackgroundMarginsColor {
     
@@ -526,14 +534,16 @@
 
 
 /**
- 背景圆角
+ 绘制带圆角边框和居中文本的自定义图片
  
- @discussion string  背景文字
- @discussion font  文字字体
- @discussion textColor  文字颜色
- @discussion fillColor  填充背景色
- @discussion radius  圆角
- @discussion imgSize  固定宽高(size.width=0/size.height=0表示不固定，文本水平/垂直居中)
+ @brief 根据参数生成一个带圆角矩形边框的图片，文本内容在图片中自动居中显示。定义图片大小
+ 
+ @discussion text  需要绘制的文本内容
+ @discussion font  文本字体（nil 时使用系统默认）
+ @discussion textColor  文本颜色（nil 时默认黑色）
+ @discussion fillColor  背景填充色（nil 时透明）
+ @discussion radius  基础圆角半径（实际生效半径需结合 corners 参数）
+ @discussion imgSize  图片固定宽高（width/height=0 表示该方向自适应）固定宽高(size.width=0/size.height=0表示不固定，文本水平/垂直居中)
  @discussion offsetY  偏移量 ， offsetY < 0 向上偏移，offsetY > 0  向下偏移，offsetY = 0  不偏移
  */
 - (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, CGSize imgSize, CGFloat offsetY))appendBackgroundSize {
@@ -556,14 +566,16 @@
 }
 
 /**
- 背景圆角
+ 绘制带圆角边框和居中文本的自定义图片
  
- @discussion string  背景文字
- @discussion font  文字字体
- @discussion textColor  文字颜色
- @discussion fillColor  填充背景色
- @discussion radius  圆角
- @discussion corners  圆角属性
+ @brief 根据参数生成一个带圆角矩形边框的图片，文本内容在图片中自动居中显示。定义圆角方向
+ 
+ @discussion text  需要绘制的文本内容
+ @discussion font  文本字体（nil 时使用系统默认）
+ @discussion textColor  文本颜色（nil 时默认黑色）
+ @discussion fillColor  背景填充色（nil 时透明）
+ @discussion radius  基础圆角半径（实际生效半径需结合 corners 参数）
+ @discussion corners  圆角方向组合（如：UIRectCornerTopLeft | UIRectCornerBottomRight）
  @discussion offsetY  偏移量 ， offsetY < 0 向上偏移，offsetY > 0  向下偏移，offsetY = 0  不偏移
  */
 - (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, UIRectCorner corners, CGFloat offsetY))appendBackgroundCornerColor {
@@ -586,15 +598,19 @@
 }
 
 /**
- 背景圆角
+ 绘制带圆角边框和居中文本的自定义图片
  
- @discussion string  背景文字
- @discussion font  文字字体
- @discussion textColor  文字颜色
- @discussion fillColor  填充背景色
- @discussion radius  圆角
- @discussion corners  圆角属性
+ @brief 根据参数生成一个带圆角矩形边框的图片，文本内容在图片中自动居中显示。
+ 若固定宽高被指定，文本严格居中；否则根据内容自适应宽高，并按边距布局。
+ 
+ @discussion text  需要绘制的文本内容
+ @discussion font  文本字体（nil 时使用系统默认）
+ @discussion textColor  文本颜色（nil 时默认黑色）
+ @discussion fillColor  背景填充色（nil 时透明）
+ @discussion radius  基础圆角半径（实际生效半径需结合 corners 参数）
+ @discussion corners  圆角方向组合（如：UIRectCornerTopLeft | UIRectCornerBottomRight）
  @discussion offsetY  偏移量 ， offsetY < 0 向上偏移，offsetY > 0  向下偏移，offsetY = 0  不偏移
+ 
  */
 - (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, UIRectCorner corners, CGSize imgSize, CGFloat offsetY))appendBackgroundCornerSize {
     return ^(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, UIRectCorner corners, CGSize imgSize, CGFloat offsetY) {
@@ -617,19 +633,22 @@
 
 
 /**
- 背景圆角
+ 绘制带圆角边框和居中文本的自定义图片
  
- @discussion text  文本数据
- @discussion font  文字字体
- @discussion textColor  文字颜色
- @discussion fillColor  填充背景色
- @discussion radius  圆角半径
- @discussion corners  圆角属性
- @discussion imgSize  固定宽高(size.width=0/size.height=0表示不固定，文本水平/垂直居中)
- @discussion insets  文本边距(设置固定宽size.width之后left/right失效，设置固定高size.height之后top/bottom失效)
- @discussion margins  边框以外的边距
- @discussion strokeColor  边框线颜色
- @discussion lineWidth   宽度
+ @brief 根据参数生成一个带圆角矩形边框的图片，文本内容在图片中自动居中显示。
+ 若固定宽高被指定，文本严格居中；否则根据内容自适应宽高，并按边距布局。
+ 
+ @discussion text  需要绘制的文本内容
+ @discussion font  文本字体（nil 时使用系统默认）
+ @discussion textColor  文本颜色（nil 时默认黑色）
+ @discussion fillColor  背景填充色（nil 时透明）
+ @discussion radius  基础圆角半径（实际生效半径需结合 corners 参数）
+ @discussion corners  圆角方向组合（如：UIRectCornerTopLeft | UIRectCornerBottomRight）
+ @discussion imgSize  图片固定宽高（width/height=0 表示该方向自适应）固定宽高(size.width=0/size.height=0表示不固定，文本水平/垂直居中)
+ @discussion insets  文本内边距（固定宽高时水平/垂直方向边距失效）文本边距(设置固定宽size.width之后left/right失效，设置固定高size.height之后top/bottom失效)
+ @discussion margins  图片外边框边距（始终生效）
+ @discussion strokeColor  边框线颜色（nil 时无边框）
+ @discussion lineWidth   边框线宽度（0 时无边框）
  @discussion offsetY  偏移量 ， offsetY < 0 向上偏移，offsetY > 0  向下偏移，offsetY = 0  不偏移
  */
 - (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, UIRectCorner corners, CGSize imgSize, UIEdgeInsets insets, UIEdgeInsets margins, UIColor *strokeColor, CGFloat lineWidth, CGFloat offsetY))appendBackgroundRadiusColor {
@@ -653,23 +672,28 @@
 }
 
 /**
- 开始画图
+ 绘制带圆角边框和居中文本的自定义图片
  
- @Param radius  圆角半径
- @Param text  文本数据
- @Param font  文字字体
- @Param corners  圆角属性
- @Param imgSize  固定宽高(size.width=0/size.height=0表示不固定，文本水平/垂直居中)
- @Param textColor 文字颜色
- @Param fillColor 背景颜色
- @Param insets  文本边距(设置固定宽size.width之后left/right失效，设置固定高size.height之后top/bottom失效)
- @Param margins  边框以外的边距
- @Param strokeColor  边框线颜色
- @Param lineWidth   宽度
+ @brief 根据参数生成一个带圆角矩形边框的图片，文本内容在图片中自动居中显示。
+ 若固定宽高被指定，文本严格居中；否则根据内容自适应宽高，并按边距布局。
  
+ @Param radius  基础圆角半径（实际生效半径需结合 corners 参数）
+ @Param text  需要绘制的文本内容
+ @Param font  文本字体（nil 时使用系统默认）
+ @Param corners  圆角方向组合（如：UIRectCornerTopLeft | UIRectCornerBottomRight）
+ @Param imgSize  图片固定宽高（width/height=0 表示该方向自适应)
+ @Param textColor 文本颜色（nil 时默认黑色）
+ @Param fillColor 背景填充色（nil 时透明）
+ @Param insets  文本内边距（固定宽高时水平/垂直方向边距失效）文本边距(设置固定宽size.width之后left/right失效，设置固定高size.height之后top/bottom失效)
+ @Param margins  图片外边框边距（始终生效）
+ @Param strokeColor  边框线颜色（nil 时无边框）
+ @Param lineWidth   边框线宽度（0 时无边框）
+ 
+ @return 渲染完成的 UIImage 对象
  */
 - (UIImage*)drawRadius:(CGFloat)radius text:(NSString *)text font:(UIFont *)font corners:(UIRectCorner)corners imgSize:(CGSize)imgSize textColor:(UIColor *)textColor fillColor:(UIColor *)fillColor insets:(UIEdgeInsets)insets margins:(UIEdgeInsets)margins strokeColor:(UIColor *)strokeColor lineWidth:(CGFloat)lineWidth {
     
+    // 1. 构建富文本属性
     NSMutableAttributedString *attrStr = [[NSMutableAttributedString alloc] initWithString:text];
     if (font) {
         [attrStr addAttribute:NSFontAttributeName value:font range:NSMakeRange(0, text.length)];
@@ -678,28 +702,33 @@
         [attrStr addAttribute:NSForegroundColorAttributeName value:textColor range:NSMakeRange(0, text.length)];
     }
     
+    // 2. 解析圆角方向组合
     CGFloat radiusTopLeft = 0.0;
     CGFloat radiusTopRight = 0.0;
     CGFloat radiusBottomLeft = 0.0;
     CGFloat radiusBottomRight = 0.0;
+    
     if ((corners & UIRectCornerTopLeft) > 0) {
-        radiusTopLeft = radius;
+        radiusTopLeft = radius; // 左上角启用圆角
     }
     if ((corners & UIRectCornerTopRight) > 0) {
-        radiusTopRight = radius;
+        radiusTopRight = radius; // 右上角启用圆角
     }
     if ((corners & UIRectCornerBottomLeft) > 0) {
-        radiusBottomLeft = radius;
+        radiusBottomLeft = radius; // 左下角启用圆角
     }
     if ((corners & UIRectCornerBottomRight) > 0) {
-        radiusBottomRight = radius;
+        radiusBottomRight = radius; // 右下角启用圆角
     }
     
+    // 3. 计算文本绘制区域（考虑边距和边框）
     CGFloat maxStrWidth = imgSize.width - (insets.left + insets.right + lineWidth);
     CGFloat maxStrHeight = imgSize.height - (insets.top + insets.bottom + lineWidth);
     CGSize strSize = [attrStr boundingRectWithSize:CGSizeMake(maxStrWidth > 0 ? maxStrWidth : CGFLOAT_MAX, maxStrHeight > 0 ? maxStrHeight : CGFLOAT_MAX)
                                            options:NSStringDrawingTruncatesLastVisibleLine | NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading
                                            context:nil].size;
+    
+    // 4. 确定最终画布尺寸（优先使用固定宽高，否则根据文本内容自适应）
     CGSize drawSize = imgSize;
     drawSize = CGSizeMake(drawSize.width > 0 ? drawSize.width : strSize.width + insets.left + insets.right + lineWidth,
                           drawSize.height > 0 ? drawSize.height : strSize.height + insets.top + insets.bottom + lineWidth);
@@ -707,10 +736,11 @@
     drawSize = CGSizeMake(drawSize.width + margins.left + margins.right,
                           drawSize.height + margins.top + margins.bottom);
     
-    /* 1.设置当前上下文中绘制的区域 */
+    // 5. 开启图像上下文
     UIGraphicsBeginImageContextWithOptions(drawSize, NO, 0);
-    
     CGContextRef ctx = UIGraphicsGetCurrentContext();
+    
+    // 6. 定义圆角路径绘制闭包
     void (^drawBlock)(CGRect rrect,
                       CGFloat radiusTopLeft,
                       CGFloat radiusTopRight,
@@ -736,38 +766,44 @@
                           CGContextClosePath(ctx);
                           CGContextDrawPath(ctx, kCGPathFillStroke);
                       };
+    
+    // 7. 配置描边与填充色
     CGFloat r = 0, g, b, a;
-    if (strokeColor) {
+    if (strokeColor && lineWidth > 0) {
         [strokeColor getRed:&r green:&g blue:&b alpha:&a];
         CGContextSetLineWidth(ctx, lineWidth);
-        CGContextSetRGBStrokeColor(ctx, r, g, b, a);
+        CGContextSetRGBStrokeColor(ctx, r, g, b, a); // 有效描边
     } else {
-        CGContextSetLineWidth(ctx, 0);
-        CGContextSetRGBStrokeColor(ctx, 0, 0, 0, 0);
-    }
-    if (fillColor) {
-        [fillColor getRed:&r green:&g blue:&b alpha:&a];
-        CGContextSetRGBFillColor(ctx, r, g, b, a);
-    } else {
-        CGContextSetRGBFillColor(ctx, 0, 0, 0, 0);
+        CGContextSetLineWidth(ctx, 0); // 禁用描边
+       //CGContextSetRGBStrokeColor(ctx, 0, 0, 0, 0);
     }
     
+    if (fillColor) {
+        [fillColor getRed:&r green:&g blue:&b alpha:&a];
+        CGContextSetRGBFillColor(ctx, r, g, b, a); // 背景填充
+    } else {
+        CGContextSetRGBFillColor(ctx, 0, 0, 0, 0); // 透明背景
+    }
+    
+    // 8. 计算圆角矩形区域（考虑边框偏移和外边距）
     CGRect rrect = CGRectMake(lineWidth / 2 + margins.left,
                               lineWidth / 2 + margins.top,
                               drawSize.width - lineWidth - margins.left - margins.right,
                               drawSize.height - lineWidth - margins.top - margins.bottom);
     
+    // 9. 绘制圆角矩形路径
     drawBlock(rrect,
               radiusTopLeft,
               radiusTopRight,
               radiusBottomLeft,
               radiusBottomRight);
     
+    // 10. 绘制文本（根据是否固定宽高决定居中方式）
     [attrStr drawInRect:CGRectMake(imgSize.width > 0 ? drawSize.width / 2 - strSize.width / 2 : insets.left + lineWidth / 2 + margins.left,imgSize.height > 0 ? drawSize.height / 2 - strSize.height / 2 : insets.top + lineWidth / 2 + margins.top, strSize.width, strSize.height)];
     
+    // 11. 生成图像并关闭上下文
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-    
     
     return image;
     

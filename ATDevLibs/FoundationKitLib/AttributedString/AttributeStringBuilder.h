@@ -156,99 +156,116 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 /**
- 背景圆角
-
- @discussion string  背景文字
- @discussion font  文字字体
- @discussion textColor  文字颜色
- @discussion fillColor  填充背景色
- @discussion radius  圆角
+ 绘制带圆角边框和居中文本的自定义图片
+ 
+ @brief 根据参数生成一个带圆角矩形边框的图片，文本内容在图片中自动居中显示。
+ 
+ @discussion text  需要绘制的文本内容
+ @discussion font  文本字体（nil 时使用系统默认）
+ @discussion textColor  文本颜色（nil 时默认黑色）
+ @discussion fillColor  背景填充色（nil 时透明）
+ @discussion radius  基础圆角半径（实际生效半径需结合 corners 参数）
  @discussion offsetY  偏移量 ， offsetY < 0 向上偏移，offsetY > 0  向下偏移，offsetY = 0  不偏移
  */
 - (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *_Nullable textColor, UIColor *_Nullable fillColor, CGFloat radius, CGFloat offsetY))appendBackgroundColor;
 
 /**
- 背景圆角（文本边距）
-
- @discussion string  背景文字
- @discussion font  文字字体
- @discussion textColor  文字颜色
- @discussion fillColor  填充背景色
- @discussion radius  圆角
- @discussion insets  文本边距(设置固定宽size.width之后left/right失效，设置固定高size.height之后top/bottom失效)
+ 绘制带圆角边框和居中文本的自定义图片 （文本内边距）
+ 
+ @brief 根据参数生成一个带圆角矩形边框的图片，文本内容在图片中自动居中显示。定义图片大小
+ 
+ @discussion text  需要绘制的文本内容
+ @discussion font  文本字体（nil 时使用系统默认）
+ @discussion textColor  文本颜色（nil 时默认黑色）
+ @discussion fillColor  背景填充色（nil 时透明）
+ @discussion radius  基础圆角半径（实际生效半径需结合 corners 参数）
+ @discussion insets  文本内边距（固定宽高时水平/垂直方向边距失效）文本边距(设置固定宽size.width之后left/right失效，设置固定高size.height之后top/bottom失效)
  @discussion offsetY  偏移量 ， offsetY < 0 向上偏移，offsetY > 0  向下偏移，offsetY = 0  不偏移
  */
 - (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *_Nullable textColor, UIColor *_Nullable fillColor, CGFloat radius, UIEdgeInsets insets, CGFloat offsetY))appendBackgroundInsetsColor;
 
 
 /**
- 背景圆角（文本边距、边框以外的边距）
-
- @discussion string  背景文字
- @discussion font  文字字体
- @discussion textColor  文字颜色
- @discussion fillColor  填充背景色
- @discussion radius  圆角
- @discussion insets  文本边距(设置固定宽size.width之后left/right失效，设置固定高size.height之后top/bottom失效)
- @discussion margins  边框以外的边距
+ 绘制带圆角边框和居中文本的自定义图片 （文本内边距、边框以外的边距）
+ 
+ @brief 根据参数生成一个带圆角矩形边框的图片，文本内容在图片中自动居中显示。定义图片大小
+ 
+ @discussion text  需要绘制的文本内容
+ @discussion font  文本字体（nil 时使用系统默认）
+ @discussion textColor  文本颜色（nil 时默认黑色）
+ @discussion fillColor  背景填充色（nil 时透明）
+ @discussion radius  基础圆角半径（实际生效半径需结合 corners 参数）
+ @discussion insets  文本内边距（固定宽高时水平/垂直方向边距失效）文本边距(设置固定宽size.width之后left/right失效，设置固定高size.height之后top/bottom失效)
+ @discussion margins  图片外边框边距（始终生效）
  @discussion offsetY  偏移量 ， offsetY < 0 向上偏移，offsetY > 0  向下偏移，offsetY = 0  不偏移
+
  */
 - (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *_Nullable textColor, UIColor *_Nullable fillColor, CGFloat radius, UIEdgeInsets insets, UIEdgeInsets margins, CGFloat offsetY))appendBackgroundMarginsColor;
 
 
 /**
- 背景圆角
+ 绘制带圆角边框和居中文本的自定义图片
  
- @discussion string  背景文字
- @discussion font  文字字体
- @discussion textColor  文字颜色
- @discussion fillColor  填充背景色
- @discussion radius  圆角
- @discussion imgSize  固定宽高(size.width=0/size.height=0表示不固定，文本水平/垂直居中)
+ @brief 根据参数生成一个带圆角矩形边框的图片，文本内容在图片中自动居中显示。定义图片大小
+ 
+ @discussion text  需要绘制的文本内容
+ @discussion font  文本字体（nil 时使用系统默认）
+ @discussion textColor  文本颜色（nil 时默认黑色）
+ @discussion fillColor  背景填充色（nil 时透明）
+ @discussion radius  基础圆角半径（实际生效半径需结合 corners 参数）
+ @discussion imgSize  图片固定宽高（width/height=0 表示该方向自适应）固定宽高(size.width=0/size.height=0表示不固定，文本水平/垂直居中)
  @discussion offsetY  偏移量 ， offsetY < 0 向上偏移，offsetY > 0  向下偏移，offsetY = 0  不偏移
  */
 - (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor * _Nullable textColor, UIColor * _Nullable fillColor, CGFloat radius, CGSize imgSize, CGFloat offsetY))appendBackgroundSize;
 
 /**
- 背景圆角
+ 绘制带圆角边框和居中文本的自定义图片
  
- @discussion string  背景文字
- @discussion font  文字字体
- @discussion textColor  文字颜色
- @discussion fillColor  填充背景色
- @discussion radius  圆角
- @discussion corners  圆角属性
+ @brief 根据参数生成一个带圆角矩形边框的图片，文本内容在图片中自动居中显示。定义圆角方向
+ 
+ @discussion text  需要绘制的文本内容
+ @discussion font  文本字体（nil 时使用系统默认）
+ @discussion textColor  文本颜色（nil 时默认黑色）
+ @discussion fillColor  背景填充色（nil 时透明）
+ @discussion radius  基础圆角半径（实际生效半径需结合 corners 参数）
+ @discussion corners  圆角方向组合（如：UIRectCornerTopLeft | UIRectCornerBottomRight）
  @discussion offsetY  偏移量 ， offsetY < 0 向上偏移，offsetY > 0  向下偏移，offsetY = 0  不偏移
  */
 - (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor * _Nullable textColor, UIColor * _Nullable fillColor, CGFloat radius, UIRectCorner corners, CGFloat offsetY))appendBackgroundCornerColor;
 
 /**
- 背景圆角
+ 绘制带圆角边框和居中文本的自定义图片
  
- @discussion string  背景文字
- @discussion font  文字字体
- @discussion textColor  文字颜色
- @discussion fillColor  填充背景色
- @discussion radius  圆角
- @discussion corners  圆角属性
+ @brief 根据参数生成一个带圆角矩形边框的图片，文本内容在图片中自动居中显示。
+ 若固定宽高被指定，文本严格居中；否则根据内容自适应宽高，并按边距布局。
+ 
+ @discussion text  需要绘制的文本内容
+ @discussion font  文本字体（nil 时使用系统默认）
+ @discussion textColor  文本颜色（nil 时默认黑色）
+ @discussion fillColor  背景填充色（nil 时透明）
+ @discussion radius  基础圆角半径（实际生效半径需结合 corners 参数）
+ @discussion corners  圆角方向组合（如：UIRectCornerTopLeft | UIRectCornerBottomRight）
  @discussion offsetY  偏移量 ， offsetY < 0 向上偏移，offsetY > 0  向下偏移，offsetY = 0  不偏移
  */
 - (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor * _Nullable textColor, UIColor * _Nullable fillColor, CGFloat radius, UIRectCorner corners, CGSize imgSize, CGFloat offsetY))appendBackgroundCornerSize;
 
 /**
- 背景圆角
+ 绘制带圆角边框和居中文本的自定义图片
  
- @discussion text  文本数据
- @discussion font  文字字体
- @discussion textColor  文字颜色
- @discussion fillColor  填充背景色
- @discussion radius  圆角半径
- @discussion corners  圆角属性
- @discussion imgSize  固定宽高(size.width=0/size.height=0表示不固定，文本水平/垂直居中)
- @discussion insets  文本边距(设置固定宽size.width之后left/right失效，设置固定高size.height之后top/bottom失效)
- @discussion margins  边框以外的边距
- @discussion strokeColor  边框线颜色
- @discussion lineWidth   宽度
+ @brief 根据参数生成一个带圆角矩形边框的图片，文本内容在图片中自动居中显示。
+ 若固定宽高被指定，文本严格居中；否则根据内容自适应宽高，并按边距布局。
+ 
+ @discussion text  需要绘制的文本内容
+ @discussion font  文本字体（nil 时使用系统默认）
+ @discussion textColor  文本颜色（nil 时默认黑色）
+ @discussion fillColor  背景填充色（nil 时透明）
+ @discussion radius  基础圆角半径（实际生效半径需结合 corners 参数）
+ @discussion corners  圆角方向组合（如：UIRectCornerTopLeft | UIRectCornerBottomRight）
+ @discussion imgSize  图片固定宽高（width/height=0 表示该方向自适应）固定宽高(size.width=0/size.height=0表示不固定，文本水平/垂直居中)
+ @discussion insets  文本内边距（固定宽高时水平/垂直方向边距失效）文本边距(设置固定宽size.width之后left/right失效，设置固定高size.height之后top/bottom失效)
+ @discussion margins  图片外边框边距（始终生效）
+ @discussion strokeColor  边框线颜色（nil 时无边框）
+ @discussion lineWidth   边框线宽度（0 时无边框）
  @discussion offsetY  偏移量 ， offsetY < 0 向上偏移，offsetY > 0  向下偏移，offsetY = 0  不偏移
  */
 - (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor * _Nullable textColor, UIColor * _Nullable fillColor, CGFloat radius, UIRectCorner corners, CGSize imgSize, UIEdgeInsets insets, UIEdgeInsets margins, UIColor * _Nullable strokeColor, CGFloat lineWidth, CGFloat offsetY))appendBackgroundRadiusColor;
