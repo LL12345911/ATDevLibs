@@ -87,34 +87,23 @@ CG_INLINE UIEdgeInsets safeAreaInsets(void) {
     }
     return safeAreaInsets;
 }
+
 /**
  状态栏的高度
 
  @return 不是刘海屏默认20，是的话44
  */
 CG_INLINE CGFloat kStatusBar(){
-//    //获取状态栏的rect
-//    CGRect statusRect = [[UIApplication sharedApplication] statusBarFrame];
-//    return statusRect.size.height;
-    //return (isIphoneX() ? 44.0 : 20.0);//状态栏;
-//    if (@available(iOS 13.0, *)) {
-//        NSSet *set = [UIApplication sharedApplication].connectedScenes;
-//        UIWindowScene *windowScene = [set anyObject];
-//        UIStatusBarManager *statusBarManager = windowScene.statusBarManager;
-//        return statusBarManager.statusBarFrame.size.height;
-//    } else {
-//        return [UIApplication sharedApplication].statusBarFrame.size.height;
-//    }
     if (@available(iOS 13.0, *)) {
         UIWindowScene *windowScene = (UIWindowScene *)[UIApplication.sharedApplication.connectedScenes anyObject];
         if (windowScene) {
             return windowScene.statusBarManager.statusBarFrame.size.height;
         }
-    } else {
-        return UIApplication.sharedApplication.statusBarFrame.size.height;
     }
-    
+    return UIApplication.sharedApplication.statusBarFrame.size.height;
 }
+
+
 /**
  导航栏的高度
 

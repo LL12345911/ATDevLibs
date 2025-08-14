@@ -867,7 +867,7 @@
     };
 }
 
-/// 段头部缩进
+/// 段头部缩进  后续行的左边距
 - (AttributeStringBuilder *(^)(CGFloat))headIndent {
     return ^(CGFloat headIndent) {
         [self configParagraphStyle:^(NSMutableParagraphStyle *paragraphStyle) {
@@ -876,6 +876,42 @@
         return self;
     };
 }
+
+/// 段头部缩进字符数  后续行的左边距
+/// @Discussion headIndentCharacters  缩进字符数
+/// @Discussion headIndentFont  缩进字符的字体大小
+- (AttributeStringBuilder *(^)(NSInteger, UIFont *))headIndentCharacters {
+    return ^(NSInteger headIndentCharacters, UIFont *headIndentFont) {
+        [self configParagraphStyle:^(NSMutableParagraphStyle *paragraphStyle) {
+            NSString *tempStr = @"";
+            for (int i = 0; i < headIndentCharacters; i++) {
+                tempStr = [NSString stringWithFormat:@"%@字", tempStr];
+            }
+            CGSize size = [self string:tempStr sizeWithFont:headIndentFont MaxSize:CGSizeMake(10000, 10000)];
+            CGFloat padding = size.width;
+            
+            paragraphStyle.headIndent = padding;
+        }];
+        return self;
+    };
+}
+
+#pragma mark - get labelSize
+- (CGSize)string:(NSString *)str sizeWithFont:(UIFont *)font MaxSize:(CGSize)maxSize {
+    @autoreleasepool {
+        CGSize resultSize;
+        NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:font, NSFontAttributeName, nil];
+        CGRect rect = [str boundingRectWithSize:maxSize
+                                        options:(NSStringDrawingTruncatesLastVisibleLine|NSStringDrawingUsesLineFragmentOrigin| NSStringDrawingUsesFontLeading)
+                                     attributes:attrs
+                                        context:nil];
+        resultSize = rect.size;
+        resultSize = CGSizeMake(ceil(resultSize.width), ceil(resultSize.height));
+        
+        return resultSize;
+    }
+}
+
 
 /// 段尾部缩进
 - (AttributeStringBuilder *(^)(CGFloat))tailIndent {

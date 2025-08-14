@@ -298,6 +298,12 @@ NS_ASSUME_NONNULL_BEGIN
 /// 段头部缩进 后续行的左边距
 - (AttributeStringBuilder *(^)(CGFloat indent))headIndent;
 
+/// 段头部缩进字符数  后续行的左边距
+/// @Discussion headIndentCharacters  缩进字符数
+/// @Discussion headIndentFont  缩进字符的字体大小
+- (AttributeStringBuilder *(^)(NSInteger headIndentCharacters, UIFont *headIndentFont))headIndentCharacters;
+
+
 /// 段尾部缩进 后续行相对于左边距的缩进量，负值表示超出左边距 如果setTailIndent:是负值，那么文本将会超出左边距，从而实现左边不超过起始左边点的效果。
 - (AttributeStringBuilder *(^)(CGFloat indent))tailIndent;
 

@@ -12,10 +12,10 @@
 #import <Foundation/Foundation.h>
 
 /**   记录App打开次数  */
-static NSString * const kAppOpenTimes = @"kAppOpenTimes";
+static NSString * _Nullable const kAppOpenTimes = @"kAppOpenTimes";
 
-static NSString * const USER_CanOpenApp = @"user_CanOpenApp"; //1 是从其他APP唤醒 0自己打开
-static NSString * const USER_AppName = @"user_AppName"; //从哪个APP打开
+static NSString * _Nullable const USER_CanOpenApp = @"user_CanOpenApp"; //1 是从其他APP唤醒 0自己打开
+static NSString * _Nullable const USER_AppName = @"user_AppName"; //从哪个APP打开
 
 
 @interface Helper : NSObject
@@ -36,11 +36,11 @@ static NSString * const USER_AppName = @"user_AppName"; //从哪个APP打开
 
 //+ (void)setUserKeyValue:(id)value forKey:(NSString *)key;
 
-+ (void)setUserObject:(id)object forkey:(NSString *)key;
++ (void)setUserObject:(id _Nullable )object forkey:(NSString *_Nullable)key;
 
-+ (id)getObjectForKey:(NSString *)key;
++ (id _Nullable)getObjectForKey:(NSString *_Nullable)key;
 
-+ (void)removeObjectForKey:(NSString *)key;
++ (void)removeObjectForKey:(NSString *_Nullable)key;
 
 + (void)removeAll;
 
@@ -48,7 +48,7 @@ static NSString * const USER_AppName = @"user_AppName"; //从哪个APP打开
 /**
  判断是否存在该key
  */
-+ (BOOL)objectIsIncludeForKey:(NSString *)defaultName;
++ (BOOL)objectIsIncludeForKey:(NSString *_Nullable)defaultName;
 
 /// **-stringForKey:**  与  **-objectForKey:** 相当，
 /// 不同之处在于它会将 NSNumber 值转换为其 NSString 表示形式。如果找到的值既不是字符串也不是数字，则返回 nil。

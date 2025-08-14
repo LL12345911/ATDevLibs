@@ -19,46 +19,29 @@
 }
 
 - (AuthorizationStatus)authorizationStatus {
-    if (@available(iOS 8.0, *)) {
-        //used `PHPhotoLibrary`
-        PHAuthorizationStatus authStatus = [PHPhotoLibrary authorizationStatus];
-        switch (authStatus) {
-            case PHAuthorizationStatusAuthorized:
-                return AuthorizationStatusAuthorized;
-                break;
-            case PHAuthorizationStatusRestricted:
-            case PHAuthorizationStatusDenied:
-                return AuthorizationStatusUnAuthorized;
-                break;
-            case PHAuthorizationStatusNotDetermined:
-                return AuthorizationStatusNotDetermined;
-                break;
-        }
-        
+    PHAuthorizationStatus authStatus;
+    if (@available(iOS 14, *)) {
+        authStatus = [PHPhotoLibrary authorizationStatusForAccessLevel:PHAccessLevelReadWrite];
     }else{
-        //used `AssetsLibrary`
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        ALAuthorizationStatus authStatus = [ALAssetsLibrary authorizationStatus];
-        switch (authStatus) {
-            case ALAuthorizationStatusAuthorized:
-                return AuthorizationStatusAuthorized;
-                break;
-            case ALAuthorizationStatusRestricted:
-            case ALAuthorizationStatusDenied:
-                return AuthorizationStatusUnAuthorized;
-                break;
-            case ALAuthorizationStatusNotDetermined:
-                return AuthorizationStatusNotDetermined;
-                break;
-            default:
-                return AuthorizationStatusDisabled;
-                break;
-        }
-#pragma clang diagnostic pop
+        authStatus = [PHPhotoLibrary authorizationStatus];
     }
-    return AuthorizationStatusDisabled;
+    switch (authStatus) {
+        case PHAuthorizationStatusAuthorized:
+            return AuthorizationStatusAuthorized;
+            break;
+        case PHAuthorizationStatusRestricted:
+        case PHAuthorizationStatusDenied:
+            return AuthorizationStatusUnAuthorized;
+            break;
+        case PHAuthorizationStatusNotDetermined:
+            return AuthorizationStatusNotDetermined;
+            break;
+        default:
+            return AuthorizationStatusDisabled;
+            break;
+    }
 }
+
 
 - (BOOL)hasSpecificPermissionKeyFromInfoPlist {
     return [[NSBundle mainBundle] objectForInfoDictionaryKey:self.permissionDescriptionKey];
