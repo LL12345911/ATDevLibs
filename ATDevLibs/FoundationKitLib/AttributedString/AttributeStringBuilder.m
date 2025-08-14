@@ -461,6 +461,35 @@
     };
 }
 
+/**
+ 背景圆角（文本边距、边框以外的边距）
+
+ @discussion string  背景文字
+ @discussion font  文字字体
+ @discussion textColor  文字颜色
+ @discussion fillColor  填充背景色
+ @discussion radius  圆角
+ @discussion offsetY  偏移量 ， offsetY < 0 向上偏移，offsetY > 0  向下偏移，offsetY = 0  不偏移
+ */
+- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *_Nullable textColor, UIColor *_Nullable fillColor, CGFloat radius, UIEdgeInsets insets, UIEdgeInsets margins, CGFloat offsetY))appendBackgroundMarginsColor {
+    
+    return ^(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, UIEdgeInsets insets, UIEdgeInsets margins, CGFloat offsetY) {
+        
+        NSRange range = NSMakeRange(self.source.length, text.length);
+        self.scr_ranges = @[ [NSValue valueWithRange:range] ];
+        
+        
+        UIImage *img1 = [self drawRadius:radius text:text font:font corners:UIRectCornerAllCorners imgSize:CGSizeMake(0, 0) textColor:textColor fillColor:fillColor insets:insets margins:margins strokeColor:nil lineWidth:0];
+        
+        
+        NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
+        attachment.image = img1;
+        attachment.bounds = CGRectMake(0, -offsetY, attachment.image.size.width, attachment.image.size.height);
+        [self.source appendAttributedString:[NSAttributedString attributedStringWithAttachment:attachment]];
+        
+        return self;
+    };
+}
 
 
 /**

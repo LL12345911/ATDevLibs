@@ -163,9 +163,24 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion textColor  文字颜色
  @discussion fillColor  填充背景色
  @discussion radius  圆角
+ @discussion insets  文本边距(设置固定宽size.width之后left/right失效，设置固定高size.height之后top/bottom失效)
+ @discussion margins  边框以外的边距
  @discussion offsetY  偏移量 ， offsetY < 0 向上偏移，offsetY > 0  向下偏移，offsetY = 0  不偏移
  */
-- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, CGFloat offsetY))appendBackgroundColor;
+- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *_Nullable textColor, UIColor *_Nullable fillColor, CGFloat radius, CGFloat offsetY))appendBackgroundColor;
+
+/**
+ 背景圆角（文本边距、边框以外的边距）
+
+ @discussion string  背景文字
+ @discussion font  文字字体
+ @discussion textColor  文字颜色
+ @discussion fillColor  填充背景色
+ @discussion radius  圆角
+ @discussion offsetY  偏移量 ， offsetY < 0 向上偏移，offsetY > 0  向下偏移，offsetY = 0  不偏移
+ */
+- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *_Nullable textColor, UIColor *_Nullable fillColor, CGFloat radius, UIEdgeInsets insets, UIEdgeInsets margins, CGFloat offsetY))appendBackgroundMarginsColor;
+
 
 /**
  背景圆角
@@ -178,7 +193,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion imgSize  固定宽高(size.width=0/size.height=0表示不固定，文本水平/垂直居中)
  @discussion offsetY  偏移量 ， offsetY < 0 向上偏移，offsetY > 0  向下偏移，offsetY = 0  不偏移
  */
-- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, CGSize imgSize, CGFloat offsetY))appendBackgroundSize;
+- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor * _Nullable textColor, UIColor * _Nullable fillColor, CGFloat radius, CGSize imgSize, CGFloat offsetY))appendBackgroundSize;
 
 /**
  背景圆角
@@ -191,7 +206,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion corners  圆角属性
  @discussion offsetY  偏移量 ， offsetY < 0 向上偏移，offsetY > 0  向下偏移，offsetY = 0  不偏移
  */
-- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, UIRectCorner corners, CGFloat offsetY))appendBackgroundCornerColor;
+- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor * _Nullable textColor, UIColor * _Nullable fillColor, CGFloat radius, UIRectCorner corners, CGFloat offsetY))appendBackgroundCornerColor;
 
 /**
  背景圆角
@@ -204,7 +219,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion corners  圆角属性
  @discussion offsetY  偏移量 ， offsetY < 0 向上偏移，offsetY > 0  向下偏移，offsetY = 0  不偏移
  */
-- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, UIRectCorner corners, CGSize imgSize, CGFloat offsetY))appendBackgroundCornerSize;
+- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor * _Nullable textColor, UIColor * _Nullable fillColor, CGFloat radius, UIRectCorner corners, CGSize imgSize, CGFloat offsetY))appendBackgroundCornerSize;
 
 /**
  背景圆角
@@ -222,7 +237,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion lineWidth   宽度
  @discussion offsetY  偏移量 ， offsetY < 0 向上偏移，offsetY > 0  向下偏移，offsetY = 0  不偏移
  */
-- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *textColor, UIColor *fillColor, CGFloat radius, UIRectCorner corners, CGSize imgSize, UIEdgeInsets insets, UIEdgeInsets margins, UIColor *strokeColor, CGFloat lineWidth, CGFloat offsetY))appendBackgroundRadiusColor;
+- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor * _Nullable textColor, UIColor * _Nullable fillColor, CGFloat radius, UIRectCorner corners, CGSize imgSize, UIEdgeInsets insets, UIEdgeInsets margins, UIColor * _Nullable strokeColor, CGFloat lineWidth, CGFloat offsetY))appendBackgroundRadiusColor;
 
 
 #pragma mark - Glyph
