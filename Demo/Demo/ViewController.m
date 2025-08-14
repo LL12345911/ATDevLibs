@@ -8,6 +8,7 @@
 #import "ViewController.h"
 #import "AttributeStringBuilder.h"
 #import "ATPlaceholdTextView.h"
+#import "ATDevLibs/ATDevLibs.h"
 
 
 @interface ViewController ()
@@ -76,6 +77,7 @@
             .append(@"\n\n").font([UIFont systemFontOfSize:2])
     ;
     
+    build.appendBackgroundMarginsColor(@"位置信息", AutoFont(12), RGBCOLOR(0xFF5C00), RGBCOLOR(0x000000), 3, UIEdgeInsetsMake(10, 10, 10, 10),UIEdgeInsetsMake(10, 0, 10, 0), 0);
     
       
       label.attributedText = [build commit];

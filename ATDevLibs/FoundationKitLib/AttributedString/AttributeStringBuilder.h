@@ -163,11 +163,23 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion textColor  文字颜色
  @discussion fillColor  填充背景色
  @discussion radius  圆角
- @discussion insets  文本边距(设置固定宽size.width之后left/right失效，设置固定高size.height之后top/bottom失效)
- @discussion margins  边框以外的边距
  @discussion offsetY  偏移量 ， offsetY < 0 向上偏移，offsetY > 0  向下偏移，offsetY = 0  不偏移
  */
 - (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *_Nullable textColor, UIColor *_Nullable fillColor, CGFloat radius, CGFloat offsetY))appendBackgroundColor;
+
+/**
+ 背景圆角（文本边距）
+
+ @discussion string  背景文字
+ @discussion font  文字字体
+ @discussion textColor  文字颜色
+ @discussion fillColor  填充背景色
+ @discussion radius  圆角
+ @discussion insets  文本边距(设置固定宽size.width之后left/right失效，设置固定高size.height之后top/bottom失效)
+ @discussion offsetY  偏移量 ， offsetY < 0 向上偏移，offsetY > 0  向下偏移，offsetY = 0  不偏移
+ */
+- (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *_Nullable textColor, UIColor *_Nullable fillColor, CGFloat radius, UIEdgeInsets insets, CGFloat offsetY))appendBackgroundInsetsColor;
+
 
 /**
  背景圆角（文本边距、边框以外的边距）
@@ -177,6 +189,8 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion textColor  文字颜色
  @discussion fillColor  填充背景色
  @discussion radius  圆角
+ @discussion insets  文本边距(设置固定宽size.width之后left/right失效，设置固定高size.height之后top/bottom失效)
+ @discussion margins  边框以外的边距
  @discussion offsetY  偏移量 ， offsetY < 0 向上偏移，offsetY > 0  向下偏移，offsetY = 0  不偏移
  */
 - (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor *_Nullable textColor, UIColor *_Nullable fillColor, CGFloat radius, UIEdgeInsets insets, UIEdgeInsets margins, CGFloat offsetY))appendBackgroundMarginsColor;
