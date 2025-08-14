@@ -295,6 +295,12 @@ NS_ASSUME_NONNULL_BEGIN
 /// 段第一行头部缩进
 - (AttributeStringBuilder *(^)(CGFloat indent))firstLineHeadIndent;
 
+/// 段第一行头部缩进字符数
+/// @Discussion headIndentCharacters  缩进字符数
+/// @Discussion indentFont  缩进字符的字体大小
+- (AttributeStringBuilder *(^)(NSInteger headIndentCharacters, UIFont *headIndentFont))firstLineHeadIndentCharacters;
+
+
 /// 段头部缩进 后续行的左边距
 - (AttributeStringBuilder *(^)(CGFloat indent))headIndent;
 

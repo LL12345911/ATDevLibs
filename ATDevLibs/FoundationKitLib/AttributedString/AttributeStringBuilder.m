@@ -867,6 +867,27 @@
     };
 }
 
+
+/// 段第一行头部缩进字符数
+/// @Discussion headIndentCharacters  缩进字符数
+/// @Discussion indentFont  缩进字符的字体大小
+- (AttributeStringBuilder *(^)(NSInteger, UIFont *))firstLineHeadIndentCharacters {
+    return ^(NSInteger headIndentCharacters, UIFont *headIndentFont) {
+        [self configParagraphStyle:^(NSMutableParagraphStyle *paragraphStyle) {
+            NSString *tempStr = @"";
+            for (int i = 0; i < headIndentCharacters; i++) {
+                tempStr = [NSString stringWithFormat:@"%@字", tempStr];
+            }
+            CGSize size = [self string:tempStr sizeWithFont:headIndentFont MaxSize:CGSizeMake(10000, 10000)];
+            CGFloat padding = size.width;
+            
+            paragraphStyle.firstLineHeadIndent = padding;
+        }];
+        return self;
+    };
+}
+
+
 /// 段头部缩进  后续行的左边距
 - (AttributeStringBuilder *(^)(CGFloat))headIndent {
     return ^(CGFloat headIndent) {
