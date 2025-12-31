@@ -451,13 +451,20 @@
         self.scr_ranges = @[ [NSValue valueWithRange:range] ];
         
         
-        UIImage *img1 = [self drawRadius:radius text:text font:font corners:UIRectCornerAllCorners imgSize:CGSizeMake(0, 0) textColor:textColor fillColor:fillColor insets:UIEdgeInsetsMake(0, 0, 0, 0) margins:UIEdgeInsetsMake(0, 0, 0, 0) strokeColor:nil lineWidth:0];
+        UIImage *img1 = [self drawRadius:radius text:text font:font corners:UIRectCornerAllCorners imgSize:CGSizeMake(0, 0) textColor:textColor fillColor:fillColor insets:UIEdgeInsetsMake(0, 0, 0, 0) margins:UIEdgeInsetsMake(0, 0, 0, 0) strokeColor:nil lineWidth:0 textHorizontalMargin:0 textVerticalMargin:0];
         
         
         NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
         attachment.image = img1;
-        attachment.bounds = CGRectMake(0, -offsetY, attachment.image.size.width, attachment.image.size.height);
-        [self.source appendAttributedString:[NSAttributedString attributedStringWithAttachment:attachment]];
+//        attachment.bounds = CGRectMake(0, -offsetY, attachment.image.size.width, attachment.image.size.height);
+//        [self.source appendAttributedString:[NSAttributedString attributedStringWithAttachment:attachment]];
+        
+        attachment.bounds = CGRectMake(0, 0, attachment.image.size.width, attachment.image.size.height);
+        NSMutableAttributedString *attachmentString = [[NSAttributedString attributedStringWithAttachment:attachment] mutableCopy];
+        
+        // 为附件添加基线偏移属性
+        [attachmentString addAttribute:NSBaselineOffsetAttributeName value:@(-offsetY) range:NSMakeRange(0, attachmentString.length)];
+        [self.source appendAttributedString:attachmentString];
         
         return self;
     };
@@ -485,13 +492,20 @@
         self.scr_ranges = @[ [NSValue valueWithRange:range] ];
         
         
-        UIImage *img1 = [self drawRadius:radius text:text font:font corners:UIRectCornerAllCorners imgSize:CGSizeMake(0, 0) textColor:textColor fillColor:fillColor insets:insets margins:UIEdgeInsetsMake(0, 0, 0, 0) strokeColor:nil lineWidth:0];
+        UIImage *img1 = [self drawRadius:radius text:text font:font corners:UIRectCornerAllCorners imgSize:CGSizeMake(0, 0) textColor:textColor fillColor:fillColor insets:insets margins:UIEdgeInsetsMake(0, 0, 0, 0) strokeColor:nil lineWidth:0 textHorizontalMargin:0 textVerticalMargin:0];
         
         
         NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
         attachment.image = img1;
-        attachment.bounds = CGRectMake(0, -offsetY, attachment.image.size.width, attachment.image.size.height);
-        [self.source appendAttributedString:[NSAttributedString attributedStringWithAttachment:attachment]];
+//        attachment.bounds = CGRectMake(0, -offsetY, attachment.image.size.width, attachment.image.size.height);
+//        [self.source appendAttributedString:[NSAttributedString attributedStringWithAttachment:attachment]];
+        
+        attachment.bounds = CGRectMake(0, 0, attachment.image.size.width, attachment.image.size.height);
+        NSMutableAttributedString *attachmentString = [[NSAttributedString attributedStringWithAttachment:attachment] mutableCopy];
+        
+        // 为附件添加基线偏移属性
+        [attachmentString addAttribute:NSBaselineOffsetAttributeName value:@(-offsetY) range:NSMakeRange(0, attachmentString.length)];
+        [self.source appendAttributedString:attachmentString];
         
         return self;
     };
@@ -520,13 +534,20 @@
         self.scr_ranges = @[ [NSValue valueWithRange:range] ];
         
         
-        UIImage *img1 = [self drawRadius:radius text:text font:font corners:UIRectCornerAllCorners imgSize:CGSizeMake(0, 0) textColor:textColor fillColor:fillColor insets:insets margins:margins strokeColor:nil lineWidth:0];
+        UIImage *img1 = [self drawRadius:radius text:text font:font corners:UIRectCornerAllCorners imgSize:CGSizeMake(0, 0) textColor:textColor fillColor:fillColor insets:insets margins:margins strokeColor:nil lineWidth:0 textHorizontalMargin:0 textVerticalMargin:0];
         
         
         NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
         attachment.image = img1;
-        attachment.bounds = CGRectMake(0, -offsetY, attachment.image.size.width, attachment.image.size.height);
-        [self.source appendAttributedString:[NSAttributedString attributedStringWithAttachment:attachment]];
+//        attachment.bounds = CGRectMake(0, -offsetY, attachment.image.size.width, attachment.image.size.height);
+//        [self.source appendAttributedString:[NSAttributedString attributedStringWithAttachment:attachment]];
+        
+        attachment.bounds = CGRectMake(0, 0, attachment.image.size.width, attachment.image.size.height);
+        NSMutableAttributedString *attachmentString = [[NSAttributedString attributedStringWithAttachment:attachment] mutableCopy];
+        
+        // 为附件添加基线偏移属性
+        [attachmentString addAttribute:NSBaselineOffsetAttributeName value:@(-offsetY) range:NSMakeRange(0, attachmentString.length)];
+        [self.source appendAttributedString:attachmentString];
         
         return self;
     };
@@ -553,14 +574,20 @@
         self.scr_ranges = @[ [NSValue valueWithRange:range] ];
         
         
-        UIImage *img1 = [self drawRadius:radius text:text font:font corners:UIRectCornerAllCorners imgSize:imgSize textColor:textColor fillColor:fillColor insets:UIEdgeInsetsMake(0, 0, 0, 0) margins:UIEdgeInsetsMake(0, 0, 0, 0) strokeColor:nil lineWidth:0];
+        UIImage *img1 = [self drawRadius:radius text:text font:font corners:UIRectCornerAllCorners imgSize:imgSize textColor:textColor fillColor:fillColor insets:UIEdgeInsetsMake(0, 0, 0, 0) margins:UIEdgeInsetsMake(0, 0, 0, 0) strokeColor:nil lineWidth:0 textHorizontalMargin:0 textVerticalMargin:0];
         
         
         NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
         attachment.image = img1;
-        attachment.bounds = CGRectMake(0, -offsetY, attachment.image.size.width, attachment.image.size.height);
-        [self.source appendAttributedString:[NSAttributedString attributedStringWithAttachment:attachment]];
+//        attachment.bounds = CGRectMake(0, -offsetY, attachment.image.size.width, attachment.image.size.height);
+//        [self.source appendAttributedString:[NSAttributedString attributedStringWithAttachment:attachment]];
         
+        attachment.bounds = CGRectMake(0, 0, attachment.image.size.width, attachment.image.size.height);
+        NSMutableAttributedString *attachmentString = [[NSAttributedString attributedStringWithAttachment:attachment] mutableCopy];
+        
+        // 为附件添加基线偏移属性
+        [attachmentString addAttribute:NSBaselineOffsetAttributeName value:@(-offsetY) range:NSMakeRange(0, attachmentString.length)];
+        [self.source appendAttributedString:attachmentString];
         return self;
     };
 }
@@ -585,13 +612,20 @@
         self.scr_ranges = @[ [NSValue valueWithRange:range] ];
         
         
-        UIImage *img1 = [self drawRadius:radius text:text font:font corners:corners imgSize:CGSizeMake(0, 0) textColor:textColor fillColor:fillColor insets:UIEdgeInsetsMake(0, 0, 0, 0) margins:UIEdgeInsetsMake(0, 0, 0, 0) strokeColor:nil lineWidth:0];
+        UIImage *img1 = [self drawRadius:radius text:text font:font corners:corners imgSize:CGSizeMake(0, 0) textColor:textColor fillColor:fillColor insets:UIEdgeInsetsMake(0, 0, 0, 0) margins:UIEdgeInsetsMake(0, 0, 0, 0) strokeColor:nil lineWidth:0 textHorizontalMargin:0 textVerticalMargin:0];
         
         
         NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
         attachment.image = img1;
-        attachment.bounds = CGRectMake(0, -offsetY, attachment.image.size.width, attachment.image.size.height);
-        [self.source appendAttributedString:[NSAttributedString attributedStringWithAttachment:attachment]];
+//        attachment.bounds = CGRectMake(0, -offsetY, attachment.image.size.width, attachment.image.size.height);
+//        [self.source appendAttributedString:[NSAttributedString attributedStringWithAttachment:attachment]];
+        
+        attachment.bounds = CGRectMake(0, 0, attachment.image.size.width, attachment.image.size.height);
+        NSMutableAttributedString *attachmentString = [[NSAttributedString attributedStringWithAttachment:attachment] mutableCopy];
+        
+        // 为附件添加基线偏移属性
+        [attachmentString addAttribute:NSBaselineOffsetAttributeName value:@(-offsetY) range:NSMakeRange(0, attachmentString.length)];
+        [self.source appendAttributedString:attachmentString];
         
         return self;
     };
@@ -619,13 +653,20 @@
         self.scr_ranges = @[ [NSValue valueWithRange:range] ];
         
         
-        UIImage *img1 = [self drawRadius:radius text:text font:font corners:corners imgSize:imgSize textColor:textColor fillColor:fillColor insets:UIEdgeInsetsMake(0, 0, 0, 0) margins:UIEdgeInsetsMake(0, 0, 0, 0) strokeColor:nil lineWidth:0];
+        UIImage *img1 = [self drawRadius:radius text:text font:font corners:corners imgSize:imgSize textColor:textColor fillColor:fillColor insets:UIEdgeInsetsMake(0, 0, 0, 0) margins:UIEdgeInsetsMake(0, 0, 0, 0) strokeColor:nil lineWidth:0 textHorizontalMargin:0 textVerticalMargin:0];
         
         
         NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
         attachment.image = img1;
-        attachment.bounds = CGRectMake(0, -offsetY, attachment.image.size.width, attachment.image.size.height);
-        [self.source appendAttributedString:[NSAttributedString attributedStringWithAttachment:attachment]];
+//        attachment.bounds = CGRectMake(0, -offsetY, attachment.image.size.width, attachment.image.size.height);
+//        [self.source appendAttributedString:[NSAttributedString attributedStringWithAttachment:attachment]];
+        
+        attachment.bounds = CGRectMake(0, 0, attachment.image.size.width, attachment.image.size.height);
+        NSMutableAttributedString *attachmentString = [[NSAttributedString attributedStringWithAttachment:attachment] mutableCopy];
+        
+        // 为附件添加基线偏移属性
+        [attachmentString addAttribute:NSBaselineOffsetAttributeName value:@(-offsetY) range:NSMakeRange(0, attachmentString.length)];
+        [self.source appendAttributedString:attachmentString];
         
         return self;
     };
@@ -659,13 +700,20 @@
         self.scr_ranges = @[ [NSValue valueWithRange:range] ];
         
         
-        UIImage *img1 = [self drawRadius:radius text:text font:font corners:corners imgSize:imgSize textColor:textColor fillColor:fillColor insets:insets margins:margins strokeColor:strokeColor lineWidth:lineWidth];
+        UIImage *img1 = [self drawRadius:radius text:text font:font corners:corners imgSize:imgSize textColor:textColor fillColor:fillColor insets:insets margins:margins strokeColor:strokeColor lineWidth:lineWidth textHorizontalMargin:0 textVerticalMargin:0];
         
         
         NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
         attachment.image = img1;
-        attachment.bounds = CGRectMake(0, -offsetY, attachment.image.size.width, attachment.image.size.height);
-        [self.source appendAttributedString:[NSAttributedString attributedStringWithAttachment:attachment]];
+//        attachment.bounds = CGRectMake(0, -offsetY, attachment.image.size.width, attachment.image.size.height);
+//        [self.source appendAttributedString:[NSAttributedString attributedStringWithAttachment:attachment]];
+        
+        attachment.bounds = CGRectMake(0, 0, attachment.image.size.width, attachment.image.size.height);
+        NSMutableAttributedString *attachmentString = [[NSAttributedString attributedStringWithAttachment:attachment] mutableCopy];
+        
+        // 为附件添加基线偏移属性
+        [attachmentString addAttribute:NSBaselineOffsetAttributeName value:@(-offsetY) range:NSMakeRange(0, attachmentString.length)];
+        [self.source appendAttributedString:attachmentString];
         
         return self;
     };
@@ -688,18 +736,20 @@
  @Param margins  图片外边框边距（始终生效）
  @Param strokeColor  边框线颜色（nil 时无边框）
  @Param lineWidth   边框线宽度（0 时无边框）
+ @Param textHorizontalMargin 文本左右边距（固定宽高时有效）
+ @Param textVerticalMargin 文本上下边距（固定宽高时有效）
  
  @return 渲染完成的 UIImage 对象
  */
-- (UIImage*)drawRadius:(CGFloat)radius text:(NSString *)text font:(UIFont *)font corners:(UIRectCorner)corners imgSize:(CGSize)imgSize textColor:(UIColor *)textColor fillColor:(UIColor *)fillColor insets:(UIEdgeInsets)insets margins:(UIEdgeInsets)margins strokeColor:(UIColor *)strokeColor lineWidth:(CGFloat)lineWidth {
+- (UIImage*)drawRadius:(CGFloat)radius text:(NSString *)text font:(UIFont *)font corners:(UIRectCorner)corners imgSize:(CGSize)imgSize textColor:(UIColor *)textColor fillColor:(UIColor *)fillColor insets:(UIEdgeInsets)insets margins:(UIEdgeInsets)margins strokeColor:(UIColor *)strokeColor lineWidth:(CGFloat)lineWidth textHorizontalMargin:(CGFloat)textHorizontalMargin textVerticalMargin:(CGFloat)textVerticalMargin {
     
     // 1. 构建富文本属性
-    NSMutableAttributedString *attrStr = [[NSMutableAttributedString alloc] initWithString:text];
+    NSMutableAttributedString *attrStr = [[NSMutableAttributedString alloc] initWithString:text ?: @""];
     if (font) {
-        [attrStr addAttribute:NSFontAttributeName value:font range:NSMakeRange(0, text.length)];
+        [attrStr addAttribute:NSFontAttributeName value:font range:NSMakeRange(0, attrStr.length)];
     }
     if (textColor) {
-        [attrStr addAttribute:NSForegroundColorAttributeName value:textColor range:NSMakeRange(0, text.length)];
+        [attrStr addAttribute:NSForegroundColorAttributeName value:textColor range:NSMakeRange(0, attrStr.length)];
     }
     
     // 2. 解析圆角方向组合
@@ -730,8 +780,15 @@
     
     // 4. 确定最终画布尺寸（优先使用固定宽高，否则根据文本内容自适应）
     CGSize drawSize = imgSize;
-    drawSize = CGSizeMake(drawSize.width > 0 ? drawSize.width : strSize.width + insets.left + insets.right + lineWidth,
-                          drawSize.height > 0 ? drawSize.height : strSize.height + insets.top + insets.bottom + lineWidth);
+//    drawSize = CGSizeMake(drawSize.width > 0 ? drawSize.width : strSize.width + insets.left + insets.right + lineWidth,
+//                          drawSize.height > 0 ? drawSize.height : strSize.height + insets.top + insets.bottom + lineWidth);
+    if (imgSize.width <= 0) {
+        drawSize.width = strSize.width + insets.left + insets.right + lineWidth;
+    }
+    if (imgSize.height <= 0) {
+        drawSize.height = strSize.height + insets.top + insets.bottom + lineWidth;
+    }
+
     
     drawSize = CGSizeMake(drawSize.width + margins.left + margins.right,
                           drawSize.height + margins.top + margins.bottom);
@@ -798,10 +855,36 @@
               radiusBottomLeft,
               radiusBottomRight);
     
-    // 10. 绘制文本（根据是否固定宽高决定居中方式）
-    [attrStr drawInRect:CGRectMake(imgSize.width > 0 ? drawSize.width / 2 - strSize.width / 2 : insets.left + lineWidth / 2 + margins.left,imgSize.height > 0 ? drawSize.height / 2 - strSize.height / 2 : insets.top + lineWidth / 2 + margins.top, strSize.width, strSize.height)];
+//    // 10. 绘制文本（根据是否固定宽高决定居中方式）
+//    [attrStr drawInRect:CGRectMake(imgSize.width > 0 ? drawSize.width / 2 - strSize.width / 2 : insets.left + lineWidth / 2 + margins.left,imgSize.height > 0 ? drawSize.height / 2 - strSize.height / 2 : insets.top + lineWidth / 2 + margins.top, strSize.width, strSize.height)];
     
-    // 11. 生成图像并关闭上下文
+    // 10. 计算文本绘制区域（修复居中逻辑）
+    CGRect textRect;
+    if (imgSize.width > 0 && imgSize.height > 0) {
+        // 固定宽高模式：严格居中，考虑文本边距
+        CGFloat textAreaWidth = drawSize.width - margins.left - margins.right - lineWidth;
+        CGFloat textAreaHeight = drawSize.height - margins.top - margins.bottom - lineWidth;
+        
+        CGFloat textX = margins.left + (textAreaWidth - strSize.width) / 2;
+        CGFloat textY = margins.top + (textAreaHeight - strSize.height) / 2;
+        
+        // 应用文本边距
+        textX += textHorizontalMargin;
+        textY += textVerticalMargin;
+        
+        textRect = CGRectMake(textX, textY, strSize.width, strSize.height);
+    } else {
+        // 自适应模式：使用原有的insets布局
+        CGFloat textX = insets.left + lineWidth / 2 + margins.left;
+        CGFloat textY = insets.top + lineWidth / 2 + margins.top;
+        textRect = CGRectMake(textX, textY, strSize.width, strSize.height);
+    }
+    
+    // 11. 绘制文本
+    [attrStr drawInRect:textRect];
+    
+    
+    // 12. 生成图像并关闭上下文
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     
