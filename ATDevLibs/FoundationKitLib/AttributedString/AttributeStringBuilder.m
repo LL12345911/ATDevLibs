@@ -25,6 +25,15 @@
 /// - Parameters:
 ///   - attributedString: 富文本
 ///   - width: 宽度
+- (CGSize)calculateForAttributedString:(NSAttributedString *)attributedString withWidth:(CGFloat)width {
+    
+    return [AttributeStringBuilder calculateForAttributedString:attributedString withWidth:width];
+}
+
+/// 计算文本高度
+/// - Parameters:
+///   - attributedString: 富文本
+///   - width: 宽度
 + (CGSize)calculateForAttributedString:(NSAttributedString *)attributedString withWidth:(CGFloat)width {
     
     if (!attributedString || attributedString.length == 0) {
