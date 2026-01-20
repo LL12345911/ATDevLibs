@@ -34,5 +34,6 @@
 
 #import "JsonTransForm.h"
 #import "YHDrawImage.h"
+#import "UIColor+HexAlpha.h"
 
 #endif /* FoundationMacro_h */

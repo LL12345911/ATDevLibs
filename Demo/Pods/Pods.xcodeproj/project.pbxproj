@@ -161,14 +161,14 @@
 		01DB1392AF9156880E30741E07CBC052 /* UINavigationSXFixSpace.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = UINavigationSXFixSpace.m; sourceTree = "<group>"; };
 		01E4422408C9C269DFA25228B4561EBB /* Pods-Demo-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-Demo-frameworks.sh"; sourceTree = "<group>"; };
 		03C0312A956A330AA529F4D5937483FB /* UIViewController+Util.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "UIViewController+Util.h"; sourceTree = "<group>"; };
-		09833B0D0C6178417C5BB5C61A32BD41 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; path = README.md; sourceTree = "<group>"; };
+		09833B0D0C6178417C5BB5C61A32BD41 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		0B57CAE6B425E0F005ED04EC7D7EEAD4 /* NSString+ATKit.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "NSString+ATKit.m"; sourceTree = "<group>"; };
 		0E3AD4A0280E0DBACD03949916ABCDB7 /* UIBarButtonItem+SXCreate.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "UIBarButtonItem+SXCreate.h"; sourceTree = "<group>"; };
 		1156017E16AAC9E12B53AFE19D0DA173 /* Pods-DemoTests.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-DemoTests.modulemap"; sourceTree = "<group>"; };
 		133F91395EF200F39658F6075EBE9767 /* UIKitLibDefine.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = UIKitLibDefine.h; path = ATDevLibs/UIKitLib/UIKitLibDefine.h; sourceTree = "<group>"; };
 		147678D889C0F1A4EE958A50174CD3DB /* AlignmentLabel.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = AlignmentLabel.h; sourceTree = "<group>"; };
 		15B7AF86632CE3FCD710CCF1AB15EE39 /* NSMutableAttributedString+YHDrawImage.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "NSMutableAttributedString+YHDrawImage.h"; sourceTree = "<group>"; };
-		15C2E312F1C032AD64E3875EAF63BEF1 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; path = LICENSE; sourceTree = "<group>"; };
+		15C2E312F1C032AD64E3875EAF63BEF1 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		17B7AF7ACFFE00B143BD943D23C247DD /* NSMutableArray+ATKit.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "NSMutableArray+ATKit.m"; sourceTree = "<group>"; };
 		187F03BB827B2A2A9E8FF0904C4761C4 /* CameraPermission.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = CameraPermission.h; sourceTree = "<group>"; };
 		19E3449FA1146AD54CB609AA4006C56F /* ATDevLibs.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = ATDevLibs.debug.xcconfig; sourceTree = "<group>"; };
@@ -187,7 +187,7 @@
 		2EA7358776D244B16A92175F3DB89FCE /* Pods-DemoTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-DemoTests.release.xcconfig"; sourceTree = "<group>"; };
 		2F0FB1380D2C77D7718BAB4859C13B1D /* UITableView+ATKit.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "UITableView+ATKit.m"; sourceTree = "<group>"; };
 		30A3D3CBBBE7AB6C969C598BA1FF7C2D /* PPCounterConst.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = PPCounterConst.h; sourceTree = "<group>"; };
-		335180CFF17F0680957E8EFE39A51255 /* ATDevLibs */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = ATDevLibs; path = ATDevLibs.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		335180CFF17F0680957E8EFE39A51255 /* ATDevLibs.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ATDevLibs.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3479843194D746DF336C857232302BA1 /* AuthorizationManager.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AuthorizationManager.h; path = ATDevLibs/AuthorizeRequestLib/AuthorizationManager.h; sourceTree = "<group>"; };
 		34A91F2B8F5732D420F185EDF66C49AC /* ATPlaceholdTextView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = ATPlaceholdTextView.h; sourceTree = "<group>"; };
 		377780F7EA4A56643755DAA1F723AA34 /* ATMacro.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ATMacro.h; path = ATDevLibs/FoundationKitLib/ATMacro.h; sourceTree = "<group>"; };
@@ -236,7 +236,7 @@
 		75335B3B7C58FB965B7AAB2340BE7CF8 /* ATDevLibs-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "ATDevLibs-prefix.pch"; sourceTree = "<group>"; };
 		771B79D491CD6014F5F06C3BFF9FC429 /* ATDevLibs-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "ATDevLibs-Info.plist"; sourceTree = "<group>"; };
 		77CA61AEF682BD292BF0BE643BB40DE7 /* XTimer.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = XTimer.m; sourceTree = "<group>"; };
-		78AA3E20F1ADD9050E7207C089BC14FB /* Pods-Demo-DemoUITests */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = "Pods-Demo-DemoUITests"; path = Pods_Demo_DemoUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		78AA3E20F1ADD9050E7207C089BC14FB /* Pods_Demo_DemoUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Demo_DemoUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		78F5CB9CC13CEE50D3B9F949B45EFBC6 /* AuthorizationManager.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = AuthorizationManager.m; path = ATDevLibs/AuthorizeRequestLib/AuthorizationManager.m; sourceTree = "<group>"; };
 		79F53421FB2D53605D137B57D808D47C /* YHDrawModel.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = YHDrawModel.m; sourceTree = "<group>"; };
 		7D20F2DCCBAA709EB338F5EF0A87EEB2 /* Pods-Demo-DemoUITests-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-Demo-DemoUITests-dummy.m"; sourceTree = "<group>"; };
@@ -253,7 +253,7 @@
 		938C7E1A54FAEC10DA49730DA4BA41C9 /* Pods-Demo-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-Demo-dummy.m"; sourceTree = "<group>"; };
 		95C60C5A293EAC86F02BC897616EB9E0 /* ATFPSView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = ATFPSView.h; sourceTree = "<group>"; };
 		964680CEBDEF4B721420807615F6B1CE /* ATSearchBar.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = ATSearchBar.m; sourceTree = "<group>"; };
-		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		9E6E3FB39213CF24E18E472C071A458E /* FoundationMacro.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = FoundationMacro.h; path = ATDevLibs/FoundationKitLib/FoundationMacro.h; sourceTree = "<group>"; };
 		9FEFC02CA59852C3098D85DD39F7A923 /* UIView+Frame.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "UIView+Frame.h"; sourceTree = "<group>"; };
 		A05EC6A9954A8E8CADA514BA12A143A1 /* NSObject+Json.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "NSObject+Json.h"; sourceTree = "<group>"; };
@@ -276,7 +276,7 @@
 		C49F024B383507E00E386E234613C699 /* PPCounterConst.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PPCounterConst.m; sourceTree = "<group>"; };
 		C65EC6E94A580C2A2245E8946322BB81 /* ATSearchBar.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = ATSearchBar.h; sourceTree = "<group>"; };
 		C660B8FF0030B020CF205A0BC9953B89 /* AttributeStringBuilder.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = AttributeStringBuilder.h; sourceTree = "<group>"; };
-		C694DE63ED5EAB66E3CA6D184271692B /* Pods-Demo */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = "Pods-Demo"; path = Pods_Demo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C694DE63ED5EAB66E3CA6D184271692B /* Pods_Demo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Demo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7239EA2DD7E2C3D77FFD44F60474B80 /* AngleView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = AngleView.m; sourceTree = "<group>"; };
 		C98544071C5F1201F3A3F6F211B562F5 /* UIButton+ATImagePosition.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "UIButton+ATImagePosition.h"; sourceTree = "<group>"; };
 		C9E7C4524BDF659F6ADD27C2F07AECFA /* UILabel+PPCounter.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "UILabel+PPCounter.h"; sourceTree = "<group>"; };
@@ -292,7 +292,7 @@
 		DA4FEBBD5EB5A0A7721C733B6C23C1D0 /* NSDate+Util.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Util.m"; sourceTree = "<group>"; };
 		DD237EE81FA84DE0D91D475E1FB291F5 /* CoordinateConverter.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = CoordinateConverter.h; sourceTree = "<group>"; };
 		E1B45C12DA62B1BA858187610EBA3E6D /* Pods-DemoTests-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-DemoTests-umbrella.h"; sourceTree = "<group>"; };
-		E3684F5BA1358FFD527E45C5C84EDAB2 /* ATDevLibs.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = ATDevLibs.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		E3684F5BA1358FFD527E45C5C84EDAB2 /* ATDevLibs.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; path = ATDevLibs.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		E447AAC53863610CCD9BEF19C7A23B26 /* Pods-Demo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Demo.release.xcconfig"; sourceTree = "<group>"; };
 		E682C5E44EAF815ECCFEF1CFE12C330E /* BasePermisssion.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = BasePermisssion.h; sourceTree = "<group>"; };
 		E7658FE42DF8B32ED536FCE5CA2BE312 /* Base64.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = Base64.m; sourceTree = "<group>"; };
@@ -302,7 +302,7 @@
 		EDC7117B099F13AD3157DB5FF95DBF2E /* OpenShareManager.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = OpenShareManager.h; path = ATDevLibs/ShareLib/OpenShareManager.h; sourceTree = "<group>"; };
 		EE1A37497F913A92DC5CB67EF7FFD1FB /* UIViewController+Animation.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "UIViewController+Animation.h"; sourceTree = "<group>"; };
 		EF198EA5E55762AA9506F249CE8D2F87 /* UIColor+HexColor.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "UIColor+HexColor.m"; sourceTree = "<group>"; };
-		F2473B9A57174E81C2ABF1DCDDCB6FC3 /* Pods-DemoTests */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = "Pods-DemoTests"; path = Pods_DemoTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F2473B9A57174E81C2ABF1DCDDCB6FC3 /* Pods_DemoTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DemoTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4282C1A8273FA4DFDAAF055C95A6829 /* Pods-Demo-DemoUITests.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-Demo-DemoUITests.modulemap"; sourceTree = "<group>"; };
 		F59FEF11EB0C98CFE48041C90DC7C12C /* PPCounter.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = PPCounter.h; path = ATDevLibs/PPCounter/PPCounter.h; sourceTree = "<group>"; };
 		F6368E825D8A88C47C518F0ABEF6B318 /* CoordinateConverter.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = CoordinateConverter.m; sourceTree = "<group>"; };
@@ -414,10 +414,10 @@
 		241CFBDE8E81D330501B0629D9DBB6DE /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				335180CFF17F0680957E8EFE39A51255 /* ATDevLibs */,
-				C694DE63ED5EAB66E3CA6D184271692B /* Pods-Demo */,
-				78AA3E20F1ADD9050E7207C089BC14FB /* Pods-Demo-DemoUITests */,
-				F2473B9A57174E81C2ABF1DCDDCB6FC3 /* Pods-DemoTests */,
+				335180CFF17F0680957E8EFE39A51255 /* ATDevLibs.framework */,
+				C694DE63ED5EAB66E3CA6D184271692B /* Pods_Demo.framework */,
+				78AA3E20F1ADD9050E7207C089BC14FB /* Pods_Demo_DemoUITests.framework */,
+				F2473B9A57174E81C2ABF1DCDDCB6FC3 /* Pods_DemoTests.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -742,7 +742,6 @@
 				A32082BF7F9F7434823EF822EACBB5A7 /* UINavigationSXFixSpace.h */,
 				01DB1392AF9156880E30741E07CBC052 /* UINavigationSXFixSpace.m */,
 			);
-			name = "UINavigation-SXFixSpace";
 			path = "UINavigation-SXFixSpace";
 			sourceTree = "<group>";
 		};
@@ -1037,7 +1036,7 @@
 			);
 			name = "Pods-Demo";
 			productName = Pods_Demo;
-			productReference = C694DE63ED5EAB66E3CA6D184271692B /* Pods-Demo */;
+			productReference = C694DE63ED5EAB66E3CA6D184271692B /* Pods_Demo.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		535900A22DA13441095D054F6E83186F /* ATDevLibs */ = {
@@ -1055,7 +1054,7 @@
 			);
 			name = ATDevLibs;
 			productName = ATDevLibs;
-			productReference = 335180CFF17F0680957E8EFE39A51255 /* ATDevLibs */;
+			productReference = 335180CFF17F0680957E8EFE39A51255 /* ATDevLibs.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		A4975C2D70F167C83111E578DB2AC3AE /* Pods-Demo-DemoUITests */ = {
@@ -1074,7 +1073,7 @@
 			);
 			name = "Pods-Demo-DemoUITests";
 			productName = Pods_Demo_DemoUITests;
-			productReference = 78AA3E20F1ADD9050E7207C089BC14FB /* Pods-Demo-DemoUITests */;
+			productReference = 78AA3E20F1ADD9050E7207C089BC14FB /* Pods_Demo_DemoUITests.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		C0401D588E009557D776F4700CA5F992 /* Pods-DemoTests */ = {
@@ -1093,7 +1092,7 @@
 			);
 			name = "Pods-DemoTests";
 			productName = Pods_DemoTests;
-			productReference = F2473B9A57174E81C2ABF1DCDDCB6FC3 /* Pods-DemoTests */;
+			productReference = F2473B9A57174E81C2ABF1DCDDCB6FC3 /* Pods_DemoTests.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
