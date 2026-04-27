@@ -59,6 +59,23 @@ typedef void(^LeftBarButtonItemBlock)(void);
 - (void)stopIndicatorLoading:(float)time;
 
 
+/**
+ 显示进度条和文字（默认隐藏，调用后才显示）
+ */
+- (void)showProgressAndLabel;
+
+/**
+ 更新加载进度（0~1）
+ 自动更新进度条 + 百分比文本
+ */
+- (void)updateLoadingProgress:(CGFloat)progress;
+
+/**
+ 自定义更新加载提示文本
+ */
+- (void)updateLoadingText:(NSString *)text;
+
+
 ///**
 // 导航栏背景色
 //

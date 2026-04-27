@@ -13,13 +13,20 @@
 #import "WindowsManager.h"
 #import <objc/runtime.h>
 
+
+#pragma mark - 关联对象 Key
     //定义常量 必须是C语言字符串
 static char *IndicatorBackViewKey = "IndicatorBackViewKey";
 static char *LeftBarButtonClickBlockKey = "LeftBarButtonClickBlockKey";
 //static char *FullScreenAllowRotationKey = "FullScreenAllowRotationKey";
+static char *ProgressViewKey = "ProgressViewKey";
+static char *ProgressLabelKey = "ProgressLabelKey";
+static char *LoadingIndicatorKey = "LoadingIndicatorKey";
+
 
 @implementation UIViewController (Util)
 
+#pragma mark - 方法交换工具
 void swizzleMethod(Class class, SEL originalSelector, SEL swizzledSelector){
         // the method might not exist in the class, but in its superclass
     Method originalMethod = class_getInstanceMethod(class, originalSelector);
@@ -35,6 +42,19 @@ void swizzleMethod(Class class, SEL originalSelector, SEL swizzledSelector){
         method_exchangeImplementations(originalMethod, swizzledMethod);
     }
 }
+
++ (void)load {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        swizzleMethod(self, @selector(viewWillLayoutSubviews), @selector(aty_viewWillLayoutSubviews));
+    });
+}
+
+- (void)aty_viewWillLayoutSubviews {
+    [self aty_viewWillLayoutSubviews];
+    [self updateLoadingViewFrames];
+}
+
 
 ///**
 // 是否允许横屏
@@ -129,19 +149,67 @@ void swizzleMethod(Class class, SEL originalSelector, SEL swizzledSelector){
 }
 
 
-- (void)setIndicatorBack:(UIView *)indicatorBack{
+#pragma mark - 私有属性关联
+- (void)setIndicatorBack:(UIView *)indicatorBack {
     objc_setAssociatedObject(self, IndicatorBackViewKey, indicatorBack, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (UIView *)indicatorBack{
+- (UIView *)indicatorBack {
     return objc_getAssociatedObject(self, IndicatorBackViewKey);
 }
 
+- (UIProgressView *)progressView {
+    return objc_getAssociatedObject(self, ProgressViewKey);
+}
+
+- (void)setProgressView:(UIProgressView *)progressView {
+    objc_setAssociatedObject(self, ProgressViewKey, progressView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (UILabel *)progressLabel {
+    return objc_getAssociatedObject(self, ProgressLabelKey);
+}
+
+- (void)setProgressLabel:(UILabel *)progressLabel {
+    objc_setAssociatedObject(self, ProgressLabelKey, progressLabel, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (UIActivityIndicatorView *)loadingIndicator {
+    return objc_getAssociatedObject(self, LoadingIndicatorKey);
+}
+
+- (void)setLoadingIndicator:(UIActivityIndicatorView *)loadingIndicator {
+    objc_setAssociatedObject(self, LoadingIndicatorKey, loadingIndicator, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+
+
+#pragma mark - 页面布局变化时，自动刷新加载框位置
+
+- (void)updateLoadingViewFrames {
+    if (!self.indicatorBack) return;
+    
+    CGFloat width = self.view.bounds.size.width;
+    CGFloat height = self.view.bounds.size.height;
+    
+    // 背景铺满
+    self.indicatorBack.frame = self.view.bounds;
+    
+    // 菊花居中
+    self.loadingIndicator.center = CGPointMake(width * 0.5, height * 0.5 - 30);
+    
+    // 进度条居中
+    self.progressView.frame = CGRectMake(width * 0.5 - 70, height * 0.5 + 10, 140, 3);
+    
+    // 文本居中
+    self.progressLabel.frame = CGRectMake(width * 0.5 - 90, height * 0.5 + 20, 180, 30);
+}
+
+
+#pragma mark - 普通加载（默认只显示菊花）
 /// 加载进度
 - (void)startIndicatorLoading{
-    @autoreleasepool {
         [self startIndicatorLoadingWithAlpha:0.6];
-    }
 }
 /// 加载进度
 /// @param alpha 透明度 0-1（值范围）
@@ -152,32 +220,58 @@ void swizzleMethod(Class class, SEL originalSelector, SEL swizzledSelector){
         // window.windowLevel = UIWindowLevelAlert;
         CGFloat height = self.view.frame.size.height;
         CGFloat width = self.view.frame.size.width;
+        
+        // 移除旧视图
         if (self.indicatorBack) {
             [self.indicatorBack removeFromSuperview];
-            self.indicatorBack.frame = CGRectMake(0, height, width, height);
+            self.indicatorBack = nil;
+            self.progressView = nil;
+            self.progressLabel = nil;
+            self.loadingIndicator = nil;
         }
+        
+        // 背景遮罩
         self.indicatorBack = [[UIView alloc] init];
-        self.indicatorBack.frame = CGRectMake(0, 0, width, height);
+        self.indicatorBack.frame = self.view.bounds;
         self.indicatorBack.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:alpha];
         [self.view addSubview:self.indicatorBack];
         
-        UIActivityIndicatorView* indicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+        UIActivityIndicatorView* indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
         //设置显示位置
-        indicator.center = CGPointMake(width/2.0, height/2.0);
+        indicator.center = CGPointMake(width/2.0, height/2.0 - 30);
         indicator.hidesWhenStopped = NO;
         // indicator.color = [UIColor orangeColor];
         //     //    _indicator.color = [UIColor whiteColor];
         [self.indicatorBack addSubview:indicator];
         [indicator startAnimating];
+        self.loadingIndicator = indicator;
+        
+        // 进度条（直接添加，默认隐藏）
+        UIProgressView *progressView = [[UIProgressView alloc] init];
+        progressView.frame = CGRectMake(width * 0.5 - 70, height * 0.5 + 10, 140, 3);
+        progressView.tintColor = UIColor.whiteColor;
+        progressView.trackTintColor = [[UIColor whiteColor] colorWithAlphaComponent:0.3];
+        progressView.progress = 0;
+        progressView.hidden = YES;
+        [self.indicatorBack addSubview:progressView];
+        self.progressView = progressView;
+        
+        // 文字（直接添加，默认隐藏）
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(width * 0.5 - 90, height * 0.5 + 20, 180, 30)];
+        label.textAlignment = NSTextAlignmentCenter;
+        label.textColor = UIColor.whiteColor;
+        label.font = [UIFont systemFontOfSize:14];
+        label.text = @"加载中... 0%";
+        label.hidden = YES;
+        [self.indicatorBack addSubview:label];
+        self.progressLabel = label;
     }
 }
 
 
 /// 全屏加载进度
 - (void)startLoadingFullScreen{
-    @autoreleasepool {
         [self startLoadingFullScreenWithAlpha:0.6];
-    }
 }
 
 /// 全屏加载进度
@@ -193,50 +287,117 @@ void swizzleMethod(Class class, SEL originalSelector, SEL swizzledSelector){
         CGFloat width = self.view.frame.size.width;
         if (self.indicatorBack) {
             [self.indicatorBack removeFromSuperview];
-            self.indicatorBack.frame = CGRectMake(0, height, width, height);
+            self.indicatorBack = nil;
+            self.progressView = nil;
+            self.progressLabel = nil;
+            self.loadingIndicator = nil;
+
         }
         
         self.indicatorBack = [[UIView alloc] init];
-        self.indicatorBack.frame = CGRectMake(0, 0, width, height);
+        self.indicatorBack.frame = self.view.bounds;
         self.indicatorBack.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:alpha];
         [window addSubview:self.indicatorBack];
         
         UIActivityIndicatorView* indicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
         //设置显示位置
-        indicator.center = CGPointMake(width/2.0, height/2.0);
+        indicator.center = CGPointMake(width/2.0, height/2.0-30);
         indicator.hidesWhenStopped = NO;
         // indicator.color = [UIColor orangeColor];
         //     //    _indicator.color = [UIColor whiteColor];
         [self.indicatorBack addSubview:indicator];
         [indicator startAnimating];
+        self.loadingIndicator = indicator;
+        
+        // 进度条
+        UIProgressView *progressView = [[UIProgressView alloc] init];
+        progressView.frame = CGRectMake(width * 0.5 - 70, height * 0.5 + 10, 140, 3);
+        progressView.tintColor = UIColor.whiteColor;
+        progressView.trackTintColor = [[UIColor whiteColor] colorWithAlphaComponent:0.3];
+        progressView.progress = 0;
+        progressView.hidden = YES;
+        [self.indicatorBack addSubview:progressView];
+        self.progressView = progressView;
+        
+        // 文本
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(width * 0.5 - 90, height * 0.5 + 20, 180, 30)];
+        label.textAlignment = NSTextAlignmentCenter;
+        label.textColor = UIColor.whiteColor;
+        label.font = [UIFont systemFontOfSize:14];
+        label.text = @"加载中... 0%";
+        label.hidden = YES;
+        [self.indicatorBack addSubview:label];
+        self.progressLabel = label;
     }
 }
 
-- (void)stopIndicatorLoading{
-    __block typeof(self) weakSelf = self;
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [weakSelf.indicatorBack removeFromSuperview];
-        CGFloat height = self.view.frame.size.height;
-        CGFloat width = self.view.frame.size.width;
-        weakSelf.indicatorBack.frame = CGRectMake(0, height, width, height);
-        //[weakSelf.indicator removeAllSubviews];
-        
+//- (void)stopIndicatorLoading{
+//    __block typeof(self) weakSelf = self;
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//        [weakSelf.indicatorBack removeFromSuperview];
+//        CGFloat height = self.view.frame.size.height;
+//        CGFloat width = self.view.frame.size.width;
+//        weakSelf.indicatorBack.frame = CGRectMake(0, height, width, height);
+//        //[weakSelf.indicator removeAllSubviews];
+//        
+//    });
+//}
+
+//- (void)stopIndicatorLoading:(float)time{
+//    __block typeof(self) weakSelf = self;
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(time * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//        [weakSelf.indicatorBack removeFromSuperview];
+//        
+//        CGFloat height = self.view.frame.size.height;
+//        CGFloat width = self.view.frame.size.width;
+//        weakSelf.indicatorBack.frame = CGRectMake(0, height, width, height);
+//        //[weakSelf.indicator removeAllSubviews];
+//        
+//    });
+//}
+
+
+#pragma mark - 显示进度条 + 文本
+- (void)showProgressAndLabel {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.progressView.hidden = NO;
+        self.progressLabel.hidden = NO;
     });
 }
 
-- (void)stopIndicatorLoading:(float)time{
-    __block typeof(self) weakSelf = self;
+#pragma mark - 更新进度
+- (void)updateLoadingProgress:(CGFloat)progress {
+    if (!self.progressView) return;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.progressView.progress = progress;
+        int p = (int)(progress * 100);
+        self.progressLabel.text = [NSString stringWithFormat:@"加载中... %d%%", p];
+    });
+}
+
+#pragma mark - 更新文本
+- (void)updateLoadingText:(NSString *)text {
+    if (!self.progressLabel) return;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.progressLabel.text = text;
+    });
+}
+
+#pragma mark - 停止加载
+- (void)stopIndicatorLoading {
+    [self stopIndicatorLoading:0];
+}
+
+- (void)stopIndicatorLoading:(float)time {
+    __weak typeof(self) weakSelf = self;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(time * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [weakSelf.indicatorBack removeFromSuperview];
-        
-        CGFloat height = self.view.frame.size.height;
-        CGFloat width = self.view.frame.size.width;
-        weakSelf.indicatorBack.frame = CGRectMake(0, height, width, height);
-        //[weakSelf.indicator removeAllSubviews];
-        
+        weakSelf.indicatorBack = nil;
+        weakSelf.progressView = nil;
+        weakSelf.progressLabel = nil;
+        weakSelf.loadingIndicator = nil;
     });
 }
-
 
 //
 //- (void)at_navigationBarBackImage:(NSString *)imageName{
