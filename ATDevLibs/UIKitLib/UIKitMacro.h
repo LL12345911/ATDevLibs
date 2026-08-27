@@ -93,4 +93,10 @@
 
 //#import "SGWebView.h"
 
+#import "UIImage+SFSymbol.h"
+#import "UIImageView+SFSymbol.h"
+#import "UIButton+SFSymbol.h"
+
+
+
 #endif /* UIKitMacro_h */

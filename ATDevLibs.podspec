@@ -21,7 +21,7 @@ s.homepage     = "https://github.com/LL12345911/ATDevLibs"
 s.license      = { :type => "MIT", :file => 'LICENSE' }
 s.author             = { "Mars" => "sky12345911@163.com" }
 s.authors      = { "Mars" => "sky12345911@163.com" }
-s.platform     = :ios, '9.0'
+s.platform     = :ios, '13.0'
 s.source       = {:git => 'https://github.com/LL12345911/ATDevLibs.git', :tag => s.version}
 s.social_media_url = 'https://github.com/LL12345911/ATDevLibs'
 s.source_files = 'ATDevLibs/*.{h,m}' #'UIKitLib/*.{h,m}','FoundationKitLib/*.{h,m}','ShareLib/*.{h,m}','ShareLib/*.{h,m}',
@@ -57,6 +57,6 @@ s.public_header_files = 'ATDevLibs/ATDevLibs.h'
 
 s.requires_arc = true
 s.ios.frameworks = 'UIKit','Foundation'
-s.ios.deployment_target = '9.0'
+s.ios.deployment_target = '13.0'
 
 end

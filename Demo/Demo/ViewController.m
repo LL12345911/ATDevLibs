@@ -8,7 +8,7 @@
 #import "ViewController.h"
 #import "AttributeStringBuilder.h"
 #import "ATPlaceholdTextView.h"
-#import "ATDevLibs/ATDevLibs.h"
+#import "ATDevLibs.h"
 
 
 @interface ViewController ()

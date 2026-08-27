@@ -12,7 +12,7 @@
     "Mars": "sky12345911@163.com"
   },
   "platforms": {
-    "ios": "9.0"
+    "ios": "13.0"
   },
   "source": {
     "git": "https://github.com/LL12345911/ATDevLibs.git",
