@@ -58,7 +58,7 @@ CGRect rectStatus = [[UIApplication sharedApplication] statusBarFrame];\    CGRe
 //    return ((CGFloat)((minWidth() * (value) / 375.0f)));
 //}
 //刘海屏 isNotchScreen
-CG_INLINE BOOL isIphoneX(){
+CG_INLINE BOOL isIphoneX(void){
     //return [ATMacro iPhoneX] || [ATMacro iPhoneXR] || [ATMacro iPhoneXMax];
     BOOL iPhoneXSeries = NO;
     if (UIDevice.currentDevice.userInterfaceIdiom != UIUserInterfaceIdiomPhone) {
@@ -93,14 +93,17 @@ CG_INLINE UIEdgeInsets safeAreaInsets(void) {
 
  @return 不是刘海屏默认20，是的话44
  */
-CG_INLINE CGFloat kStatusBar(){
+CG_INLINE CGFloat kStatusBar(void){
     if (@available(iOS 13.0, *)) {
         UIWindowScene *windowScene = (UIWindowScene *)[UIApplication.sharedApplication.connectedScenes anyObject];
         if (windowScene) {
             return windowScene.statusBarManager.statusBarFrame.size.height;
         }
     }
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     return UIApplication.sharedApplication.statusBarFrame.size.height;
+#pragma clang diagnostic pop
 }
 
 
@@ -109,7 +112,7 @@ CG_INLINE CGFloat kStatusBar(){
 
  @return 不是刘海屏默认64，是的话88
  */
-CG_INLINE CGFloat kNavHeight(){
+CG_INLINE CGFloat kNavHeight(void){
     if (@available(iOS 13.0, *)) {
         // Mac Catalyst 环境
         if ([NSProcessInfo processInfo].isMacCatalystApp) {
@@ -129,7 +132,7 @@ CG_INLINE CGFloat kNavHeight(){
 
  @return 不是刘海屏默认0，是的话34
  */
-CG_INLINE CGFloat kBottom(){
+CG_INLINE CGFloat kBottom(void){
     //return (isIphoneX() ? 34 : 0);//iphoneX斜刘海
     if (@available(iOS 13.0, *)) {
         NSSet *set = [UIApplication sharedApplication].connectedScenes;
@@ -148,7 +151,7 @@ CG_INLINE CGFloat kBottom(){
 
  @return 不是刘海屏默认49，是的话83
  */
-CG_INLINE CGFloat kTabBarHeight(){
+CG_INLINE CGFloat kTabBarHeight(void){
     //return (isIphoneX() ? 83.0 : 49.0);
     return kBottom() + 49;
 }
@@ -158,7 +161,7 @@ CG_INLINE CGFloat kTabBarHeight(){
 
  @return 顶部安全区高度
  */
-CG_INLINE CGFloat kSafeDistanceTop(){
+CG_INLINE CGFloat kSafeDistanceTop(void){
     if (@available(iOS 13.0, *)) {
            NSSet *set = [UIApplication sharedApplication].connectedScenes;
            UIWindowScene *windowScene = [set anyObject];
@@ -177,7 +180,7 @@ CG_INLINE CGFloat kSafeDistanceTop(){
  
  @return kHeight-kNavHeight()-kBottomHeight();
  */
-CG_INLINE CGFloat kSafeHeight(){
+CG_INLINE CGFloat kSafeHeight(void){
     return [UIScreen mainScreen].bounds.size.height-kNavHeight()-kBottom();//kHeight-kNavHeight()-kBottom();
 }
 
@@ -186,7 +189,7 @@ CG_INLINE CGFloat kSafeHeight(){
  
  @return CGRect CGRectMake(0, kNavHeight(), kWidth, kHeight-kNavHeight()-kBottomHeight())
  */
-CG_INLINE CGRect kRect(){
+CG_INLINE CGRect kRect(void){
     return CGRectMake(0, kNavHeight(), [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height-kNavHeight()-kBottom());
 }
 /**
@@ -245,7 +248,7 @@ CG_INLINE CGFloat Inch(CGFloat original){
  
  @return 自动适应后的屏幕尺寸
  */
-CG_INLINE CGFloat AutoScale(){
+CG_INLINE CGFloat AutoScale(void){
     return  minWidth() / kRefereWidth;
 }
 /**
@@ -253,7 +256,7 @@ CG_INLINE CGFloat AutoScale(){
 
  @return UIFont(默认是15号字体)
  */
-CG_INLINE UIFont* ATFont(){
+CG_INLINE UIFont* ATFont(void){
     return AutoFont(15);
 }
 
@@ -262,7 +265,7 @@ CG_INLINE UIFont* ATFont(){
 
  @return UIFont(默认是15号字体)
  */
-CG_INLINE UIFont* ATBoldFont(){
+CG_INLINE UIFont* ATBoldFont(void){
     return AutoBlodFont(15);
 }
 //CG_INLINE CGFloat screenWidth() {

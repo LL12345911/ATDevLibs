@@ -121,7 +121,7 @@
     activityVC.excludedActivityTypes = excludetypes ? excludetypes : [self excludetypes];
     //这儿一定要做iPhone与iPad的判断，因为这儿只有iPhone可以present，iPad需pop，所以这儿actVC.popoverPresentationController.sourceView = self.view;在iPad下必须有，不然iPad会crash，self.view你可以换成任何view，你可以理解为弹出的窗需要找个依托。
     activityVC.modalPresentationStyle = UIModalPresentationFullScreen;
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
         activityVC.popoverPresentationController.sourceView = [WindowsManager presentController].view;
         [[WindowsManager presentController] presentViewController:activityVC animated:YES completion:nil];
     } else {
@@ -233,7 +233,7 @@ CG_INLINE NSString* kIfNullString(NSString *f){
     activityVC.excludedActivityTypes = [self excludetypes];
     //这儿一定要做iPhone与iPad的判断，因为这儿只有iPhone可以present，iPad需pop，所以这儿actVC.popoverPresentationController.sourceView = self.view;在iPad下必须有，不然iPad会crash，self.view你可以换成任何view，你可以理解为弹出的窗需要找个依托。
     activityVC.modalPresentationStyle = UIModalPresentationFullScreen;
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
         activityVC.popoverPresentationController.sourceView = [WindowsManager presentController].view;
         [[WindowsManager presentController] presentViewController:activityVC animated:YES completion:nil];
     } else {

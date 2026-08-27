@@ -30,7 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
                                    pointSize:(CGFloat)pointSize
                                       weight:(UIImageSymbolWeight)weight
                                        scale:(UIImageSymbolScale)scale
-                           fallbackImageName:(nullable NSString *)fallbackImageName;
+                           fallbackImageName:(nullable NSString *)fallbackImageName API_AVAILABLE(ios(13.0));
 
 /**
  *  @brief 便捷默认版本生成SF‑Symbol图片

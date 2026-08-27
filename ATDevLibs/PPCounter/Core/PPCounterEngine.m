@@ -115,7 +115,7 @@ typedef CGFloat (*PPCurrentBufferFunction)(CGFloat);
     // 实例化定时器
 #if TARGET_OS_IPHONE
     _timer = [CADisplayLink displayLinkWithTarget:self selector:@selector(changeNumber)];
-    _timer.frameInterval = 2;
+    _timer.preferredFramesPerSecond = 2;
     [_timer addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
     [_timer addToRunLoop:[NSRunLoop mainRunLoop] forMode:UITrackingRunLoopMode];
 #elif TARGET_OS_MAC

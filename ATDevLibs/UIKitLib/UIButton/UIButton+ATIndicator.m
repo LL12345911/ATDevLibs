@@ -20,7 +20,7 @@ static NSString *const at_ButtonTextObjectKey = @"buttonTextObject";
         [self at_hideIndicator];
         self.submitting = @YES;
         
-        UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+        UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleMedium];
         indicator.center = CGPointMake(self.bounds.size.width / 2, self.bounds.size.height / 2);
         [indicator startAnimating];
         
@@ -40,7 +40,7 @@ static NSString *const at_ButtonTextObjectKey = @"buttonTextObject";
         [self at_hideIndicator];
         self.submitting = @YES;
         
-        UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+        UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleMedium];
         CGFloat width = [self calculateRowWidth:statusText];
         indicator.center = CGPointMake(self.bounds.size.width / 2 - width/2.0, self.bounds.size.height / 2);
         [indicator startAnimating];

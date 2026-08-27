@@ -616,11 +616,6 @@ static NSString *const RequestNotificationsKey = @"_requestedNotifications";
                 }
             });
         }];
-    } else if (@available(iOS 8.0, *)) {
-        
-        UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes: UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert categories:nil];
-        [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
-        
     } else {
         
 #pragma clang diagnostic push

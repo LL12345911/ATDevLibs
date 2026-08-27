@@ -91,8 +91,15 @@
     _textView.layer.borderColor = [UIColor grayColor].CGColor;
     _textView.layer.cornerRadius = 5;
     [self.view addSubview:_textView];
-
-
+    
+    
+    UIButton *btn = [UIButton sf_buttonWithSymbol:@"arrow.up.circle.fill"
+                                                          forState:UIControlStateNormal
+                                                         tintColor:UIColor.redColor];
+    btn.frame = CGRectMake(10, 400, 300, 100);
+    btn.sf_pointSize = Inch(60);
+    [btn sf_reloadAllSymbols];
+    [self.view addSubview:btn];
 }
 
 

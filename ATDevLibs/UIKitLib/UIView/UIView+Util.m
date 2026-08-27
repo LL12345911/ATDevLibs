@@ -157,7 +157,7 @@ float radiansForDegress(int degrees){
         self.indicatorBack.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.2];
         [window addSubview:self.indicatorBack];
         
-        UIActivityIndicatorView* indicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+        UIActivityIndicatorView* indicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleLarge];
         //设置显示位置
         indicator.center = CGPointMake(width/2.0, height/2.0);
         indicator.hidesWhenStopped = NO;
@@ -187,7 +187,7 @@ float radiansForDegress(int degrees){
         self.indicatorBack.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
         [window addSubview:self.indicatorBack];
         
-        UIActivityIndicatorView* indicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+        UIActivityIndicatorView* indicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleLarge];
         //设置显示位置
         indicator.center = CGPointMake(width/2.0, height/2.0);
         indicator.hidesWhenStopped = NO;
@@ -290,16 +290,72 @@ float radiansForDegress(int degrees){
 
 
 
-- (CGFloat)orientationWidth{
-    return UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation)
-    ? self.height : self.width;
+/**
+ @brief 获取当前界面方向（兼容 iOS 12 ~ iOS 18+）
+ 
+ @discussion
+ 查找优先级：
+ 1. iOS 13+：从 view 所在 window 的 UIWindowScene.interfaceOrientation 获取
+ 2. iOS 13+ 兜底：若 view 尚未加入 window，遍历 ForegroundActive scene 获取
+ 3. iOS 12 及以下：使用已废弃的 statusBarOrientation
+ 
+ @return 当前界面方向
+ */
+- (UIInterfaceOrientation)_currentInterfaceOrientation {
+    if (@available(iOS 13.0, *)) {
+        // ✅ 优先从 view 自身所在的 window scene 获取（最准确）
+        UIWindowScene *scene = self.window.windowScene;
+        if (scene) {
+            return scene.interfaceOrientation;
+        }
+        
+        // ⚠️ 兜底：view 尚未 addSubview 或 window 为 nil 时，
+        // 从当前活跃 scene 中获取
+        for (UIScene *s in [UIApplication sharedApplication].connectedScenes) {
+            if ([s isKindOfClass:[UIWindowScene class]] &&
+                s.activationState == UISceneActivationStateForegroundActive) {
+                return ((UIWindowScene *)s).interfaceOrientation;
+            }
+        }
+        
+        // 极端情况：无任何活跃 scene，返回默认竖屏
+        return UIInterfaceOrientationPortrait;
+        
+    } else {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+        return [UIApplication sharedApplication].statusBarOrientation;
+#pragma clang diagnostic pop
+    }
 }
 
-- (CGFloat)orientationHeight{
-    return UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation)
-    ? self.width : self.height;
+/**
+ @brief 获取相对于当前界面方向的逻辑宽度
+ @discussion 横屏时返回 view.height，竖屏时返回 view.width
+ @code
+ CGFloat w = [someView orientationWidth];
+ NSLog(@"逻辑宽度: %.1f", w);
+ @endcode
+ */
+- (CGFloat)orientationWidth {
+    return UIInterfaceOrientationIsLandscape([self _currentInterfaceOrientation])
+    ? self.bounds.size.height
+    : self.bounds.size.width;
 }
 
+/**
+ @brief 获取相对于当前界面方向的逻辑高度
+ @discussion 横屏时返回 view.width，竖屏时返回 view.height
+ @code
+ CGFloat h = [someView orientationHeight];
+ NSLog(@"逻辑高度: %.1f", h);
+ @endcode
+ */
+- (CGFloat)orientationHeight {
+    return UIInterfaceOrientationIsLandscape([self _currentInterfaceOrientation])
+    ? self.bounds.size.width
+    : self.bounds.size.height;
+}
 
 //#pragma mark -
 //#pragma mark -

@@ -43,21 +43,7 @@
 }
 
 - (AuthorizationStatus)authorizationStatus {
-    
-    if (@available(iOS 10.0, *)) {
-        return self.currentAuthorizedStatus;
-    } else {
-        UIUserNotificationSettings *settings = UIApplication.sharedApplication.currentUserNotificationSettings;
-        if (settings.types != UIUserNotificationTypeNone) {
-            return AuthorizationStatusAuthorized;
-        } else {
-            if (self.isRequestNotification) {
-                return AuthorizationStatusUnAuthorized;
-            } else {
-                return AuthorizationStatusNotDetermined;
-            }
-        }
-    }
+    return self.currentAuthorizedStatus;
 }
 
 - (void)asyncFetchAuthorizedStatusWithCompletion:(void (^)(AuthorizationStatus))completion {
@@ -113,19 +99,6 @@
                     }
                 }];
             }];
-        } else {
-            self.authorizationCompletion = completion;
-            [NSNotificationCenter.defaultCenter addObserver:self
-                                                   selector:@selector(requestingNotificationPermission)
-                                                       name:UIApplicationWillResignActiveNotification
-                                                     object: nil];
-            timer = [NSTimer scheduledTimerWithTimeInterval:1
-                                                     target:self
-                                                   selector:@selector(finishedRequestNotificationPermission)
-                                                   userInfo:nil
-                                                    repeats:NO];
-            UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes: UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert categories:nil];
-            [UIApplication.sharedApplication registerUserNotificationSettings:settings];
         }
         
     } else {

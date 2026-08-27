@@ -125,8 +125,47 @@ static void * const keypath = (void*)&keypath;
     [self presentPopupView:popupView animationType:animationType backgroundTouch:YES dismissed:nil];
 }
 
-- (UIViewController*)topViewController {
-    return [self topViewControllerWithRootViewController:[UIApplication sharedApplication].keyWindow.rootViewController];
+- (UIViewController *)topViewController {
+    UIWindow *keyWindow = nil;
+    
+    if (@available(iOS 13.0, *)) {
+        // ✅ iOS 13+：从当前活跃 scene 中获取 keyWindow
+        for (UIWindowScene *scene in [UIApplication sharedApplication].connectedScenes) {
+            if (scene.activationState == UISceneActivationStateForegroundActive) {
+                for (UIWindow *window in scene.windows) {
+                    if (window.isKeyWindow) {
+                        keyWindow = window;
+                        break;
+                    }
+                }
+                if (keyWindow) break;
+            }
+        }
+        // ⚠️ 兜底：某些场景下 activationState 可能不是 Active（如弹窗触发时），
+        //    退而求其次取任意 foreground scene 的 keyWindow
+        if (!keyWindow) {
+            for (UIWindowScene *scene in [UIApplication sharedApplication].connectedScenes) {
+                if (scene.activationState == UISceneActivationStateForegroundInactive ||
+                    scene.activationState == UISceneActivationStateForegroundActive) {
+                    for (UIWindow *window in scene.windows) {
+                        if (window.isKeyWindow) {
+                            keyWindow = window;
+                            break;
+                        }
+                    }
+                    if (keyWindow) break;
+                }
+            }
+        }
+    } else {
+        // ✅ iOS 12 及以下：使用旧 API
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+        keyWindow = [UIApplication sharedApplication].keyWindow;
+#pragma clang diagnostic pop
+    }
+    
+    return [self topViewControllerWithRootViewController:keyWindow.rootViewController];
 }
 
 - (UIViewController*)topViewControllerWithRootViewController:(UIViewController*)rootViewController {

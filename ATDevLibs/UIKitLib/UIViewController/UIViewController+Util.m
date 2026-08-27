@@ -161,7 +161,7 @@ void swizzleMethod(Class class, SEL originalSelector, SEL swizzledSelector){
         self.indicatorBack.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:alpha];
         [self.view addSubview:self.indicatorBack];
         
-        UIActivityIndicatorView* indicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+        UIActivityIndicatorView* indicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleLarge];
         //设置显示位置
         indicator.center = CGPointMake(width/2.0, height/2.0);
         indicator.hidesWhenStopped = NO;
@@ -201,7 +201,7 @@ void swizzleMethod(Class class, SEL originalSelector, SEL swizzledSelector){
         self.indicatorBack.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:alpha];
         [window addSubview:self.indicatorBack];
         
-        UIActivityIndicatorView* indicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+        UIActivityIndicatorView* indicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleLarge];
         //设置显示位置
         indicator.center = CGPointMake(width/2.0, height/2.0);
         indicator.hidesWhenStopped = NO;
