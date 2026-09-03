@@ -158,7 +158,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - 圆角文字标签（不生成图片）
 
-/// 追加一个圆角文字标签（不生成图片）
+/**
+ 追加一个圆角文字标签（直接绘制，不生成 UIImage）
+
+ @note 连续多个标签需要自动换行时，承载的 UILabel 必须显式设置
+       lineBreakMode = NSLineBreakByWordWrapping（或 NSLineBreakByCharWrapping）；
+       UILabel 默认 NSLineBreakByTruncatingTail 会对 attachment 密集的行直接截断而非换行。
+ */
 - (AttributeStringBuilder *(^)(NSString *text))appendRoundedTag;
 
 /// 标签字体

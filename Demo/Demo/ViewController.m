@@ -40,6 +40,8 @@
     [super viewDidLoad];
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(30, 0, 300, 700)];
       label.numberOfLines = 0;
+      // 必须显式设为 WordWrapping/CharWrapping；默认 TruncatingTail 会导致多标签行被截断而非换行
+      label.lineBreakMode = NSLineBreakByWordWrapping;
       [self.view addSubview:label];
       
       
@@ -68,7 +70,7 @@
             .tagTextColor(RGBCOLOR(0x333333))
             .tagBackgroundColor(RGBCOLOR(0xF0F0F0))
             .tagCornerRadius(4)
-            .tagInsets(UIEdgeInsetsMake(3, 8, 3, 8));
+            .tagInsets(UIEdgeInsetsMake(13, 8, 13, 8));
         
         // 标签之间加间距（不是空格，是固定宽度的 attachment）
         if (i < tags.count - 1) {
