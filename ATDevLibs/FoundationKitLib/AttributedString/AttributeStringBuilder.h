@@ -18,17 +18,20 @@ NS_ASSUME_NONNULL_BEGIN
          因此，在 Content 中，无论是 append 还是 insert，会将当前 Range 切换成新加入内容的，属性会应用在此 Range 上。
          由于属性主要用于应用在字符上，因此附件不会切换 Range。另外为了应对 match 到多个的情况，Range 是一个数组。
  
- @discussion NSShadow *shadow = [[NSShadow alloc] init];
+ @code
+ NSShadow *shadow = [[NSShadow alloc] init];
+
+ shadow.shadowColor = [UIColor blueColor];
+ shadow.shadowOffset = CGSizeMake(2, 2);
+ NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
+
+ attachment.image = [UIImage custom_imageNamed:@"appIcon_luffer"];
+ attachment.bounds = CGRectMake(0, 0, 50, 50);
+ NSString *text = @"测试多行文字测试多行文字测试多行文字链接测试多行文字测试多行文字链接测试多行文字测试多行文字测试多行文字链接测试多行文字测试多行文字测试多行文字\n";
+ @endcode
  
- @discussion shadow.shadowColor = [UIColor blueColor];
- @discussion shadow.shadowOffset = CGSizeMake(2, 2);
- @discussion NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
- 
- @discussion attachment.image = [UIImage custom_imageNamed:@"appIcon_luffer"];
- @discussion attachment.bounds = CGRectMake(0, 0, 50, 50);
- @discussion NSString *text = @"测试多行文字测试多行文字测试多行文字链接测试多行文字测试多行文字链接测试多行文字测试多行文字测试多行文字链接测试多行文字测试多行文字测试多行文字\n";
- 
- @discussion AttributeStringBuilder *build =  AttributeStringBuilder.build(@"颜色字体\n").fontSize(30).color([UIColor purpleColor])
+ @code
+ AttributeStringBuilder *build =  AttributeStringBuilder.build(@"颜色字体\n").fontSize(30).color([UIColor purpleColor])
      .range(1, 1).color([UIColor redColor])
      .insert(@"/插入文字/", 2).fontSize(20).color([UIColor blueColor])
      .append(text).firstLineHeadIndent(20).lineHeight(25).paragraphSpacing(20)
@@ -46,8 +49,8 @@ NS_ASSUME_NONNULL_BEGIN
      .insertImage([UIImage custom_imageNamed:@"appIcon_luffer"], CGSizeMake(50, 50), 0, [UIFont systemFontOfSize:30])
      .append(@"\n阴影").shadow(shadow).append(@"基线偏移\n").baselineOffset(-5)
      .append(@" ").backgroundColor([UIColor redColor]).fontSize(2);
- 
- @discussion self.label.attributedText = [build commit];
+ self.label.attributedText = [build commit];
+ @endcode
  */
 @interface AttributeStringBuilder : NSObject
 
@@ -153,7 +156,29 @@ NS_ASSUME_NONNULL_BEGIN
 /// 背景颜色
 - (AttributeStringBuilder *(^)(UIColor *color))backgroundColor;
 
+#pragma mark - 圆角文字标签（不生成图片）
 
+/// 追加一个圆角文字标签（不生成图片）
+- (AttributeStringBuilder *(^)(NSString *text))appendRoundedTag;
+
+/// 标签字体
+- (AttributeStringBuilder *(^)(UIFont *font))tagFont;
+
+/// 标签文字颜色
+- (AttributeStringBuilder *(^)(UIColor *color))tagTextColor;
+
+/// 标签背景色
+- (AttributeStringBuilder *(^)(UIColor *color))tagBackgroundColor;
+
+/// 圆角半径
+- (AttributeStringBuilder *(^)(CGFloat radius))tagCornerRadius;
+
+/// 标签内边距
+- (AttributeStringBuilder *(^)(UIEdgeInsets insets))tagInsets;
+
+
+
+#pragma mark - 圆角文字标签（生成图片）
 
 /**
  绘制带圆角边框和居中文本的自定义图片

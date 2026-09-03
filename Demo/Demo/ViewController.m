@@ -38,7 +38,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(30, 0, 300, 600)];
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(30, 0, 300, 700)];
       label.numberOfLines = 0;
       [self.view addSubview:label];
       
@@ -56,13 +56,27 @@
           .append(@"\n").font([UIFont systemFontOfSize:14])
           .appendDynamicKern(@"道路路路名名称：", @"上报人：", [UIFont systemFontOfSize:14]).font([UIFont systemFontOfSize:14])
           .append(@"\n").font([UIFont systemFontOfSize:14])
-      
-      
           //.append(@"背景颜色").font(AutoFont(15)).color([UIColor yellowColor])
-          .
-      appendBackgroundColor(@"背景颜色", [UIFont systemFontOfSize:34], [UIColor greenColor],[UIColor redColor],3, 0)
+          .appendBackgroundColor(@"背景颜色", [UIFont systemFontOfSize:34], [UIColor greenColor],[UIColor redColor],3, 0)
           .all.lineSpacing(3).append(@"\n").font([UIFont systemFontOfSize:14]);
     
+    NSArray *tags = @[@"道路破损", @"井盖缺失", @"路灯不亮", @"违规停车", @"垃圾堆积"];
+    
+    for (NSInteger i = 0; i < tags.count; i++) {
+        build.appendRoundedTag(tags[i])
+            .tagFont(AutoFont(12))
+            .tagTextColor(RGBCOLOR(0x333333))
+            .tagBackgroundColor(RGBCOLOR(0xF0F0F0))
+            .tagCornerRadius(4)
+            .tagInsets(UIEdgeInsetsMake(3, 8, 3, 8));
+        
+        // 标签之间加间距（不是空格，是固定宽度的 attachment）
+        if (i < tags.count - 1) {
+            build.appendSpacing(6);
+        }
+    }
+    
+    build.append(@"\n");
     NSString *reasonStr = @"DCloud还提供了使用js编写服务器代码的uniCloud云引擎。所以只需掌握js，你可以开发web、Android、iOS、各家小程序以及服务器等全栈应用。";
 //    build.append(@"\n成因分析：\n").font(AutoBlodFont(15))
 //        .append(reasonStr).color(RGBCOLOR(0x999999)).lineSpacing(Inch(3)).firstLineHeadIndent(Inch(12)*2).font(AutoFont(12)).lineBreakMode(NSLineBreakByCharWrapping)
@@ -84,22 +98,68 @@
       
     
     
-    ATPlaceholdTextView *_textView = [[ATPlaceholdTextView alloc] initWithFrame:CGRectMake(10, 600, 300, 200)];
-    _textView.font = [UIFont systemFontOfSize:14];
-    _textView.placehold = @"描述病害情况...";
-    _textView.layer.borderWidth = 1;
-    _textView.layer.borderColor = [UIColor grayColor].CGColor;
-    _textView.layer.cornerRadius = 5;
-    [self.view addSubview:_textView];
+    
+//    ATPlaceholdTextView *_textView = [[ATPlaceholdTextView alloc] initWithFrame:CGRectMake(10, 600, 300, 200)];
+//    _textView.font = [UIFont systemFontOfSize:14];
+//    _textView.placehold = @"描述病害情况...";
+//    _textView.layer.borderWidth = 1;
+//    _textView.layer.borderColor = [UIColor grayColor].CGColor;
+//    _textView.layer.cornerRadius = 5;
+//    [self.view addSubview:_textView];
+//    
+//    
+//    UIButton *btn = [UIButton sf_buttonWithSymbol:@"arrow.up.circle.fill"
+//                                                          forState:UIControlStateNormal
+//                                                         tintColor:UIColor.redColor];
+//    btn.frame = CGRectMake(10, 400, 100, 100);
+//    btn.sf_pointSize = Inch(60);
+//    [btn sf_reloadAllSymbols];
+//    [self.view addSubview:btn];
     
     
-    UIButton *btn = [UIButton sf_buttonWithSymbol:@"arrow.up.circle.fill"
-                                                          forState:UIControlStateNormal
-                                                         tintColor:UIColor.redColor];
-    btn.frame = CGRectMake(10, 400, 300, 100);
-    btn.sf_pointSize = Inch(60);
-    [btn sf_reloadAllSymbols];
-    [self.view addSubview:btn];
+//    NSDictionary *symbolMap = @{
+//        @(UIControlStateNormal): @"moon",
+//        @(UIControlStateSelected): @{
+//            SFSymbolConfigKeyName: @"sun.max.fill",
+//            SFSymbolConfigKeyTintColor: UIColor.systemYellowColor,
+//            SFSymbolConfigKeyWeight: @(UIImageSymbolWeightBold),
+//            SFSymbolConfigKeyScale:  @(UIImageSymbolScaleLarge)
+//        }
+//    };
+//    UIButton *btn2 = [UIButton sf_buttonWithSymbols:symbolMap
+//                                         pointSize:80.0
+//                                            weight:UIImageSymbolWeightMedium
+//                                             scale:UIImageSymbolScaleMedium
+//                                  defaultTintColor:UIColor.yellowColor];
+//    btn2.frame = CGRectMake(10, 500, 100, 100);
+//    [self.view addSubview:btn2];
+    
+    
+//    UIButton *btn2 = [UIButton sf_buttonWithSymbols:@{
+//        @(UIControlStateNormal): @"moon",
+//        @(UIControlStateNormal): @{
+//            SFSymbolConfigKeyName: @"sun.max.fill",
+//            SFSymbolConfigKeyTintColor: UIColor.redColor,
+//            SFSymbolConfigKeyWeight: @(UIImageSymbolWeightBold),
+//            SFSymbolConfigKeyScale:  @(UIImageSymbolScaleLarge)
+//        }
+//    } pointSize:80.0 weight:UIImageSymbolWeightMedium scale:UIImageSymbolScaleMedium];
+    
+//    UIButton *btn2 = [UIButton sf_buttonWithSymbol:@"trash.fill"
+//                                         forState:UIControlStateNormal
+//                                        pointSize:80
+//                                           weight:UIImageSymbolWeightSemibold
+//                                            scale:UIImageSymbolScaleMedium
+//                                        tintColor:UIColor.yellowColor];
+    
+//    UIButton *btn2 = [UIButton sf_buttonWithSymbol:@"arrow.right"
+//                                         forState:UIControlStateNormal
+//                                        pointSize:90
+//                                           weight:UIImageSymbolWeightSemibold
+//                                            scale:UIImageSymbolScaleMedium];
+//    
+//    btn2.frame = CGRectMake(100, 400, 100, 100);
+//    [self.view addSubview:btn2];
 }
 
 

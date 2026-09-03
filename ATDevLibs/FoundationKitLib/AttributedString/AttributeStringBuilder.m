@@ -8,6 +8,8 @@
 
 #import "AttributeStringBuilder.h"
 #import <UIKit/UIKit.h>
+#import "SCRoundedTagAttachment.h"
+
 
 @interface AttributeStringBuilder ()
 
@@ -490,7 +492,94 @@
     };
 }
 
+#pragma mark - 圆角文字标签（不生成图片）
+- (AttributeStringBuilder *(^)(NSString *))appendRoundedTag {
+    return ^(NSString *text) {
+        SCRoundedTagAttachment *attachment = [[SCRoundedTagAttachment alloc] init];
+        attachment.text = text ?: @"";
+        attachment.font = [UIFont systemFontOfSize:14];
+        attachment.textColor = UIColor.blackColor;
+        attachment.fillColor = UIColor.clearColor;
+        attachment.cornerRadius = 0;
+        attachment.insets = UIEdgeInsetsZero;
+        
+        // 占位 attachment
+        NSTextAttachment *placeholder = [[NSTextAttachment alloc] init];
+        placeholder.bounds = CGRectZero;
+        NSAttributedString *attr = [NSAttributedString attributedStringWithAttachment:placeholder];
+        [self.source appendAttributedString:attr];
+        
+        NSRange range = NSMakeRange(self.source.length - 1, 1);
+        self.scr_ranges = @[ [NSValue valueWithRange:range] ];
+        
+        // 替换为自定义 attachment
+        [self.source addAttribute:NSAttachmentAttributeName value:attachment range:range];
+        
+        return self;
+    };
+}
 
+- (AttributeStringBuilder *(^)(UIFont *))tagFont {
+    return ^(UIFont *font) {
+        [self p_updateCurrentTagAttachment:^(SCRoundedTagAttachment *tag) {
+            tag.font = font;
+        }];
+        return self;
+    };
+}
+
+- (AttributeStringBuilder *(^)(UIColor *))tagTextColor {
+    return ^(UIColor *color) {
+        [self p_updateCurrentTagAttachment:^(SCRoundedTagAttachment *tag) {
+            tag.textColor = color;
+        }];
+        return self;
+    };
+}
+
+- (AttributeStringBuilder *(^)(UIColor *))tagBackgroundColor {
+    return ^(UIColor *color) {
+        [self p_updateCurrentTagAttachment:^(SCRoundedTagAttachment *tag) {
+            tag.fillColor = color;
+        }];
+        return self;
+    };
+}
+
+- (AttributeStringBuilder *(^)(CGFloat))tagCornerRadius {
+    return ^(CGFloat radius) {
+        [self p_updateCurrentTagAttachment:^(SCRoundedTagAttachment *tag) {
+            tag.cornerRadius = radius;
+        }];
+        return self;
+    };
+}
+
+- (AttributeStringBuilder *(^)(UIEdgeInsets))tagInsets {
+    return ^(UIEdgeInsets insets) {
+        [self p_updateCurrentTagAttachment:^(SCRoundedTagAttachment *tag) {
+            tag.insets = insets;
+        }];
+        return self;
+    };
+}
+
+#pragma mark - Private
+
+- (void)p_updateCurrentTagAttachment:(void (^)(SCRoundedTagAttachment *tag))block {
+    for (NSValue *value in self.scr_ranges) {
+        NSRange range = [value rangeValue];
+        SCRoundedTagAttachment *attachment =
+        [self.source attribute:NSAttachmentAttributeName
+                       atIndex:range.location
+                effectiveRange:nil];
+        if ([attachment isKindOfClass:[SCRoundedTagAttachment class]]) {
+            if (block) block(attachment);
+        }
+    }
+}
+
+#pragma mark - 圆角文字标签（生成图片）
 /**
  绘制带圆角边框和居中文本的自定义图片
  
