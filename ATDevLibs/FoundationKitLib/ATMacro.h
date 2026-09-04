@@ -63,78 +63,145 @@ CG_INLINE UIColor* kRandomColor(void){
 //    return isMatch;
 //}
 
-#pragma mark -
-#pragma mark - 数据验证 是否 为空
-//*************数据验证*************//
-CG_INLINE BOOL StrValid(NSString *f){
-    return (f!=nil && [f isKindOfClass:[NSString class]] && ![f isEqualToString:@""]);
+
+
+#pragma mark - 字符串验证
+
+/// 判断字符串是否有效（非 nil、类型正确、非空串、非 NSNull）
+/// 返回: YES=有效字符串，NO=nil/NSNull/非NSString类型/空字符串@""
+CG_INLINE BOOL kValidStr(NSString *f){
+    if (f == nil) return NO;
+    if ([f isKindOfClass:[NSNull class]]) return NO;
+    if (![f isKindOfClass:[NSString class]]) return NO;
+    return ![f isEqualToString:@""];
 }
-//字符串是否存在
-CG_INLINE BOOL HasString(NSString *allStr,NSString *keyStr){
+
+/// 兼容旧名 StrValid，内部统一调用 kValidStr
+#define StrValid(f) kValidStr(f)
+
+/// 判断 allStr 中是否包含 keyStr（大小写敏感）
+/// 返回: YES=allStr 中包含 keyStr，NO=不包含/keyStr 未找到/任一参数无效
+CG_INLINE BOOL HasString(NSString *allStr, NSString *keyStr){
+    if (!kValidStr(allStr) || !kValidStr(keyStr)) return NO;
     return [allStr rangeOfString:keyStr].location != NSNotFound;
 }
-//判断字符串是否为空
-CG_INLINE BOOL kValidStr(NSString *f){
-    return (f!=nil && [f isKindOfClass:[NSString class]] && ![f isEqualToString:@""]);
-}
-CG_INLINE NSString* kSafeStr(NSString *f){
-    return StrValid(f) ? f : @"";
-}
-//判断字典是否为空
+
+#pragma mark - 字典验证
+
+/// 判断字典是否有效（非 nil、非 NSNull、类型正确）
+/// 返回: YES=有效NSDictionary（含空字典@{}），NO=nil/NSNull/非NSDictionary类型
 CG_INLINE BOOL kValidDict(NSDictionary *f){
-    return (f!=nil &&[f isKindOfClass:[NSDictionary class]]);
+    if (f == nil) return NO;
+    if ([f isKindOfClass:[NSNull class]]) return NO;
+    return [f isKindOfClass:[NSDictionary class]];
 }
-CG_INLINE NSDictionary* kIfDictNull(NSDictionary *f){
-    return kValidDict(f) ? f : @{};
-}
-//判断数组是否为空
+
+#pragma mark - 数组验证
+
+/// 判断数组是否有效（非 nil、非 NSNull、类型正确、且元素数量 > 0）
+/// 返回: YES=有效且非空数组，NO=nil/NSNull/非NSArray类型/count==0
 CG_INLINE BOOL kValidArray(NSArray *f){
-    return  (f!=nil &&[f isKindOfClass:[NSArray class]]&&[f count]>0);
+    if (f == nil) return NO;
+    if ([f isKindOfClass:[NSNull class]]) return NO;
+    if (![f isKindOfClass:[NSArray class]]) return NO;
+    return [f count] > 0;
 }
 
+#pragma mark - 数值 & 二进制验证
 
-
-//判断Number是否为空
+/// 判断 NSNumber 是否有效（非 nil、非 NSNull、类型正确）
+/// 返回: YES=有效NSNumber（含 @0），NO=nil/NSNull/非NSNumber类型
+/// 注意: @0 / @NO 视为有效，只有 nil 或类型不匹配才返回 NO
 CG_INLINE BOOL kValidNum(NSNumber *f){
-    return (f!=nil &&[f isKindOfClass:[NSNumber class]]);
+    if (f == nil) return NO;
+    if ([f isKindOfClass:[NSNull class]]) return NO;
+    return [f isKindOfClass:[NSNumber class]];
 }
-//判断Data是否为空
+
+/// 判断 NSData 是否有效（非 nil、非 NSNull、类型正确）
+/// 返回: YES=有效NSData（含空data），NO=nil/NSNull/非NSData类型
 CG_INLINE BOOL kValidData(NSData *f){
-    return (f!=nil &&[f isKindOfClass:[NSData class]]);
+    if (f == nil) return NO;
+    if ([f isKindOfClass:[NSNull class]]) return NO;
+    return [f isKindOfClass:[NSData class]];
 }
-//如果 不为空 返回原字符串 为空返回空字符串
-CG_INLINE NSString* kIfNull(NSString *f){
+
+#pragma mark - 安全取值 / 默认值
+
+/// 字符串安全取值：有效返回原字符串 f，无效返回空字符串 @""
+CG_INLINE NSString* kSafeStr(NSString *f){
     return kValidStr(f) ? f : @"";
 }
-CG_INLINE NSString* kIfNullStr(NSString *f,NSString *tempStr){
-    return kValidStr(f) ? f : tempStr;
+
+/// 兼容旧名 kIfNull，内部统一调用 kSafeStr
+#define kIfNull(f) kSafeStr(f)
+
+/// 字符串安全取值：有效返回原字符串 f，无效返回指定的默认字符串
+/// 返回: 有效时返回 f，无效时返回 tempStr（若 tempStr 本身无效则回退到 @""）
+CG_INLINE NSString* kIfNullStr(NSString *f, NSString *tempStr){
+    if (kValidStr(f)) return f;
+    return kValidStr(tempStr) ? tempStr : @"";
 }
 
-
-//CG_INLINE NSString* kIfNullSpace(NSString *f){
-//    return kValidStr(f) ? f : @"  ";
-//}
-
-//
+/// 字符串安全取值：有效返回原字符串 f，无效返回 @"0"
+/// 返回: 有效时返回 f，无效时返回 @"0"
 CG_INLINE NSString* kIfNullForZero(NSString *f){
     return kValidStr(f) ? f : @"0";
 }
 
-#define kValidClass(f,cls)   (f!=nil &&[f isKindOfClass:[cls class]])//判断类是否为空
-#define IsNilOrNull(_ref)   (((_ref) == nil) || ([(_ref) isEqual:[NSNull null]]))
+/// 字典安全取值：有效返回原字典 f，无效返回空字典 @{}
+/// 返回: 有效时返回 f，无效时返回 @{}
+CG_INLINE NSDictionary* kIfDictNull(NSDictionary *f){
+    return kValidDict(f) ? f : @{};
+}
 
+/// 数组安全取值：有效返回原数组 f，无效返回空数组 @[]
+/// 返回: 有效时返回 f，无效时返回 @[]
+CG_INLINE NSArray* kSafeArray(NSArray *f){
+    return kValidArray(f) ? f : @[];
+}
 
-/// 字符串是否为空
-#define kStringIsEmpty(str) ([str isKindOfClass:[NSNull class]] || str == nil || [str length] < 1 ? YES : NO )
-/// 数组是否为空
-#define kArrayIsEmpty(array) (array == nil || [array isKindOfClass:[NSNull class]] || array.count == 0)
-/// 字典是否为空
-#define kDictIsEmpty(dic) (dic == nil || [dic isKindOfClass:[NSNull class]] || dic.allKeys == 0)
-/// 是否是空对象
-#define kObjectIsEmpty(_object) (_object == nil \
-|| [_object isKindOfClass:[NSNull class]] \
-|| ([_object respondsToSelector:@selector(length)] && [(NSData *)_object length] == 0) \
-|| ([_object respondsToSelector:@selector(count)] && [(NSArray *)_object count] == 0))
+#pragma mark - 宏定义（仅保留必须用宏的场景）
+
+/// 判断对象是否为指定类的实例（需要动态类型参数，无法用内联函数替代）
+/// 返回: YES=f 非 nil 且 isKindOfClass:cls 通过，NO=nil 或类型不匹配
+#define kValidClass(f, cls)   ((f) != nil && [(f) isKindOfClass:[cls class]])
+
+/// 判断对象是否为 nil 或 NSNull（常用于 JSON 解析后判空）
+/// 返回: YES=_ref 为 nil 或等于 [NSNull null]，NO=其他情况
+#define IsNilOrNull(_ref)     (((_ref) == nil) || [(_ref) isEqual:[NSNull null]])
+
+/// 字符串是否为空（覆盖 NSNull、nil、非 NSString 类型、长度为 0 四种情况）
+/// 返回: YES=空/无效，NO=有内容的字符串
+#define kStringIsEmpty(str)   ((str) == nil \
+    || [(str) isKindOfClass:[NSNull class]] \
+    || ![(str) isKindOfClass:[NSString class]] \
+    || [(str) length] < 1 ? YES : NO)
+
+/// 数组是否为空（覆盖 nil、NSNull、非 NSArray 类型、count == 0 四种情况）
+/// 返回: YES=空/无效，NO=有元素的数组
+#define kArrayIsEmpty(array)  ((array) == nil \
+    || [(array) isKindOfClass:[NSNull class]] \
+    || ![(array) isKindOfClass:[NSArray class]] \
+    || (array).count == 0)
+
+/// 字典是否为空（覆盖 nil、NSNull、非 NSDictionary 类型、无 key 四种情况）
+/// 返回: YES=空/无效，NO=有 key-value 的字典
+#define kDictIsEmpty(dic)     ((dic) == nil \
+    || [(dic) isKindOfClass:[NSNull class]] \
+    || ![(dic) isKindOfClass:[NSDictionary class]] \
+    || (dic).allKeys.count == 0)
+
+/// 通用对象判空（覆盖 nil、NSNull、length==0、count==0）
+/// 返回: YES=空/无效，NO=有内容的对象
+/// ✅ 已修复：按类型分路判断，避免 NSDictionary 响应 length 返回 0 导致非空字典被误判为空
+#define kObjectIsEmpty(_object) ((_object) == nil \
+    || [(_object) isKindOfClass:[NSNull class]] \
+    || ([(_object) isKindOfClass:[NSString class]] && [(_object) length] == 0) \
+    || ([(_object) isKindOfClass:[NSData class]] && [(_object) length] == 0) \
+    || ([(_object) isKindOfClass:[NSArray class]] && [(_object) count] == 0) \
+    || ([(_object) isKindOfClass:[NSDictionary class]] && [(_object) count] == 0) \
+    || ([(_object) isKindOfClass:[NSSet class]] && [(_object) count] == 0))
 
 
 

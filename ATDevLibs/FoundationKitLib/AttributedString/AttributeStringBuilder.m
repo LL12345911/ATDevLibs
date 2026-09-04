@@ -569,10 +569,7 @@
 - (void)p_updateCurrentTagAttachment:(void (^)(SCRoundedTagAttachment *tag))block {
     for (NSValue *value in self.scr_ranges) {
         NSRange range = [value rangeValue];
-        SCRoundedTagAttachment *attachment =
-        [self.source attribute:NSAttachmentAttributeName
-                       atIndex:range.location
-                effectiveRange:nil];
+        SCRoundedTagAttachment *attachment = [self.source attribute:NSAttachmentAttributeName atIndex:range.location effectiveRange:nil];
         if ([attachment isKindOfClass:[SCRoundedTagAttachment class]]) {
             if (block) block(attachment);
         }

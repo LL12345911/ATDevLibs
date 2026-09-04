@@ -38,10 +38,33 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    UILabel *label2 = [[UILabel alloc] initWithFrame:CGRectMake(30, 30, 300, 20)];
+    [self.view addSubview:label2];
+    
+    NSArray *tags2 = @[@"道路破损", @"井盖缺失", @"路灯不亮", @"违规停车", @"垃圾堆积"];
+    AttributeStringBuilder *build2 = AttributeStringBuilder.build(@"");
+
+    for (NSInteger i = 0; i < tags2.count; i++) {
+        build2.appendRoundedTag(tags2[i])
+            .tagFont(AutoFont(12))
+            .tagTextColor(RGBCOLOR(0x333333))
+            .tagBackgroundColor(RGBCOLOR(0xF0F0F0))
+            .tagCornerRadius(4)
+            .tagInsets(UIEdgeInsetsMake(3, 8, 3, 8));
+        
+        // 标签之间加间距（不是空格，是固定宽度的 attachment）
+        if (i < tags2.count - 1) {
+            build2.appendSpacing(6);
+        }
+    }
+    label2.attributedText = [build2 commit];
+    
+    
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(30, 0, 300, 700)];
       label.numberOfLines = 0;
       // 必须显式设为 WordWrapping/CharWrapping；默认 TruncatingTail 会导致多标签行被截断而非换行
-      label.lineBreakMode = NSLineBreakByWordWrapping;
+//      label.lineBreakMode = NSLineBreakByWordWrapping;
       [self.view addSubview:label];
       
       
