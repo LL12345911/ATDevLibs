@@ -76,8 +76,8 @@ CG_INLINE BOOL kValidStr(NSString *f){
     return ![f isEqualToString:@""];
 }
 
-/// 兼容旧名 StrValid，内部统一调用 kValidStr
-#define StrValid(f) kValidStr(f)
+///// 兼容旧名 StrValid，内部统一调用 kValidStr
+//#define StrValid(f) kValidStr(f)
 
 /// 判断 allStr 中是否包含 keyStr（大小写敏感）
 /// 返回: YES=allStr 中包含 keyStr，NO=不包含/keyStr 未找到/任一参数无效
@@ -129,12 +129,12 @@ CG_INLINE BOOL kValidData(NSData *f){
 #pragma mark - 安全取值 / 默认值
 
 /// 字符串安全取值：有效返回原字符串 f，无效返回空字符串 @""
-CG_INLINE NSString* kSafeStr(NSString *f){
+CG_INLINE NSString* kIfNull(NSString *f){
     return kValidStr(f) ? f : @"";
 }
 
-/// 兼容旧名 kIfNull，内部统一调用 kSafeStr
-#define kIfNull(f) kSafeStr(f)
+///// 兼容旧名 kIfNull，内部统一调用 kSafeStr
+//#define kIfNull(f) kSafeStr(f)
 
 /// 字符串安全取值：有效返回原字符串 f，无效返回指定的默认字符串
 /// 返回: 有效时返回 f，无效时返回 tempStr（若 tempStr 本身无效则回退到 @""）
