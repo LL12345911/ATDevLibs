@@ -414,33 +414,82 @@ NS_ASSUME_NONNULL_BEGIN
 - (AttributeStringBuilder *(^)(CGFloat kern))kern;
 
 
-/// 动态添加字间距
-/// @Discussion baseText  基准文本 ,   @"道路路路名名称"
-/// @Discussion dynamicText  动态文本 , @"上报人“
-/// @Discussion font 字体
+
+/// 对已追加的末尾文本动态调整字间距，使其渲染宽度与参考文本对齐
+///
+/// @discussion 与 appendDynamicFitKern 的区别：
+///             - 本方法 **不追加** 新文本，仅修改 builder 当前末尾已存在的文本属性
+///             - 适用于先 .append(@"上报人") 再链式调用 .dynamicKern(...) 的场景
+///             - 内部固定 suffixLength = 1（排除末尾1个字符），若需其他值请使用 appendDynamicFitKern
+///
+///             ⚠️ 调用前必须确保 builder 末尾已有文本，否则无效果
+///
 /// @code
-///  AttributeStringBuilder *build = AttributeStringBuilder.build(@"NSBackgroundColorAttributeName 圆角")
-///  .append(@"\n").font([UIFont systemFontOfSize:14])
-///  .append(@"道路路路名名称：").font([UIFont systemFontOfSize:14])
-///  .append(@"\n").font([UIFont systemFontOfSize:14])
-///  .append(@"上报人").font([UIFont systemFontOfSize:14]).dynamicKern(@"道路路路名名称", @"上报人", [UIFont systemFontOfSize:14])
-- (AttributeStringBuilder *(^)(NSString *baseText, NSString *dynamicText, UIFont *font))dynamicKern;
+/// AttributeStringBuilder.build(@"")
+///     .append(@"道路名称：").font(labelFont)
+///     .append(@"\n").font(labelFont)
+///     .append(@"上报人").font(labelFont)
+///     .dynamicKern(@"道路名称", @"上报人", labelFont);
+/// @endcode
+///
+/// @note 本方法返回一个 Block，该 Block 接受以下三个参数：
+///       - referenceText: 参考基准文本，以其渲染宽度作为对齐目标（不含后缀）
+///       - fittingText:   用于计算宽度差值的动态文本（应与 builder 末尾文本内容一致）
+///       - font:          文本使用的字体（参考文本与动态文本必须使用相同字体）
+- (AttributeStringBuilder *(^)(NSString *referenceText, NSString *fittingText, UIFont *font))dynamicKern;
 
 
-/// 添加文字并设置字间距
-/// @Discussion baseText  基准文本 ,   @"道路路路名名称："
-/// @Discussion dynamicText  动态文本 , @"上报人：“
-/// @Discussion font 字体
+
+/// 追加动态文本并自动调整字间距，使其渲染宽度与参考文本对齐（固定排除尾部2个字符）
+///
+/// @discussion 这是 appendDynamicFitKern:suffixLength: 的便捷方法，
+///             内部固定 suffixLength = 2，适用于标签后缀为两个字符的场景，如：
+///             "道路名称：" ← 参考文本
+///             "上报人："   ← 动态文本，末2位"人："不参与间距调整
+///
+///             ⚠️ 若后缀长度不为2，请使用 appendDynamicFitKern:suffixLength:
+///
 /// @code
-///  AttributeStringBuilder *build = AttributeStringBuilder.build(@"NSBackgroundColorAttributeName 圆角")
-///  .append(@"\n").font([UIFont systemFontOfSize:14])
-///  .append(@"道路路路名名称：").font([UIFont systemFontOfSize:14])
-///  .append(@"\n").font([UIFont systemFontOfSize:14])
-///  .append(@"上报人").font([UIFont systemFontOfSize:14]).dynamicKern(@"道路路路名名称", @"上报人", [UIFont systemFontOfSize:14])
-///  .append(@"\n").font([UIFont systemFontOfSize:14])
-///  .appendDynamicKern(@"道路路路名名称：", @"上报人：", [UIFont systemFontOfSize:14]).font([UIFont systemFontOfSize:14])
-///  .append(@"\n").font([UIFont systemFontOfSize:14])
-- (AttributeStringBuilder *(^)(NSString *baseText, NSString *dynamicText, UIFont *font))appendDynamicKern;
+/// AttributeStringBuilder.build(@"")
+///     .append(@"道路名称：").font(labelFont)
+///     .appendDynamicKern(@"道路名称：", @"上报人：", labelFont)
+///     .append(@"\n").font(labelFont);
+/// @endcode
+///
+/// @discussion 本方法返回一个 Block，该 Block 接受以下参数：<br/>
+///
+/// - referenceText: 参考基准文本，以其渲染宽度作为对齐目标（不含后缀）<br/>
+///
+/// - fittingText:   用于计算宽度差值的动态文本（长度必须 > 2）（应与 builder 末尾文本内容一致）<br/>
+///
+/// - font:          文本使用的字体（参考文本与动态文本必须使用相同字体）
+- (AttributeStringBuilder *(^)(NSString *referenceText, NSString *fittingText, UIFont *font))appendDynamicKern;
+
+/// 追加动态文本并自动调整字间距，使其渲染宽度与参考文本对齐
+///
+/// @discussion 核心原理：计算「参考文本」与「动态文本」的宽度差值，
+///             将差值均摊到动态文本的可调节字符上（排除尾部固定后缀），
+///             通过 NSKernAttributeName 实现视觉上的等宽对齐。
+///             适用于标签列对齐场景，如：
+///             "道路名称：" ← 参考文本（4字中文+冒号）
+///             "上报人："   ← 动态文本（3字中文+冒号），自动撑开至与上方等宽
+///
+/// @code
+/// AttributeStringBuilder.build(@"")
+///     .append(@"道路名称：").font(labelFont)
+///     .appendDynamicFitKern(@"道路名称：", @"上报人：", labelFont, 1)
+///     .append(@"\n").font(labelFont)
+///     .appendDynamicFitKern(@"道路名称：", @"审核意见：", labelFont, 1);
+/// @endcode
+///
+/// @note 本方法返回一个 Block，该 Block 接受以下参数：
+///       - referenceText: 参考基准文本，以其渲染宽度作为对齐目标（不含后缀）
+///       - fittingText:    需要调整字间距的动态文本（长度必须 > 2）（应与 builder 末尾文本内容一致）
+///       - font:          文本使用的字体（参考文本与动态文本必须使用相同字体）
+///       - suffixLength:          动态文本尾部不参与字间距调整的固定字符数
+///                       （通常为冒号、空格等后缀，如 @"：" 传 1）
+///                       字间距仅作用于前 (fittingText.length - suffixLength) 个字符
+- (AttributeStringBuilder *(^)(NSString *referenceText, NSString *fittingText, UIFont *font, NSInteger suffixLength))appendDynamicFitKern;
 
 /// 倾斜
 - (AttributeStringBuilder *(^)(CGFloat obliqueness))obliqueness;

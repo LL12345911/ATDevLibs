@@ -75,15 +75,17 @@
     
       AttributeStringBuilder *build = AttributeStringBuilder.build(@"NSBackgroundColorAttributeName 圆角")
         .append(@"\n").font([UIFont systemFontOfSize:14])
-          .append(@"道路路路名名称：").font([UIFont systemFontOfSize:14])
-          .append(@"\n").font([UIFont systemFontOfSize:14])
-          .append(@"上报人").font([UIFont systemFontOfSize:14]).dynamicKern(@"道路路路名名称", @"上报人", [UIFont systemFontOfSize:14])
-          .append(@"\n").font([UIFont systemFontOfSize:14])
-          .appendDynamicKern(@"道路路路名名称：", @"上报人：", [UIFont systemFontOfSize:14]).font([UIFont systemFontOfSize:14])
-          .append(@"\n").font([UIFont systemFontOfSize:14])
-          //.append(@"背景颜色").font(AutoFont(15)).color([UIColor yellowColor])
-          .appendBackgroundColor(@"背景颜色", [UIFont systemFontOfSize:34], [UIColor greenColor],[UIColor redColor],3, 0)
-          .all.lineSpacing(3).append(@"\n").font([UIFont systemFontOfSize:14]);
+        .append(@"道路路路名名称：").font([UIFont systemFontOfSize:14])
+        .append(@"\n").font([UIFont systemFontOfSize:14])
+        .append(@"上报人").font([UIFont systemFontOfSize:14]).dynamicKern(@"道路路路名名称", @"上报人", [UIFont systemFontOfSize:14])
+        .append(@"\n").font([UIFont systemFontOfSize:14])
+        .appendDynamicKern(@"道路路路名名称：", @"上报人：", [UIFont systemFontOfSize:14]).font([UIFont systemFontOfSize:14])
+        .append(@"\n").font([UIFont systemFontOfSize:14])
+        .appendDynamicFitKern(@"道路路路名名称", @"发报人", [UIFont systemFontOfSize:14], 1).font([UIFont systemFontOfSize:14])
+        .append(@"\n").font([UIFont systemFontOfSize:14])
+    //.append(@"背景颜色").font(AutoFont(15)).color([UIColor yellowColor])
+        .appendBackgroundColor(@"背景颜色", [UIFont systemFontOfSize:34], [UIColor greenColor],[UIColor redColor],3, 0)
+        .all.lineSpacing(3).append(@"\n").font([UIFont systemFontOfSize:14]);
     
     NSArray *tags = @[@"道路破损", @"井盖缺失", @"路灯不亮", @"违规停车", @"垃圾堆积"];
     
