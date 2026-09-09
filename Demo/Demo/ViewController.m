@@ -121,9 +121,7 @@
     //.append(@"背景颜色").font(AutoFont(15)).color([UIColor yellowColor])
         .appendBackgroundColor(@"背景颜色", [UIFont systemFontOfSize:34], [UIColor greenColor],[UIColor redColor],3, 0)
         .all.lineSpacing(3).append(@"\n").font([UIFont systemFontOfSize:14])
-        .append(@"点击事件").tapAction(^{
-            NSLog(@"+_++++++");
-        })
+    
         .append(@"\n")
         .append(@"\n") .append(@"\n")
     
@@ -164,7 +162,6 @@
     
     
     label.attributedText = [build commit];
-    [AttributeStringBuilder scr_enableTapOnLabel:label];
     
     
     
@@ -229,6 +226,122 @@
     //
     //    btn2.frame = CGRectMake(100, 400, 100, 100);
     //    [self.scrollView addSubview:btn2];
+}
+
+- (void)test3 {
+    NSShadow *shadow = [[NSShadow alloc] init];
+    shadow.shadowColor = [UIColor blueColor];
+    shadow.shadowOffset = CGSizeMake(2, 2);
+    
+    NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
+    attachment.image = [UIImage sf_defaultSymbolImageWithName:@"arrow.up.circle.fill" tintColor:themeColor pointSize:36];;
+    attachment.bounds = CGRectMake(0, -4, 16, 16);
+    
+    NSString *reasonStr = @"DCloud还提供了使用js编写服务器代码的uniCloud云引擎。所以只需掌握js，你可以开发web、Android、iOS、各家小程序以及服务器等全栈应用。";
+    
+    
+    AttributeStringBuilder *build =  AttributeStringBuilder.build(@"颜色字体\n").fontSize(30).color([UIColor purpleColor])
+    // 匹配（match/matchFirst/matchLast/regular）
+        .append(@"链接A 链接B 链接C 数字123 数字456")
+        .match(@"链接").hexColor(0xFF4400).underlineStyle(NSUnderlineStyleSingle).underlineColor([UIColor redColor])
+        .matchFirst(@"数字").backgroundColor([UIColor yellowColor])
+        .matchLast(@"数字").backgroundColor([UIColor cyanColor])
+        .regular(@"\\d+", YES).color([UIColor blueColor])
+    
+    // 图片附件（appendImage/appendSizeImage/appendFontImage/appendCustomImage / insertImage/headInsertImag）
+        .appendImage(icon)
+        .appendSizeImage(icon, CGSizeMake(28, 28))
+        .appendFontImage(smallIcon, [UIFont systemFontOfSize:18])
+        .appendCustomImage(icon, CGSizeMake(24, 24), f14)
+        .headInsertImage(smallIcon, CGSizeMake(18, 18), f14)
+        .insertImage(smallIcon, CGSizeMake(18, 18), 0, f14)
+        .append(@" 附件：").font(f14).appendAttachment(attachment)
+    
+    
+    // 圆角文字标签（appendRoundedTag/tagFont/tagTextColor/tagBackgroundColor/tagCornerRadius/tagInsets）
+        .appendRoundedTag(@"红色标签")
+        .tagFont([UIFont boldSystemFontOfSize:14])
+        .tagTextColor([UIColor whiteColor])
+        .tagBackgroundColor([UIColor redColor])
+        .tagCornerRadius(8)
+        .tagInsets(UIEdgeInsetsMake(3, 6, 3, 6))
+    
+    // 圆角文字标签‑生成图片（appendBackgroundColor 系列，共 7 种变体）
+        .appendBackgroundColor(@"基础款", [UIFont systemFontOfSize:13], [UIColor whiteColor], fill, 6, 0)
+        .appendBackgroundColor(@"上偏移", [UIFont systemFontOfSize:13], [UIColor whiteColor], fill, 6, -3)
+        .appendBackgroundInsetsColor(@"内边距款", [UIFont systemFontOfSize:13], [UIColor whiteColor], fill, 6, UIEdgeInsetsMake(4, 12, 4, 12), 0)
+        .appendBackgroundMarginsColor(@"外边距款", [UIFont systemFontOfSize:13], [UIColor whiteColor], fill, 6, UIEdgeInsetsMake(2, 6, 2, 6), UIEdgeInsetsMake(2, 4, 2, 4), 0)
+        .appendBackgroundSize(@"固定尺寸款", [UIFont systemFontOfSize:13], [UIColor whiteColor], fill, 6, CGSizeMake(48, 28), 0)
+        .appendBackgroundCornerColor(@"圆角方向 - 左上圆角", [UIFont systemFontOfSize:13], [UIColor whiteColor], fill, r,UIRectCornerTopLeft, 0)
+        .appendBackgroundCornerColor(@"圆角方向 - 右侧圆角", [UIFont systemFontOfSize:13], [UIColor whiteColor], fill, r, UIRectCornerTopRight | UIRectCornerBottomRight, 0)
+        .appendBackgroundCornerSize(@"圆角方向+尺寸款", [UIFont systemFontOfSize:13], [UIColor whiteColor], fill, 6, UIRectCornerAllCorners, CGSizeMake(30, 30), 0)
+        .appendBackgroundRadiusColor(@"完整参数（描边/线宽/内外边距）", [UIFont systemFontOfSize:13], [UIColor blueColor], [UIColor clearColor], 6,UIRectCornerAllCorners, CGSizeMake(0, 0),UIEdgeInsetsMake(3, 10, 3, 10),UIEdgeInsetsZero,[UIColor blueColor], 1, 0)
+    
+    // 左侧标题 + 右侧内容（内容多行，自动留出左侧标题空白）
+        .append([NSString stringWithFormat:@"位置信息：%@", reasonStr]).font(AutoFont(12)).color([UIColor redColor])
+        .headIndent(padding).tailIndent(0).lineBreakMode(NSLineBreakByCharWrapping)
+        .append(@"\n\n").font([UIFont systemFontOfSize:2])
+        .append([NSString stringWithFormat:@"位置信息：%@", reasonStr]).font(AutoFont(12)).color([UIColor blackColor])
+        .headIndentCharacters(5, AutoFont(12)).tailIndent(0).lineBreakMode(NSLineBreakByCharWrapping)
+        .append(@"\n\n").font([UIFont systemFontOfSize:2]);
+    
+    // 分割线
+        .appendDividerLine(16, 16)
+        .appendDividerLine(0, 0).dividerColor([UIColor lightGrayColor]).dividerThickness(1);
+    
+    // Glyph 属性（strikethrough/underline/stroke/textEffect/shadow/link/linkUrlStr）
+        .append(@"删除线 ").font(f14).strikethroughStyle(NSUnderlineStyleSingle).strikethroughColor([UIColor redColor])
+        .append(@"下划线 ").font(f14).underlineStyle(NSUnderlineStyleThick).underlineColor([UIColor greenColor])
+        .append(@"中空字").font([UIFont boldSystemFontOfSize:18]).strokeColor([UIColor purpleColor]).strokeWidth(2)
+        .append(@"\n浮雕效果").font(f16).textEffect(NSTextEffectLetterpressStyle)
+        .append(@" 阴影").font(f16).shadow(shadow)
+        .append(@" 链接").font(f16).link([NSURL URLWithString:@"https://www.apple.com"])
+        .append(@" 链接字符串").font(f16).linkUrlStr(@"https://www.apple.com")
+    
+    // appendLeftRightLine（一行两段对齐，自动独占一行）
+        .appendLeftRightLine(@"商品名称", @"¥99.00", kDemoWidth, f14)
+        .appendLeftRightLine(@"运费", @"包邮", kDemoWidth, f14)
+        .appendLeftRightLine(@"实付款", @"¥99.00", kDemoWidth, [UIFont boldSystemFontOfSize:14])
+    
+    // alignLeftRight（手动 \\t，右段为文本+图片）
+        .append(@"金额：").font(f14)
+        .append(@"\t")
+        .appendSizeImage(smallIcon, CGSizeMake(18, 18)).append(@" ¥99.00").font(f14)
+        .alignLeftRight(340) // 演示区域的固定内容宽度（Label使用该宽度）
+    
+    // headIndent / tailIndent
+        .append(@"整体左缩进 + 右缩进。这段文字设置了 headIndent(20) 与 tailIndent(-20)，展示左右缩进后的排版。").font(f14).headIndent(20).tailIndent(-20)
+    
+    // 特殊属性（baselineOffset/kern/obliqueness/expansion/ligature）
+        .append(@"上标").font(f14).baselineOffset(8).fontSize(10)
+        .append(@" 下标").font(f14).baselineOffset(-6).fontSize(10)
+        .append(@" 字间距").font(f14).kern(4)
+        .append(@" 倾斜").font(f14).obliqueness(0.3)
+        .append(@" 拉伸").font(f14).expansion(0.5)
+        .append(@" 压缩").font(f14).expansion(-0.3)
+        .append(@" 连字").font(f14).ligature(1)
+    
+    //  dynamicKern（对齐已追加的末尾文本宽度）
+        .append(@"道路名称：").font(labelFont)
+        .append(@"\n").font(labelFont)
+        .append(@"上报人").font(labelFont).dynamicKern(@"道路名称", @"上报人", labelFont)
+    
+    // appendDynamicKern（追加并对齐
+        .append(@"道路名称：").font(labelFont)
+        .append(@"\n").font(labelFont)
+        .appendDynamicKern(@"道路名称：", @"上报人：", labelFont).font(labelFont)
+        .append(@"\n").font(labelFont)
+        .appendDynamicKern(@"道路名称：", @"审核意见：", labelFont).font(labelFont)
+    
+    // appendDynamicFitKern（指定后缀长度）
+        .append(@"道路名称：").font(labelFont)
+        .append(@"\n").font(labelFont)
+        .appendDynamicFitKern(@"道路名称：", @"上报人：", labelFont, 2).font(labelFont)
+        .append(@"\n").font(labelFont)
+        .appendDynamicFitKern(@"道路名称：", @"审核意见：", labelFont, 1).font(labelFont);
+    
+    _label.attributedText = [build commit];
+    
 }
 
 @end

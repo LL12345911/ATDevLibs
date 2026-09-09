@@ -191,7 +191,7 @@ static const CGFloat kDemoWidth = 340.0;
         CGFloat r = 6;
         AttributeStringBuilder *b2 = AttributeStringBuilder.build(@"");
         b2.append(@"内边距款").font(f14);
-        b2.appendBackgroundInsetsColor(@"Padding", tagFont, white, fill, r,
+        b2.appendBackgroundInsetsColor(@"内边距款", tagFont, white, fill, r,
                                        UIEdgeInsetsMake(4, 12, 4, 12), 0);
         mainBuilder.attributedAppend([b2 commit]);
     }
@@ -204,7 +204,7 @@ static const CGFloat kDemoWidth = 340.0;
         CGFloat r = 6;
         AttributeStringBuilder *b3 = AttributeStringBuilder.build(@"");
         b3.append(@"外边距款").font(f14);
-        b3.appendBackgroundMarginsColor(@"Margin", tagFont, white, fill, r,
+        b3.appendBackgroundMarginsColor(@"外边距款", tagFont, white, fill, r,
                                         UIEdgeInsetsMake(2, 6, 2, 6),
                                         UIEdgeInsetsMake(2, 4, 2, 4), 0);
         mainBuilder.attributedAppend([b3 commit]);
@@ -231,7 +231,7 @@ static const CGFloat kDemoWidth = 340.0;
         CGFloat r = 6;
         AttributeStringBuilder *b5 = AttributeStringBuilder.build(@"");
         b5.append(@"圆角方向款").font(f14);
-        b5.appendBackgroundCornerColor(@"左上圆角", tagFont, white, fill, r,
+        b5.appendBackgroundCornerColor(@"圆角方向 - 左上圆角", tagFont, white, fill, r,
                                        UIRectCornerTopLeft, 0);
         b5.append(@" ").font(f14);
         b5.appendBackgroundCornerColor(@"右侧圆角", tagFont, white, fill, r,
@@ -258,7 +258,7 @@ static const CGFloat kDemoWidth = 340.0;
         CGFloat r = 8;
         AttributeStringBuilder *b7 = AttributeStringBuilder.build(@"");
         b7.append(@"描边款").font(f14);
-        b7.appendBackgroundRadiusColor(@"Border", tagFont, [UIColor blueColor], [UIColor clearColor], r,
+        b7.appendBackgroundRadiusColor(@"完整参数（描边/线宽/内外边距）", tagFont, [UIColor blueColor], [UIColor clearColor], r,
                                        UIRectCornerAllCorners, CGSizeMake(0, 0),
                                        UIEdgeInsetsMake(3, 10, 3, 10),
                                        UIEdgeInsetsZero,
@@ -447,41 +447,6 @@ static const CGFloat kDemoWidth = 340.0;
         mainBuilder.attributedAppend(result);
     }
     
-#pragma mark - 11. 点击事件
-    appendSectionTitle(@"11. 点击事件（tapAction + 普通 UILabel，无需子类，点击下方文字/图标试试）");
-    {
-        __weak typeof(self) weakSelf = self;
-        UIColor *tapBlue = [UIColor blueColor];
-        UIColor *tapRed = [UIColor redColor];
-
-        AttributeStringBuilder *b = AttributeStringBuilder.build(@"");
-        // 文本点击：标记当前 Range，样式自行设置
-        b.append(@"点击我（蓝色下划线）").font(f14).color(tapBlue).underlineStyle(NSUnderlineStyleSingle);
-        b.tapAction(^{
-            weakSelf.scr_statusLabel.text = @"✅ 点击了：蓝色下划线文字";
-            NSLog(@"+_++++++");
-        });
-        b.append(@"  ").font(f14);
-        b.append(@"点击我（红色粗下划线）").font(f14).color(tapRed).underlineStyle(NSUnderlineStyleThick);
-        b.tapAction(^{
-            weakSelf.scr_statusLabel.text = @"✅ 点击了：红色文字";
-        });
-        b.append(@"  ").font(f14);
-
-        // 图片点击：图片附件也是一个字符，用 range 选中它并注册点击
-        NSRange iconTextRange = [b currentRange]; // 当前为 "点击图标" 文字范围
-        b.append(@"点击图标").font(f14).color(tapBlue);
-        b.appendSizeImage(smallIcon, CGSizeMake(18, 18));
-        b.range(NSMaxRange(iconTextRange), 1); // 图片字符位于文字之后
-        b.tapAction(^{
-            weakSelf.scr_statusLabel.text = @"✅ 点击了：图标";
-        });
-
-        // 未注册点击的文字：点击不应有任何响应
-        b.append(@" 普通文字（无点击）").font(f14).color([UIColor grayColor]);
-
-        mainBuilder.attributedAppend([b commit]);
-    }
 
     return [mainBuilder commit];
 }
@@ -517,7 +482,6 @@ static const CGFloat kDemoWidth = 340.0;
 
     // 生成完整大富文本，全部塞到这一个label
     singleContentLabel.attributedText = [self buildCombinedFullAttributedText];
-    [AttributeStringBuilder scr_enableTapOnLabel:singleContentLabel];
 
     // layout：label宽度固定kDemoWidth，上下左右边距，驱动scrollView contentSize
     [NSLayoutConstraint activateConstraints:@[
