@@ -309,6 +309,35 @@ NS_ASSUME_NONNULL_BEGIN
 - (AttributeStringBuilder *(^)(NSString *text, UIFont *font, UIColor * _Nullable textColor, UIColor * _Nullable fillColor, CGFloat radius, UIRectCorner corners, CGSize imgSize, UIEdgeInsets insets, UIEdgeInsets margins, UIColor * _Nullable strokeColor, CGFloat lineWidth, CGFloat offsetY))appendBackgroundRadiusColor;
 
 
+#pragma mark - 分割线
+
+/**
+ 追加一行分割线（占一行高度，自动独占一行）
+ 
+ @brief 分割线宽度在排版时自动撑满文本行，左右两端分别留出 leftSpacing / rightSpacing 的间距；
+        线条粗细与颜色可通过 dividerThickness / dividerColor 配置（作用于最近追加的分割线）。
+ 
+ @discussion leftSpacing   分割线左端距文本区左边界的间距（pt）
+ @discussion rightSpacing  分割线右端距文本区右边界的间距（pt）
+ 
+ @code
+ AttributeStringBuilder.build(@"")
+     .append(@"标题").font([UIFont systemFontOfSize:16])
+     .appendDividerLine(16, 16).dividerColor([UIColor lightGrayColor]).dividerThickness(1)
+     .append(@"正文").font([UIFont systemFontOfSize:14]);
+ @endcode
+ */
+- (AttributeStringBuilder *(^)(CGFloat leftSpacing, CGFloat rightSpacing))appendDividerLine;
+
+/// 分割线颜色（作用于最近追加的分割线，nil 时恢复默认浅灰）
+- (AttributeStringBuilder *(^)(UIColor *color))dividerColor;
+
+/// 分割线粗细，单位 pt（作用于最近追加的分割线）
+- (AttributeStringBuilder *(^)(CGFloat thickness))dividerThickness;
+
+
+
+
 #pragma mark - Glyph
 
 /**
@@ -371,7 +400,68 @@ NS_ASSUME_NONNULL_BEGIN
 - (AttributeStringBuilder *(^)(CGFloat spacing))paragraphSpacing;
 
 /// 对齐
+/// @note 仅作用于当前 Range。若 Range 落在段落中间，对齐可能不生效，
+///       这种场景请改用 alignLeft / alignRight / alignCenter / alignJustified
 - (AttributeStringBuilder *(^)(NSTextAlignment alignment))alignment;
+
+/// 左对齐（自动扩展到当前 Range 所在的完整段落，段落内的文本与图片附件一起对齐）
+- (AttributeStringBuilder *)alignLeft;
+
+/// 右对齐（自动扩展到当前 Range 所在的完整段落，段落内的文本与图片附件一起对齐）
+- (AttributeStringBuilder *)alignRight;
+
+/// 居中对齐（自动扩展到当前 Range 所在的完整段落，段落内的文本与图片附件一起对齐）
+- (AttributeStringBuilder *)alignCenter;
+
+/// 两端对齐（自动扩展到当前 Range 所在的完整段落）
+/// @note 一行文字自动撑满整行、左右两端齐平；不足一行的最后一行仍按左对齐处理
+- (AttributeStringBuilder *)alignJustified;
+
+/**
+ 一行内容两段对齐：同一行内前半段靠左、后半段靠右
+ 
+ @brief 通过在行尾放置一个右对齐制表位实现：`\t` 之前的内容保持靠左，
+        之后的内容被推到 lineWidth 处并右对齐。
+ 
+ @discussion lineWidth  行的总宽度，通常为承载控件（UILabel）的内容宽度，
+                        即控件宽度减去自身的 contentInset / 边距
+ 
+ @note 左右两段既可以是文本，也可以是图片附件（图片通过 appendImage /
+        appendSizeImage / appendCustomImage 等追加），制表位对齐对图片同样生效。
+ 
+ @warning 调用方需要在两段文本之间自行插入 `\t`，例如：
+ @code
+ AttributeStringBuilder.build(@"")
+     .append(@"商品名称").font([UIFont systemFontOfSize:14])
+     .append(@"\t")
+     .append(@"¥99.00").font([UIFont systemFontOfSize:14])
+     .alignLeftRight(375);
+ @endcode
+ 若不想手动拼 `\t`，可直接使用 appendLeftRightLine。
+ */
+- (AttributeStringBuilder *(^)(CGFloat lineWidth))alignLeftRight;
+
+/**
+ 追加「左段 + 右段」一行内容，左段靠左、右段靠右（自动独占一行）
+ 
+ @brief appendLeftRightLine 的便捷封装，内部自动拼接 `\t`、末尾换行并应用两段对齐，
+        调用方无需关心制表位细节。
+ 
+ @discussion leftText   靠左显示的文本（nil 视为空串）
+ @discussion rightText  靠右显示的文本（nil 视为空串）
+ @discussion lineWidth  行的总宽度，通常为承载控件的内容宽度
+ @discussion font       文本字体（nil 时使用系统 17pt）
+ 
+ @note 若左右段包含图片附件，请改用「手动 `\t` + alignLeftRight」的方式：
+       在图片附件与右段内容之间插入 `\t`，最后调用 alignLeftRight(lineWidth)。
+ 
+ @code
+ AttributeStringBuilder.build(@"")
+     .appendLeftRightLine(@"商品名称", @"¥99.00", 375, [UIFont systemFontOfSize:14])
+     .appendLeftRightLine(@"运费", @"包邮", 375, [UIFont systemFontOfSize:14]);
+ @endcode
+ */
+- (AttributeStringBuilder *(^)(NSString *leftText, NSString *rightText, CGFloat lineWidth, UIFont *_Nullable font))appendLeftRightLine;
 
 /// 换行
 - (AttributeStringBuilder *(^)(NSLineBreakMode mode))lineBreakMode;
@@ -458,11 +548,9 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 /// @discussion 本方法返回一个 Block，该 Block 接受以下参数：<br/>
 ///
-/// - referenceText: 参考基准文本，以其渲染宽度作为对齐目标（不含后缀）<br/>
-///
-/// - fittingText:   用于计算宽度差值的动态文本（长度必须 > 2）（应与 builder 末尾文本内容一致）<br/>
-///
-/// - font:          文本使用的字体（参考文本与动态文本必须使用相同字体）
+/// @discussion  - referenceText: 参考基准文本，以其渲染宽度作为对齐目标（不含后缀）<br/>
+/// @discussion  - fittingText:   用于计算宽度差值的动态文本（长度必须 > 2）（应与 builder 末尾文本内容一致）<br/>
+/// @discussion  - font:          文本使用的字体（参考文本与动态文本必须使用相同字体）
 - (AttributeStringBuilder *(^)(NSString *referenceText, NSString *fittingText, UIFont *font))appendDynamicKern;
 
 /// 追加动态文本并自动调整字间距，使其渲染宽度与参考文本对齐
@@ -504,6 +592,68 @@ NS_ASSUME_NONNULL_BEGIN
 //
 ///// 整体段间距  segmentSpacing为零，则为默认段间距
 //- (AttributeStringBuilder *(^)(CGFloat segmentSpacing))segmentSpacing;
+
+
+
+#pragma mark - 点击事件
+//
+///// 点击标记属性名：作用于被 tapAction 标记的字符，值 = 字符串 ID
+//FOUNDATION_EXPORT NSAttributedStringKey const SCRAttributedStringTapIDAttributeName;
+//
+///// 点击回调注册表属性名：作用于整个字符串，值 = NSDictionary<NSString*, void(^)(void)>
+//FOUNDATION_EXPORT NSAttributedStringKey const SCRAttributedStringTapActionsAttributeName;
+//
+///**
+// 给当前 Range 注册点击事件
+// 
+// @brief 将当前 Range 标记为可点击，点击时回调 action。
+// 无需自定义 UILabel 子类：把 commit 出的富文本赋给任意 UILabel，
+// 再调用 [AttributeStringBuilder scr_enableTapOnLabel:label] 即可生效。
+// 标记的视觉样式（颜色 / 下划线等）需调用方自行设置。
+// 图片附件也是一个字符，可通过 .range(idx, 1) 选中后同样注册点击。
+// 
+// @code
+// AttributeStringBuilder.build(@"")
+// .append(@"点击我").font([UIFont systemFontOfSize:14])
+// .color([UIColor blueColor]).underlineStyle(NSUnderlineStyleSingle)
+// .tapAction(^{ NSLog(@"被点击了"); });
+// // label.attributedText = [builder commit];
+// // [AttributeStringBuilder scr_enableTapOnLabel:label];
+// @endcode
+// 
+// @note 通过 attributedAppend 拼接的富文本若带有点击标记，其回调会自动合并，
+// 拼接后点击事件仍然可用。
+// */
+//- (AttributeStringBuilder *(^)(void (^action)(void)))tapAction;
+//
+///**
+// 让普通 UILabel 支持富文本点击（无需子类化 UILabel）
+// 
+// @brief 给 label 挂载点击手势并启用交互。手势回调内部用 TextKit 命中测试
+// 解析点击坐标 → 找到被 tapAction 标记的字符 → 执行对应回调。
+// 幂等：对同一个 label 重复调用不会重复添加手势。
+// 
+// @code
+// UILabel *label = [[UILabel alloc] init];
+// label.numberOfLines = 0;
+// label.attributedText = [builder commit];
+// [AttributeStringBuilder scr_enableTapOnLabel:label];
+// @endcode
+// 
+// @note 1. 需在设置 attributedText 之后调用（回调注册表存储在富文本上）。
+// 2. label 的 lineBreakMode 需与展示时一致（如 WordWrapping），命中测试
+// 会按 label 当前布局解析。
+// */
+//+ (void)scr_enableTapOnLabel:(UILabel *)label;
+//
+///**
+// 在指定点触发点击回调（坐标 → 字符 → 回调）
+// 
+// @brief 与 scr_enableTapOnLabel: 内部手势回调同一实现。
+// 需要自定义手势/手动触发时可调用；测试也可直接调用验证。
+// 点未命中任何被标记字符时无副作用。
+// */
+//+ (void)scr_handleTapAtPoint:(CGPoint)point onLabel:(UILabel *)label;
 
 @end
 

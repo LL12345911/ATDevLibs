@@ -31,6 +31,9 @@
 #import "ATMacro.h"
 #import "AutoInch.h"
 #import "AttributeStringBuilder.h"
+#import "SCDividerLineAttachment.h"
+#import "SCRoundedTagAttachment.h"
+
 
 #import "JsonTransForm.h"
 #import "YHDrawImage.h"

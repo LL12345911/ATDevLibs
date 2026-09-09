@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		411F2E7A304FFFDE00E72876 /* AttributeStringBuilderAllFeaturesDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 411F2E79304FFFDE00E72876 /* AttributeStringBuilderAllFeaturesDemoViewController.m */; };
 		41877A282C41039900C7DDBB /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 41877A272C41039900C7DDBB /* AppDelegate.m */; };
 		41877A2B2C41039900C7DDBB /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 41877A2A2C41039900C7DDBB /* SceneDelegate.m */; };
 		41877A2E2C41039900C7DDBB /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 41877A2D2C41039900C7DDBB /* ViewController.m */; };
@@ -43,6 +44,8 @@
 		22E2A9BD72B08969B7C49A1F /* Pods-DemoTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DemoTests.release.xcconfig"; path = "Target Support Files/Pods-DemoTests/Pods-DemoTests.release.xcconfig"; sourceTree = "<group>"; };
 		33C1B6F5500408D6A0270AE3 /* Pods-DemoTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DemoTests.debug.xcconfig"; path = "Target Support Files/Pods-DemoTests/Pods-DemoTests.debug.xcconfig"; sourceTree = "<group>"; };
 		3827E12EC563CE576E2473B2 /* Pods-Demo-DemoUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Demo-DemoUITests.release.xcconfig"; path = "Target Support Files/Pods-Demo-DemoUITests/Pods-Demo-DemoUITests.release.xcconfig"; sourceTree = "<group>"; };
+		411F2E78304FFFDE00E72876 /* AttributeStringBuilderAllFeaturesDemoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AttributeStringBuilderAllFeaturesDemoViewController.h; sourceTree = "<group>"; };
+		411F2E79304FFFDE00E72876 /* AttributeStringBuilderAllFeaturesDemoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AttributeStringBuilderAllFeaturesDemoViewController.m; sourceTree = "<group>"; };
 		41877A232C41039900C7DDBB /* Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		41877A262C41039900C7DDBB /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		41877A272C41039900C7DDBB /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -127,6 +130,8 @@
 				41877A2A2C41039900C7DDBB /* SceneDelegate.m */,
 				41877A2C2C41039900C7DDBB /* ViewController.h */,
 				41877A2D2C41039900C7DDBB /* ViewController.m */,
+				411F2E78304FFFDE00E72876 /* AttributeStringBuilderAllFeaturesDemoViewController.h */,
+				411F2E79304FFFDE00E72876 /* AttributeStringBuilderAllFeaturesDemoViewController.m */,
 				41877A2F2C41039900C7DDBB /* Main.storyboard */,
 				41877A322C41039A00C7DDBB /* Assets.xcassets */,
 				41877A342C41039A00C7DDBB /* LaunchScreen.storyboard */,
@@ -414,6 +419,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				411F2E7A304FFFDE00E72876 /* AttributeStringBuilderAllFeaturesDemoViewController.m in Sources */,
 				41877A2E2C41039900C7DDBB /* ViewController.m in Sources */,
 				41877A282C41039900C7DDBB /* AppDelegate.m in Sources */,
 				41877A392C41039A00C7DDBB /* main.m in Sources */,

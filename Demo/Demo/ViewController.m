@@ -9,9 +9,13 @@
 #import "AttributeStringBuilder.h"
 #import "ATPlaceholdTextView.h"
 #import "ATDevLibs.h"
+#import "AttributeStringBuilderAllFeaturesDemoViewController.h"
 
 
 @interface ViewController ()
+
+@property (nonatomic, strong) UIScrollView *scrollView;
+
 
 @end
 
@@ -39,12 +43,43 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    _scrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
+    [self.view addSubview:_scrollView];
+    
+    
+    
+    // 测试1
+    [self test1];
+    
+    
+    UIButton *btn2 = [UIButton sf_buttonWithSymbol:@"arrow.right"
+                                          forState:UIControlStateNormal
+                                         pointSize:90
+                                            weight:UIImageSymbolWeightSemibold
+                                             scale:UIImageSymbolScaleMedium];
+    
+    btn2.frame = CGRectMake(100, 400, 100, 100);
+    [btn2 addTarget:self action:@selector(click) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:btn2];
+    
+}
+
+- (void)click {
+    AttributeStringBuilderAllFeaturesDemoViewController *vx = [[AttributeStringBuilderAllFeaturesDemoViewController alloc] init];
+    vx.modalPresentationStyle = UIModalPresentationFullScreen;
+    [self presentViewController:vx animated:YES completion:^{
+        
+    } ];
+}
+
+
+- (void)test1 {
     UILabel *label2 = [[UILabel alloc] initWithFrame:CGRectMake(30, 30, 300, 20)];
-    [self.view addSubview:label2];
+    [self.scrollView addSubview:label2];
     
     NSArray *tags2 = @[@"道路破损", @"井盖缺失", @"路灯不亮", @"违规停车", @"垃圾堆积"];
     AttributeStringBuilder *build2 = AttributeStringBuilder.build(@"");
-
+    
     for (NSInteger i = 0; i < tags2.count; i++) {
         build2.appendRoundedTag(tags2[i])
             .tagFont(AutoFont(12))
@@ -62,18 +97,18 @@
     
     
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(30, 0, 300, 700)];
-      label.numberOfLines = 0;
-      // 必须显式设为 WordWrapping/CharWrapping；默认 TruncatingTail 会导致多标签行被截断而非换行
-//      label.lineBreakMode = NSLineBreakByWordWrapping;
-      [self.view addSubview:label];
-      
-      
+    label.numberOfLines = 0;
+    // 必须显式设为 WordWrapping/CharWrapping；默认 TruncatingTail 会导致多标签行被截断而非换行
+    //      label.lineBreakMode = NSLineBreakByWordWrapping;
+    [self.scrollView addSubview:label];
+    
+    
     
     CGSize size = [self string:@"病害信息息" sizeWithFont:AutoFont(12) MaxSize:CGSizeMake(10000, 10000)];
     CGFloat padding = size.width;
     
     
-      AttributeStringBuilder *build = AttributeStringBuilder.build(@"NSBackgroundColorAttributeName 圆角")
+    AttributeStringBuilder *build = AttributeStringBuilder.build(@"NSBackgroundColorAttributeName 圆角")
         .append(@"\n").font([UIFont systemFontOfSize:14])
         .append(@"道路路路名名称：").font([UIFont systemFontOfSize:14])
         .append(@"\n").font([UIFont systemFontOfSize:14])
@@ -85,7 +120,14 @@
         .append(@"\n").font([UIFont systemFontOfSize:14])
     //.append(@"背景颜色").font(AutoFont(15)).color([UIColor yellowColor])
         .appendBackgroundColor(@"背景颜色", [UIFont systemFontOfSize:34], [UIColor greenColor],[UIColor redColor],3, 0)
-        .all.lineSpacing(3).append(@"\n").font([UIFont systemFontOfSize:14]);
+        .all.lineSpacing(3).append(@"\n").font([UIFont systemFontOfSize:14])
+        .append(@"点击事件").tapAction(^{
+            NSLog(@"+_++++++");
+        })
+        .append(@"\n")
+        .append(@"\n") .append(@"\n")
+    
+    ;
     
     NSArray *tags = @[@"道路破损", @"井盖缺失", @"路灯不亮", @"违规停车", @"垃圾堆积"];
     
@@ -105,89 +147,88 @@
     
     build.append(@"\n");
     NSString *reasonStr = @"DCloud还提供了使用js编写服务器代码的uniCloud云引擎。所以只需掌握js，你可以开发web、Android、iOS、各家小程序以及服务器等全栈应用。";
-//    build.append(@"\n成因分析：\n").font(AutoBlodFont(15))
-//        .append(reasonStr).color(RGBCOLOR(0x999999)).lineSpacing(Inch(3)).firstLineHeadIndent(Inch(12)*2).font(AutoFont(12)).lineBreakMode(NSLineBreakByCharWrapping)
-//        .append(@"\n\n处置建议：").font(AutoBlodFont(15))
-//    ;
+    //    build.append(@"\n成因分析：\n").font(AutoBlodFont(15))
+    //        .append(reasonStr).color(RGBCOLOR(0x999999)).lineSpacing(Inch(3)).firstLineHeadIndent(Inch(12)*2).font(AutoFont(12)).lineBreakMode(NSLineBreakByCharWrapping)
+    //        .append(@"\n\n处置建议：").font(AutoBlodFont(15))
+    //    ;
     
     build.append([NSString stringWithFormat:@"位置信息：%@", reasonStr]).font(AutoFont(12)).color([UIColor redColor])
         .headIndent(padding).tailIndent(0).lineBreakMode(NSLineBreakByCharWrapping)
         .append(@"\n\n").font([UIFont systemFontOfSize:2])
         .append([NSString stringWithFormat:@"位置信息：%@", reasonStr]).font(AutoFont(12)).color([UIColor blackColor])
-            .headIndentCharacters(5, AutoFont(12)).tailIndent(0).lineBreakMode(NSLineBreakByCharWrapping)
-            .append(@"\n\n").font([UIFont systemFontOfSize:2])
+        .headIndentCharacters(5, AutoFont(12)).tailIndent(0).lineBreakMode(NSLineBreakByCharWrapping)
+        .append(@"\n\n").font([UIFont systemFontOfSize:2])
     ;
     
     build.appendBackgroundMarginsColor(@"位置信息", AutoFont(12), RGBCOLOR(0xFF5C00), RGBCOLOR(0x000000), 3, UIEdgeInsetsMake(10, 10, 10, 10),UIEdgeInsetsMake(10, 0, 10, 0), 0);
     
-      
-      label.attributedText = [build commit];
-      
+    
+    label.attributedText = [build commit];
+    [AttributeStringBuilder scr_enableTapOnLabel:label];
     
     
     
-//    ATPlaceholdTextView *_textView = [[ATPlaceholdTextView alloc] initWithFrame:CGRectMake(10, 600, 300, 200)];
-//    _textView.font = [UIFont systemFontOfSize:14];
-//    _textView.placehold = @"描述病害情况...";
-//    _textView.layer.borderWidth = 1;
-//    _textView.layer.borderColor = [UIColor grayColor].CGColor;
-//    _textView.layer.cornerRadius = 5;
-//    [self.view addSubview:_textView];
-//    
-//    
-//    UIButton *btn = [UIButton sf_buttonWithSymbol:@"arrow.up.circle.fill"
-//                                                          forState:UIControlStateNormal
-//                                                         tintColor:UIColor.redColor];
-//    btn.frame = CGRectMake(10, 400, 100, 100);
-//    btn.sf_pointSize = Inch(60);
-//    [btn sf_reloadAllSymbols];
-//    [self.view addSubview:btn];
+    //    ATPlaceholdTextView *_textView = [[ATPlaceholdTextView alloc] initWithFrame:CGRectMake(10, 600, 300, 200)];
+    //    _textView.font = [UIFont systemFontOfSize:14];
+    //    _textView.placehold = @"描述病害情况...";
+    //    _textView.layer.borderWidth = 1;
+    //    _textView.layer.borderColor = [UIColor grayColor].CGColor;
+    //    _textView.layer.cornerRadius = 5;
+    //    [self.scrollView addSubview:_textView];
+    //
+    //
+    //    UIButton *btn = [UIButton sf_buttonWithSymbol:@"arrow.up.circle.fill"
+    //                                                          forState:UIControlStateNormal
+    //                                                         tintColor:UIColor.redColor];
+    //    btn.frame = CGRectMake(10, 400, 100, 100);
+    //    btn.sf_pointSize = Inch(60);
+    //    [btn sf_reloadAllSymbols];
+    //    [self.scrollView addSubview:btn];
     
     
-//    NSDictionary *symbolMap = @{
-//        @(UIControlStateNormal): @"moon",
-//        @(UIControlStateSelected): @{
-//            SFSymbolConfigKeyName: @"sun.max.fill",
-//            SFSymbolConfigKeyTintColor: UIColor.systemYellowColor,
-//            SFSymbolConfigKeyWeight: @(UIImageSymbolWeightBold),
-//            SFSymbolConfigKeyScale:  @(UIImageSymbolScaleLarge)
-//        }
-//    };
-//    UIButton *btn2 = [UIButton sf_buttonWithSymbols:symbolMap
-//                                         pointSize:80.0
-//                                            weight:UIImageSymbolWeightMedium
-//                                             scale:UIImageSymbolScaleMedium
-//                                  defaultTintColor:UIColor.yellowColor];
-//    btn2.frame = CGRectMake(10, 500, 100, 100);
-//    [self.view addSubview:btn2];
+    //    NSDictionary *symbolMap = @{
+    //        @(UIControlStateNormal): @"moon",
+    //        @(UIControlStateSelected): @{
+    //            SFSymbolConfigKeyName: @"sun.max.fill",
+    //            SFSymbolConfigKeyTintColor: UIColor.systemYellowColor,
+    //            SFSymbolConfigKeyWeight: @(UIImageSymbolWeightBold),
+    //            SFSymbolConfigKeyScale:  @(UIImageSymbolScaleLarge)
+    //        }
+    //    };
+    //    UIButton *btn2 = [UIButton sf_buttonWithSymbols:symbolMap
+    //                                         pointSize:80.0
+    //                                            weight:UIImageSymbolWeightMedium
+    //                                             scale:UIImageSymbolScaleMedium
+    //                                  defaultTintColor:UIColor.yellowColor];
+    //    btn2.frame = CGRectMake(10, 500, 100, 100);
+    //    [self.view addSubview:btn2];
     
     
-//    UIButton *btn2 = [UIButton sf_buttonWithSymbols:@{
-//        @(UIControlStateNormal): @"moon",
-//        @(UIControlStateNormal): @{
-//            SFSymbolConfigKeyName: @"sun.max.fill",
-//            SFSymbolConfigKeyTintColor: UIColor.redColor,
-//            SFSymbolConfigKeyWeight: @(UIImageSymbolWeightBold),
-//            SFSymbolConfigKeyScale:  @(UIImageSymbolScaleLarge)
-//        }
-//    } pointSize:80.0 weight:UIImageSymbolWeightMedium scale:UIImageSymbolScaleMedium];
+    //    UIButton *btn2 = [UIButton sf_buttonWithSymbols:@{
+    //        @(UIControlStateNormal): @"moon",
+    //        @(UIControlStateNormal): @{
+    //            SFSymbolConfigKeyName: @"sun.max.fill",
+    //            SFSymbolConfigKeyTintColor: UIColor.redColor,
+    //            SFSymbolConfigKeyWeight: @(UIImageSymbolWeightBold),
+    //            SFSymbolConfigKeyScale:  @(UIImageSymbolScaleLarge)
+    //        }
+    //    } pointSize:80.0 weight:UIImageSymbolWeightMedium scale:UIImageSymbolScaleMedium];
     
-//    UIButton *btn2 = [UIButton sf_buttonWithSymbol:@"trash.fill"
-//                                         forState:UIControlStateNormal
-//                                        pointSize:80
-//                                           weight:UIImageSymbolWeightSemibold
-//                                            scale:UIImageSymbolScaleMedium
-//                                        tintColor:UIColor.yellowColor];
+    //    UIButton *btn2 = [UIButton sf_buttonWithSymbol:@"trash.fill"
+    //                                         forState:UIControlStateNormal
+    //                                        pointSize:80
+    //                                           weight:UIImageSymbolWeightSemibold
+    //                                            scale:UIImageSymbolScaleMedium
+    //                                        tintColor:UIColor.yellowColor];
     
-//    UIButton *btn2 = [UIButton sf_buttonWithSymbol:@"arrow.right"
-//                                         forState:UIControlStateNormal
-//                                        pointSize:90
-//                                           weight:UIImageSymbolWeightSemibold
-//                                            scale:UIImageSymbolScaleMedium];
-//    
-//    btn2.frame = CGRectMake(100, 400, 100, 100);
-//    [self.view addSubview:btn2];
+    //    UIButton *btn2 = [UIButton sf_buttonWithSymbol:@"arrow.right"
+    //                                         forState:UIControlStateNormal
+    //                                        pointSize:90
+    //                                           weight:UIImageSymbolWeightSemibold
+    //                                            scale:UIImageSymbolScaleMedium];
+    //
+    //    btn2.frame = CGRectMake(100, 400, 100, 100);
+    //    [self.scrollView addSubview:btn2];
 }
-
 
 @end

@@ -222,6 +222,9 @@
         CGSize textSize = [text sizeWithAttributes:attrs];
         CGFloat x = insets.left;
         CGFloat y = (height - textSize.height) / 2.0;
+        // 按行框高度居中时，PingFang 等中文字体的字形墨迹中心会比胶囊中心低约 1px
+        // （像素级扫描验证：12~17pt 常规/粗体均为 +1px@3x），向上补偿 1 个渲染像素
+        y -= 1.0 / ((UIGraphicsImageRendererFormat *)rendererContext.format).scale;
         [text drawAtPoint:CGPointMake(x, y) withAttributes:attrs];
     }];
 

@@ -1,15 +1,15 @@
 PODS:
-  - ATDevLibs (1.0.4):
-    - ATDevLibs/AuthorizeRequestLib (= 1.0.4)
-    - ATDevLibs/FoundationKitLib (= 1.0.4)
-    - ATDevLibs/PPCounter (= 1.0.4)
-    - ATDevLibs/ShareLib (= 1.0.4)
-    - ATDevLibs/UIKitLib (= 1.0.4)
-  - ATDevLibs/AuthorizeRequestLib (1.0.4)
-  - ATDevLibs/FoundationKitLib (1.0.4)
-  - ATDevLibs/PPCounter (1.0.4)
-  - ATDevLibs/ShareLib (1.0.4)
-  - ATDevLibs/UIKitLib (1.0.4)
+  - ATDevLibs (1.0.5):
+    - ATDevLibs/AuthorizeRequestLib (= 1.0.5)
+    - ATDevLibs/FoundationKitLib (= 1.0.5)
+    - ATDevLibs/PPCounter (= 1.0.5)
+    - ATDevLibs/ShareLib (= 1.0.5)
+    - ATDevLibs/UIKitLib (= 1.0.5)
+  - ATDevLibs/AuthorizeRequestLib (1.0.5)
+  - ATDevLibs/FoundationKitLib (1.0.5)
+  - ATDevLibs/PPCounter (1.0.5)
+  - ATDevLibs/ShareLib (1.0.5)
+  - ATDevLibs/UIKitLib (1.0.5)
 
 DEPENDENCIES:
   - ATDevLibs (from `../`)
@@ -19,7 +19,7 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  ATDevLibs: 38632ffa6195fb39cd1fd9eb901ab76c2615a23a
+  ATDevLibs: 34f521415f28b2d5fb5220144d256771ee16e1c8
 
 PODFILE CHECKSUM: bcc4e53bef77d8bb98cacf7b26070a64cf3382c2
 

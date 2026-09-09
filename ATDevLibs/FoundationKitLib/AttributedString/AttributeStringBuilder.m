@@ -8,7 +8,12 @@
 
 #import "AttributeStringBuilder.h"
 #import <UIKit/UIKit.h>
+#import <objc/runtime.h>
 #import "SCRoundedTagAttachment.h"
+#import "SCDividerLineAttachment.h"
+
+NSAttributedStringKey const SCRAttributedStringTapIDAttributeName = @"SCRAttributedStringTapIDAttributeName";
+NSAttributedStringKey const SCRAttributedStringTapActionsAttributeName = @"SCRAttributedStringTapActionsAttributeName";
 
 
 @interface AttributeStringBuilder ()
@@ -16,6 +21,10 @@
 @property (nonatomic, strong) NSMutableDictionary<NSAttributedStringKey, id> *attributes;
 @property (nonatomic, strong) NSMutableAttributedString *source;
 @property (nonatomic, strong) NSArray *scr_ranges;
+
+/// 点击事件注册表：tapID -> action 块
+/// 在 commit 时以 SCRAttributedStringTapActionsAttributeName 挂到整个字符串上
+@property (nonatomic, strong) NSMutableDictionary<NSString *, id> *scr_tapActions;
 
 @end
 
@@ -57,11 +66,18 @@
     if (self = [super init]) {
         self.attributes = [[NSMutableDictionary alloc] init];
         self.source = [[NSMutableAttributedString alloc] init];
+        self.scr_tapActions = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
 
 - (NSAttributedString *)commit {
+    // 存在点击注册表时，把它挂到整个字符串上，供 SCRTappableLabel 读取
+    if (self.scr_tapActions.count > 0 && self.source.length > 0) {
+        [self.source addAttribute:SCRAttributedStringTapActionsAttributeName
+                            value:[self.scr_tapActions copy]
+                            range:NSMakeRange(0, self.source.length)];
+    }
     return [_source copy];
 }
 
@@ -112,10 +128,18 @@
 /// 同 append 比，参数是 NSAttributedString
 - (AttributeStringBuilder *(^)(NSAttributedString *))attributedAppend {
     return ^(NSAttributedString *attributedString) {
-        if (!attributedString) {
+        if (!attributedString || attributedString.length == 0) {
             return self;
         }
-        
+
+        // 合并来源字符串携带的点击注册表，保证拼接后点击事件仍然可用
+        NSDictionary *actions = [attributedString attribute:SCRAttributedStringTapActionsAttributeName
+                                                    atIndex:0
+                                             effectiveRange:NULL];
+        if ([actions isKindOfClass:[NSDictionary class]] && actions.count > 0) {
+            [self.scr_tapActions addEntriesFromDictionary:actions];
+        }
+
         NSRange range = NSMakeRange(self.source.length, attributedString.string.length);
         [self.source appendAttributedString:attributedString];
         self.scr_ranges = @[ [NSValue valueWithRange:range] ];
@@ -1082,6 +1106,154 @@
     };
 }
 
+/// 左对齐（自动扩展到当前 Range 所在的完整段落）
+- (AttributeStringBuilder *)alignLeft {
+    [self p_applyParagraphStyleToFullParagraphs:^(NSMutableParagraphStyle *paragraphStyle) {
+        paragraphStyle.alignment = NSTextAlignmentLeft;
+    }];
+    return self;
+}
+
+/// 右对齐（自动扩展到当前 Range 所在的完整段落）
+- (AttributeStringBuilder *)alignRight {
+    [self p_applyParagraphStyleToFullParagraphs:^(NSMutableParagraphStyle *paragraphStyle) {
+        paragraphStyle.alignment = NSTextAlignmentRight;
+    }];
+    return self;
+}
+
+/// 居中对齐（自动扩展到当前 Range 所在的完整段落）
+- (AttributeStringBuilder *)alignCenter {
+    [self p_applyParagraphStyleToFullParagraphs:^(NSMutableParagraphStyle *paragraphStyle) {
+        paragraphStyle.alignment = NSTextAlignmentCenter;
+    }];
+    return self;
+}
+
+/// 两端对齐（自动扩展到当前 Range 所在的完整段落）
+- (AttributeStringBuilder *)alignJustified {
+    [self p_applyParagraphStyleToFullParagraphs:^(NSMutableParagraphStyle *paragraphStyle) {
+        paragraphStyle.alignment = NSTextAlignmentJustified;
+    }];
+    return self;
+}
+
+/**
+ 一行内容两段对齐：同一行内前半段靠左、后半段靠右
+
+ 通过在该行放置一个右对齐制表位实现：`\t` 之前的内容保持靠左，
+ 之后的内容（文本或图片附件）被推到 lineWidth 处并右对齐。
+ */
+- (AttributeStringBuilder *(^)(CGFloat))alignLeftRight {
+    return ^(CGFloat lineWidth) {
+        [self p_applyParagraphStyleToFullParagraphs:^(NSMutableParagraphStyle *paragraphStyle) {
+            paragraphStyle.alignment = NSTextAlignmentLeft;
+            if (lineWidth > 0) {
+                paragraphStyle.tabStops = @[ [[NSTextTab alloc] initWithTextAlignment:NSTextAlignmentRight
+                                                                             location:lineWidth
+                                                                              options:@{}] ];
+            }
+        }];
+        return self;
+    };
+}
+
+/**
+ 追加「左段 + 右段」一行内容，左段靠左、右段靠右（自动独占一行）
+
+ 内部自动拼接 `\t`、末尾换行并应用两段对齐。
+ 若前一段内容未以换行结尾，会自动补一个换行，保证该行独占一行。
+ */
+- (AttributeStringBuilder *(^)(NSString *, NSString *, CGFloat, UIFont *))appendLeftRightLine {
+    return ^(NSString *leftText, NSString *rightText, CGFloat lineWidth, UIFont *font) {
+        NSString *left = leftText ?: @"";
+        NSString *right = rightText ?: @"";
+
+        // 确保该行独占一行：若已有内容且未以换行结尾，先补一个换行
+        if (self.source.length > 0 && [self.source.string characterAtIndex:self.source.length - 1] != '\n') {
+            [self.source appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n"]];
+        }
+
+        NSMutableString *line = [NSMutableString string];
+        [line appendString:left];
+        [line appendString:@"\t"];
+        [line appendString:right];
+        [line appendString:@"\n"];
+
+        NSRange lineRange = NSMakeRange(self.source.length, line.length);
+        [self.source appendAttributedString:[[NSAttributedString alloc] initWithString:line]];
+        self.scr_ranges = @[ [NSValue valueWithRange:lineRange] ];
+
+        if (font) {
+            [self.source addAttribute:NSFontAttributeName value:font range:lineRange];
+        }
+
+        // 两段对齐：左对齐 + 行尾右对齐制表位
+        NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+        paragraphStyle.alignment = NSTextAlignmentLeft;
+        if (lineWidth > 0) {
+            paragraphStyle.tabStops = @[ [[NSTextTab alloc] initWithTextAlignment:NSTextAlignmentRight
+                                                                         location:lineWidth
+                                                                          options:@{}] ];
+        }
+        NSRange paragraphRange = [self.source.string paragraphRangeForRange:lineRange];
+        [self.source addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:paragraphRange];
+        return self;
+    };
+}
+
+#pragma mark - 分割线
+
+/**
+ 追加一行分割线（占一行高度，自动独占一行）
+
+ 分割线宽度自动撑满文本行，左右两端分别留出 leftSpacing / rightSpacing 的间距；
+ 线条粗细与颜色可通过 dividerThickness / dividerColor 配置（作用于最近追加的分割线）。
+ */
+- (AttributeStringBuilder *(^)(CGFloat, CGFloat))appendDividerLine {
+    return ^(CGFloat leftSpacing, CGFloat rightSpacing) {
+        // 确保分割线独占一行：若已有内容且未以换行结尾，先补一个换行
+        if (self.source.length > 0 && [self.source.string characterAtIndex:self.source.length - 1] != '\n') {
+            [self.source appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n"]];
+        }
+
+        SCDividerLineAttachment *attachment = [[SCDividerLineAttachment alloc] init];
+        attachment.leftSpacing = leftSpacing;
+        attachment.rightSpacing = rightSpacing;
+
+        [self.source appendAttributedString:[NSAttributedString attributedStringWithAttachment:attachment]];
+
+        // 记录附件 Range，供 dividerColor / dividerThickness 使用
+        NSRange range = NSMakeRange(self.source.length - 1, 1);
+        self.scr_ranges = @[ [NSValue valueWithRange:range] ];
+
+        // 分割线后的内容另起一行
+        [self.source appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n"]];
+
+        return self;
+    };
+}
+
+/// 分割线颜色（作用于最近追加的分割线）
+- (AttributeStringBuilder *(^)(UIColor *))dividerColor {
+    return ^(UIColor *color) {
+        [self p_updateCurrentDividerAttachment:^(SCDividerLineAttachment *divider) {
+            divider.lineColor = color;
+        }];
+        return self;
+    };
+}
+
+/// 分割线粗细（pt，作用于最近追加的分割线）
+- (AttributeStringBuilder *(^)(CGFloat))dividerThickness {
+    return ^(CGFloat thickness) {
+        [self p_updateCurrentDividerAttachment:^(SCDividerLineAttachment *divider) {
+            divider.lineThickness = thickness;
+        }];
+        return self;
+    };
+}
+
 /// 换行
 - (AttributeStringBuilder *(^)(NSLineBreakMode))lineBreakMode {
     return ^(NSLineBreakMode lineBreakMode) {
@@ -1274,12 +1446,9 @@
 /// @endcode
 ///
 /// @discussion 本方法返回一个 Block，该 Block 接受以下参数：
-///
-///       - referenceText: 参考基准文本，以其渲染宽度作为对齐目标（不含后缀）
-///
-///       - fittingText:   用于计算宽度差值的动态文本（长度必须 > 2）（应与 builder 末尾文本内容一致）
-///
-///       - font:          文本使用的字体（参考文本与动态文本必须使用相同字体）
+/// @discussion  - referenceText: 参考基准文本，以其渲染宽度作为对齐目标（不含后缀）<br/>
+/// @discussion  - fittingText:   用于计算宽度差值的动态文本（长度必须 > 2）（应与 builder 末尾文本内容一致）<br/>
+/// @discussion  - font:          文本使用的字体（参考文本与动态文本必须使用相同字体）
 - (AttributeStringBuilder *(^)(NSString *referenceText, NSString *fittingText, UIFont *font))appendDynamicKern {
     return ^(NSString *referenceText, NSString *fittingText, UIFont *font) {
         
@@ -1366,6 +1535,295 @@
         return self;
     };
 }
+
+
+#pragma mark - 点击事件
+
+/// 给当前 Range 注册点击事件（配合普通 UILabel + scr_enableTapOnLabel: 使用）
+- (AttributeStringBuilder *(^)(void (^)(void)))tapAction {
+    return ^(void (^action)(void)) {
+        if (!action) {
+            return self;
+        }
+        
+        // 生成唯一 ID，将回调登记到注册表，并把 ID 标记到当前 Range 上
+        NSString *tapID = [NSUUID UUID].UUIDString;
+        self.scr_tapActions[tapID] = [action copy];
+        [self addAttribute:SCRAttributedStringTapIDAttributeName value:tapID];
+        return self;
+    };
+}
+
+#pragma mark - 点击事件（无需子类化 UILabel）
+//
+///**
+// 用 TextKit 把 label 上的点击点解析为字符索引（与 label 当前布局一致）。
+// 未命中（文本外 / 行内空白）返回 NSNotFound。
+// */
+////static NSUInteger scr_characterIndexInLabel(UILabel *label, CGPoint point) {
+////    NSAttributedString *attributedText = label.attributedText;
+////    if (attributedText.length == 0) {
+////        return NSNotFound;
+////    }
+////
+////    NSTextStorage *storage = [[NSTextStorage alloc] initWithAttributedString:attributedText];
+////    NSLayoutManager *layoutManager = [[NSLayoutManager alloc] init];
+////    [storage addLayoutManager:layoutManager];
+////
+////    // ✅ 关键修复：使用 label 的实际内容尺寸，并扣除 textContainerInset
+////    UIEdgeInsets inset = label.textContainerInset; // iOS 15+ API，低版本用 @available 保护
+////    CGSize containerSize = CGSizeMake(
+////                                      label.bounds.size.width - inset.left - inset.right,
+////                                      label.bounds.size.height - inset.top - inset.bottom
+////                                      );
+////
+////
+////    NSTextContainer *textContainer = [[NSTextContainer alloc] initWithSize:label.bounds.size];
+////    textContainer.lineFragmentPadding = 0;
+////    textContainer.lineBreakMode = label.lineBreakMode;
+////    [layoutManager addTextContainer:textContainer];
+////
+////    NSRange glyphRange = [layoutManager glyphRangeForTextContainer:textContainer];
+////    if (glyphRange.length == 0) {
+////        return NSNotFound;
+////    }
+////
+////    // 取距离点击点最近的字形
+////    NSUInteger glyphIndex = [layoutManager glyphIndexForPoint:point
+////                                              inTextContainer:textContainer
+////                       fractionOfDistanceThroughGlyph:NULL];
+////    if (glyphIndex == NSNotFound || glyphIndex >= NSMaxRange(glyphRange)) {
+////        return NSNotFound;
+////    }
+////
+////    // 校验点确实落在该字形所在的行内，避免点击文本区域下方空白误命中最后一行
+////    NSRange lineRange;
+////    CGRect lineRect = [layoutManager lineFragmentRectForGlyphAtIndex:glyphIndex
+////                                                       effectiveRange:&lineRange];
+////    if (!CGRectContainsPoint(lineRect, point)) {
+////        return NSNotFound;
+////    }
+////
+////    // 行内未占满的区域（如行尾空白）不应触发：校验字形包围盒，左右各留 4pt 容差
+////    NSRange glyphBoundRange = NSMakeRange(glyphIndex, 1);
+////    CGRect glyphRect = [layoutManager boundingRectForGlyphRange:glyphBoundRange
+////                                                inTextContainer:textContainer];
+////    if (point.x < CGRectGetMinX(glyphRect) - 4 || point.x > CGRectGetMaxX(glyphRect) + 4) {
+////        return NSNotFound;
+////    }
+////
+////    NSUInteger charIndex = [layoutManager characterIndexForGlyphAtIndex:glyphIndex];
+////    if (charIndex == NSNotFound || charIndex >= attributedText.length) {
+////        return NSNotFound;
+////    }
+////    return charIndex;
+////}
+//static NSUInteger scr_characterIndexInLabel(UILabel *label, CGPoint point) {
+//    // 1. 基础校验
+//    NSAttributedString *attributedText = label.attributedText;
+//    if (!attributedText || attributedText.length == 0) {
+//        return NSNotFound;
+//    }
+//    
+//    NSLayoutManager *layoutManager = nil;
+//    NSTextContainer *textContainer = nil;
+//    BOOL useInternalLayout = NO;
+//    
+//    // 2. 安全尝试获取 UILabel 内部的排版对象 (仅 iOS 真机/模拟器有效)
+//    @try {
+//        layoutManager = [label valueForKey:@"_layoutManager"];
+//        id containerObj = [label valueForKey:@"_textContainer"];
+//        
+//        if ([containerObj isKindOfClass:[NSArray class]]) {
+//            textContainer = [(NSArray *)containerObj firstObject];
+//        } else if ([containerObj isKindOfClass:[NSTextContainer class]]) {
+//            textContainer = (NSTextContainer *)containerObj;
+//        }
+//        
+//        if (layoutManager && textContainer) {
+//            useInternalLayout = YES;
+//        }
+//    } @catch (NSException *exception) {
+//        // Mac Catalyst 或某些特殊环境下会抛出 NSUnknownKeyException，安全忽略
+//        NSLog(@"⚠️ [ScrTap] KVC 获取内部 LayoutManager 失败，将启用 Fallback 模式: %@", exception.reason);
+//    }
+//    
+//    // 3. 降级兜底：手动构建 TextKit 栈 (Mac Catalyst 或 KVC 失败时走这里)
+//    NSTextStorage *fallbackStorage = nil;
+//    NSLayoutManager *fallbackLM = nil;
+//    NSTextContainer *fallbackTC = nil;
+//    
+//    if (!useInternalLayout) {
+//        fallbackStorage = [[NSTextStorage alloc] initWithAttributedString:attributedText];
+//        fallbackLM = [[NSLayoutManager alloc] init];
+//        [fallbackStorage addLayoutManager:fallbackLM];
+//        
+//        fallbackTC = [[NSTextContainer alloc] initWithSize:label.bounds.size];
+//        fallbackTC.lineFragmentPadding = 0; // UILabel 默认为 0
+//        fallbackTC.lineBreakMode = label.lineBreakMode;
+//        if (label.numberOfLines > 0) {
+//            fallbackTC.maximumNumberOfLines = label.numberOfLines;
+//        }
+//        [fallbackLM addTextContainer:fallbackTC];
+//        
+//        layoutManager = fallbackLM;
+//        textContainer = fallbackTC;
+//    }
+//    
+//    // 4. 查询 Glyph
+//    NSRange glyphRange = [layoutManager glyphRangeForTextContainer:textContainer];
+//    if (glyphRange.length == 0) {
+//        return NSNotFound;
+//    }
+//    
+//    CGFloat fraction = 0;
+//    NSUInteger glyphIndex = [layoutManager glyphIndexForPoint:point
+//                                              inTextContainer:textContainer
+//                               fractionOfDistanceThroughGlyph:&fraction];
+//    
+//    if (glyphIndex == NSNotFound || glyphIndex >= NSMaxRange(glyphRange)) {
+//        return NSNotFound;
+//    }
+//    
+//    // 5. 行级校验 (Y 轴)
+//    NSRange lineRange;
+//    CGRect lineRect = [layoutManager lineFragmentRectForGlyphAtIndex:glyphIndex effectiveRange:&lineRange];
+//    
+//    // UILabel 可能有微小的内部上下 padding，给 Y 轴加 2pt 容差
+//    CGRect expandedLineRect = CGRectInset(lineRect, 0, -2.0);
+//    if (!CGRectContainsPoint(expandedLineRect, point)) {
+//        return NSNotFound;
+//    }
+//    
+//    // 6. 字形级校验 (X 轴) 与 HeadIndent 补偿
+//    CGRect glyphRect = [layoutManager boundingRectForGlyphRange:NSMakeRange(glyphIndex, 1)
+//                                                inTextContainer:textContainer];
+//    CGFloat tolerance = 4.0; // 默认严格容差
+//    
+//    if (!useInternalLayout) {
+//        // ===== Fallback 模式专属逻辑 =====
+//        
+//        // 读取该 glyph 对应字符的段落缩进
+//        NSUInteger charIdxForGlyph = [layoutManager characterIndexForGlyphAtIndex:glyphIndex];
+//        if (charIdxForGlyph != NSNotFound && charIdxForGlyph < attributedText.length) {
+//            NSRange paraRange;
+//            NSParagraphStyle *style = [attributedText attribute:NSParagraphStyleAttributeName
+//                                                        atIndex:charIdxForGlyph
+//                                                 effectiveRange:&paraRange];
+//            CGFloat headIndent = style.headIndent;
+//            
+//            // 补偿逻辑：UILabel 实际渲染位置通常比标准 TextKit 偏左
+//            if (headIndent > 0) {
+//                CGFloat compensation = headIndent * 0.75; // 经验系数，可根据日志微调
+//                glyphRect = CGRectOffset(glyphRect, -compensation, 0);
+//                tolerance = 8.0; // 补偿后适当放宽容差
+//            }
+//        }
+//        
+//        // 打印诊断日志 (方便排查 Fallback 模式下的偏移问题)
+//        NSUInteger ci = [layoutManager characterIndexForGlyphAtIndex:glyphIndex];
+//        unichar c = (ci != NSNotFound && ci < attributedText.length) ? [attributedText.string characterAtIndex:ci] : '?';
+//        NSLog(@"🔎 [Fallback] tap=(%.1f,%.1f) | char='%C' idx=%lu | glyphRect=[%.1f~%.1f] | dx=%.1f",
+//              point.x, point.y, c, (unsigned long)ci,
+//              CGRectGetMinX(glyphRect), CGRectGetMaxX(glyphRect),
+//              point.x - CGRectGetMidX(glyphRect));
+//    }
+//    
+//    // X 轴容差过滤
+//    if (point.x < CGRectGetMinX(glyphRect) - tolerance ||
+//        point.x > CGRectGetMaxX(glyphRect) + tolerance) {
+//        return NSNotFound;
+//    }
+//    
+//    // 7. 最终业务校验：确保命中位置确实携带了 Tap Action
+//    NSUInteger finalCharIndex = [layoutManager characterIndexForGlyphAtIndex:glyphIndex];
+//    if (finalCharIndex == NSNotFound || finalCharIndex >= attributedText.length) {
+//        return NSNotFound;
+//    }
+//    
+//    NSDictionary *attrs = [attributedText attributesAtIndex:finalCharIndex effectiveRange:NULL];
+//    if (!attrs[SCRAttributedStringTapActionsAttributeName]) {
+//        // 点中了文字，但该文字没有绑定点击事件，拒绝响应
+//        return NSNotFound;
+//    }
+//    
+//    return finalCharIndex;
+//}
+//
+//
+//
+//
+//+ (void)scr_handleTapAtPoint:(CGPoint)point onLabel:(UILabel *)label {
+//    if (!label) {
+//        return;
+//    }
+//    NSLog(@"🔍 tap at (%.1f, %.1f), label bounds=%@", point.x, point.y, NSStringFromCGRect(label.bounds));
+//    NSUInteger charIndex = scr_characterIndexInLabel(label, point);
+//    NSLog(@"🎯 charIndex=%lu, char='%@'", (unsigned long)charIndex,
+//          charIndex != NSNotFound ? [label.attributedText.string substringWithRange:NSMakeRange(charIndex, 1)] : @"N/A");
+//    
+//    if (charIndex == NSNotFound) {
+//        return;
+//    }
+//    
+//    NSAttributedString *attributedText = label.attributedText;
+//    if (!attributedText || attributedText.length == 0 || charIndex >= attributedText.length) {
+//        return;
+//    }
+//    
+//    NSDictionary *attrs = [label.attributedText attributesAtIndex:charIndex effectiveRange:NULL];
+//    NSLog(@"🏷️ attrs at %lu: %@", (unsigned long)charIndex, attrs);
+//    
+//    NSString *tapID = [attributedText attribute:SCRAttributedStringTapIDAttributeName
+//                                        atIndex:charIndex
+//                                 effectiveRange:NULL];
+//    if (tapID.length == 0) {
+//        return;
+//    }
+//    
+//    NSDictionary<NSString *, id> *actions = [attributedText attribute:SCRAttributedStringTapActionsAttributeName
+//                                                              atIndex:0
+//                                                       effectiveRange:NULL];
+//    if (![actions isKindOfClass:[NSDictionary class]]) {
+//        return;
+//    }
+//    
+//    void (^action)(void) = actions[tapID];
+//    if (action) {
+//        action();
+//    }
+//}
+//
+//+ (void)scr_handleLabelTap:(UITapGestureRecognizer *)gesture {
+//    if (gesture.state != UIGestureRecognizerStateRecognized) {
+//        return;
+//    }
+//    UIView *view = gesture.view;
+//    if (![view isKindOfClass:[UILabel class]]) {
+//        return;
+//    }
+//    UILabel *label = (UILabel *)view;
+//    [self scr_handleTapAtPoint:[gesture locationInView:label] onLabel:label];
+//}
+//
+//+ (void)scr_enableTapOnLabel:(UILabel *)label {
+//    if (!label) {
+//        return;
+//    }
+//    
+//    // 幂等：同一个 label 只挂一次手势
+//    static char kSCRTapGestureAssociatedKey;
+//    if (objc_getAssociatedObject(label, &kSCRTapGestureAssociatedKey)) {
+//        return;
+//    }
+//    
+//    label.userInteractionEnabled = YES;
+//    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
+//                                                                          action:@selector(scr_handleLabelTap:)];
+//    [label addGestureRecognizer:tap];
+//    objc_setAssociatedObject(label, &kSCRTapGestureAssociatedKey, @YES, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+//}
+
 
 #pragma mark - Private
 
@@ -1456,6 +1914,56 @@
         }
         block(paragraphStyle);
         [self.source addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:range];
+    }
+}
+
+/// 将段落样式配置应用到当前 Range 覆盖的完整段落（含段落分隔符）
+/// 供 alignLeft / alignRight / alignCenter / alignJustified / alignLeftRight 使用
+- (void)p_applyParagraphStyleToFullParagraphs:(void (^)(NSMutableParagraphStyle *style))block {
+    if (!block) {
+        return;
+    }
+
+    for (NSValue *value in self.scr_ranges) {
+        NSRange range = [value rangeValue];
+        if (![self p_isValidRange:range]) {
+            continue;
+        }
+
+        // 扩展到 Range 所在的完整段落（可能跨多个段落）
+        NSRange paragraphRange = [self.source.string paragraphRangeForRange:range];
+        if (![self p_isValidRange:paragraphRange]) {
+            continue;
+        }
+
+        NSMutableParagraphStyle *paragraphStyle = [[self.source attribute:NSParagraphStyleAttributeName
+                                                                  atIndex:paragraphRange.location
+                                                           effectiveRange:nil] mutableCopy];
+        if (!paragraphStyle) {
+            paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+        }
+        block(paragraphStyle);
+        [self.source addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:paragraphRange];
+    }
+}
+
+/// 更新当前 Range 内的分割线附件
+- (void)p_updateCurrentDividerAttachment:(void (^)(SCDividerLineAttachment *divider))block {
+    if (!block) {
+        return;
+    }
+    for (NSValue *value in self.scr_ranges) {
+        NSRange range = [value rangeValue];
+        // location 为 NSNotFound 或越界时取属性会抛 NSRangeException
+        if (![self p_isValidRange:range]) {
+            continue;
+        }
+        id attachment = [self.source attribute:NSAttachmentAttributeName
+                                       atIndex:range.location
+                                effectiveRange:nil];
+        if ([attachment isKindOfClass:[SCDividerLineAttachment class]]) {
+            block((SCDividerLineAttachment *)attachment);
+        }
     }
 }
 

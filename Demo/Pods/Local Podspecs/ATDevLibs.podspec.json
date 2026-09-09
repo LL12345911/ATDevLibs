@@ -1,6 +1,6 @@
 {
   "name": "ATDevLibs",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "summary": "iOS开发基本库",
   "description": "***\niOS开发基本库\n***",
   "homepage": "https://github.com/LL12345911/ATDevLibs",
@@ -16,7 +16,7 @@
   },
   "source": {
     "git": "https://github.com/LL12345911/ATDevLibs.git",
-    "tag": "1.0.4"
+    "tag": "1.0.5"
   },
   "social_media_url": "https://github.com/LL12345911/ATDevLibs",
   "source_files": "ATDevLibs/*.{h,m}",

@@ -22,6 +22,7 @@
 #import "PhotosPermission.h"
 #import "ATMacro.h"
 #import "AttributeStringBuilder.h"
+#import "SCDividerLineAttachment.h"
 #import "SCRoundedTagAttachment.h"
 #import "AutoInch.h"
 #import "MarsEventBus.h"
