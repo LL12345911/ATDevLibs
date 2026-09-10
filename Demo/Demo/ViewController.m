@@ -107,6 +107,16 @@
     // 预期：宽度 = 120，高度 = 2 行高度（第 3、4 行截断，末尾显示"…"）
     btnB.frame = CGRectMake(200, 220, fitB.width, fitB.height);
     [self.view addSubview:btnB];
+    
+    
+    // 对齐：按钮尺寸必须大于内容才有空间
+    ATButton *alignBtn = [[ATButton alloc] initWithFrame:CGRectMake(20, 200, 200, 60)];
+    [alignBtn setTitle:@"收藏" forState:UIControlStateNormal];
+    [alignBtn setImage:[UIImage systemImageNamed:@"star"] forState:UIControlStateNormal];
+    alignBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
+//    alignBtn.contentVerticalAlignment   = UIControlContentVerticalAlignmentTop;
+    alignBtn.backgroundColor = [UIColor redColor];
+    [self.view addSubview:alignBtn];
 
 }
 

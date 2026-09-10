@@ -108,7 +108,7 @@ static char kCustomButtonKVOTitleAttr;
     _titleLabel.numberOfLines = 1;                         // 默认单行；0=不限行，N=最多 N 行
     _titleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
     _titleLabel.font = _titleFont;
-    _titleLabel.textColor = [UIColor blackColor];
+    _titleLabel.textColor = [UIColor whiteColor];
     [self addSubview:_titleLabel];
     
     _imageView = [[UIImageView alloc] init];
@@ -245,7 +245,7 @@ static char kCustomButtonKVOTitleAttr;
     } else {
         self.titleLabel.attributedText = nil;               // 清掉旧的富文本
         self.titleLabel.text = [self _valueInDict:_titles forState:s];
-        self.titleLabel.textColor = [self _valueInDict:_titleColors forState:s] ?: [UIColor blackColor];
+        self.titleLabel.textColor = [self _valueInDict:_titleColors forState:s] ?: [UIColor whiteColor];
     }
     self.imageView.image = [self _valueInDict:_images forState:s];
     self.backgroundImageView.image = [self _valueInDict:_backgroundImages forState:s];
@@ -564,8 +564,15 @@ static char kCustomButtonKVOTitleAttr;
             case UIControlContentHorizontalAlignmentRight:
                 dx = CGRectGetMaxX(contentRect) - CGRectGetMaxX(contentBox);
                 break;
-            default:                                    // Center / Fill：保持居中
+            case UIControlContentHorizontalAlignmentFill:
+                // 标题横向拉伸到内容区宽度（近似 UIButton：label 占满、文字居中）
+                if (hasTitle) {
+                    titleFrame.origin.x = CGRectGetMinX(contentRect);
+                    titleFrame.size.width = CGRectGetWidth(contentRect);
+                }
                 break;
+            default:
+                break;                                  // Center：保持居中
         }
         switch (self.contentVerticalAlignment) {
             case UIControlContentVerticalAlignmentTop:
@@ -574,8 +581,14 @@ static char kCustomButtonKVOTitleAttr;
             case UIControlContentVerticalAlignmentBottom:
                 dy = CGRectGetMaxY(contentRect) - CGRectGetMaxY(contentBox);
                 break;
-            default:                                    // Center / Fill：保持居中
+            case UIControlContentVerticalAlignmentFill:
+                if (hasTitle) {
+                    titleFrame.origin.y = CGRectGetMinY(contentRect);
+                    titleFrame.size.height = CGRectGetHeight(contentRect);
+                }
                 break;
+            default:
+                break;                                  // Center：保持居中
         }
         imgFrame.origin.x += dx;   imgFrame.origin.y += dy;
         titleFrame.origin.x += dx; titleFrame.origin.y += dy;
