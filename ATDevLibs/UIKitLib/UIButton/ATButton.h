@@ -20,6 +20,11 @@ typedef NS_ENUM(NSUInteger, ATButtonImagePosition) {
 
 @interface ATButton : UIView
 
+#pragma mark - 类型（对齐 UIButton）
++ (instancetype)buttonWithType:(UIButtonType)buttonType;
+@property (nonatomic, readonly) UIButtonType buttonType; // 由 buttonWithType: 指定，init 默认 Custom
+
+
 #pragma mark - 状态（对齐 UIControl 语义）
 @property (nonatomic, getter=isEnabled) BOOL enabled;
 @property (nonatomic, getter=isSelected) BOOL selected;
@@ -27,7 +32,7 @@ typedef NS_ENUM(NSUInteger, ATButtonImagePosition) {
 @property (nonatomic, readonly) UIControlState state;
 
 #pragma mark - 标题（对齐 UIButton 风格 API）
-@property (nonatomic, strong) UIFont *titleFont;   // 默认 system 17，设置后自动刷新
+@property (nonatomic, strong) UIFont *titleFont;   // 默认 system 15，设置后自动刷新
 - (void)setTitle:(nullable NSString *)title forState:(UIControlState)state;
 - (nullable NSString *)titleForState:(UIControlState)state;
 - (void)setTitleColor:(nullable UIColor *)color forState:(UIControlState)state;
@@ -75,8 +80,6 @@ typedef NS_ENUM(NSUInteger, ATButtonImagePosition) {
 @property (nonatomic) BOOL adjustsImageWhenDisabled;      // 默认 YES，禁用时图片变暗
 @property (nonatomic) BOOL showsTouchWhenHighlighted;     // 默认 NO，高亮时显示覆盖层
 
-#pragma mark - 类型（对齐 UIButton，固定返回 UIButtonTypeCustom）
-@property (nonatomic, readonly) UIButtonType buttonType;
 
 #pragma mark - 外观（只改 layer，立即生效）
 @property (nonatomic, assign) CGFloat cornerRadius;

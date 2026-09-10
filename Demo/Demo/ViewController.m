@@ -82,7 +82,7 @@
     [btn addTarget:self action:@selector(toggleStar:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:btn];
 
-    
+    [UIButton buttonWithType:0];
     
     // 配置 A：numberOfLines = 0（多行，不限行数）
     ATButton *btnA = [[ATButton alloc] init];

@@ -30,6 +30,7 @@ static char kCustomButtonKVOTitleAttr;
 #pragma mark - CustomButton
 @interface ATButton ()
 
+@property (nonatomic, assign) UIButtonType buttonType;
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIImageView *backgroundImageView;
@@ -47,6 +48,12 @@ static char kCustomButtonKVOTitleAttr;
 @implementation ATButton
 
 #pragma mark - 初始化
++ (instancetype)buttonWithType:(UIButtonType)buttonType {
+    ATButton *button = [[self alloc] init];      // 走 initWithFrame: → setup
+    [button configureForType:buttonType];
+    return button;
+}
+
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) [self setup];
@@ -69,6 +76,7 @@ static char kCustomButtonKVOTitleAttr;
 
 - (void)setup {
     _enabled = YES;
+    _buttonType = UIButtonTypeCustom;   // 新增这一行
     _imagePosition = ATButtonImagePositionLeft;
     _spacing = 4.0;
     _contentEdgeInsets = UIEdgeInsetsZero;
@@ -76,7 +84,7 @@ static char kCustomButtonKVOTitleAttr;
     _imageEdgeInsets = UIEdgeInsetsZero;
     _cornerRadius = 0;
     _borderWidth = 0;
-    _titleFont = [UIFont systemFontOfSize:17];
+    _titleFont = [UIFont systemFontOfSize:15];
     _contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
     _contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
     _adjustsImageWhenHighlighted = YES;
@@ -97,7 +105,7 @@ static char kCustomButtonKVOTitleAttr;
     _titleLabel = [[UILabel alloc] init];
     _titleLabel.userInteractionEnabled = NO;               // 避免子视图拦截触摸
     _titleLabel.textAlignment = NSTextAlignmentCenter;
-    _titleLabel.numberOfLines = 1;                         // 默认单行，外部可改为 2 / 3 / 0
+    _titleLabel.numberOfLines = 1;                         // 默认单行；0=不限行，N=最多 N 行
     _titleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
     _titleLabel.font = _titleFont;
     _titleLabel.textColor = [UIColor blackColor];
@@ -115,9 +123,50 @@ static char kCustomButtonKVOTitleAttr;
     [_titleLabel addObserver:self forKeyPath:@"attributedText" options:0 context:&kCustomButtonKVOTitleAttr];
 }
 
+#pragma mark - 类型配置
+- (void)configureForType:(UIButtonType)buttonType {
+    _buttonType = buttonType;
+    switch (buttonType) {
+        case UIButtonTypeSystem:                      // iOS 7+，近似系统样式
+        case UIButtonTypePlain: {                     // iOS 15+
+            [self setTitleColor:[UIColor systemBlueColor] forState:UIControlStateNormal];
+            [self setTitleColor:[UIColor systemGrayColor] forState:UIControlStateHighlighted];
+            self.backgroundColor = [UIColor clearColor];
+            break;
+        }
+        case UIButtonTypeDetailDisclosure:
+            [self _setSystemIcon:@"info.circle"];
+            break;
+        case UIButtonTypeInfoLight:
+        case UIButtonTypeInfoDark:
+            [self _setSystemIcon:@"info.circle"];
+            break;
+        case UIButtonTypeContactAdd:
+            [self _setSystemIcon:@"plus.circle"];
+            break;
+        case UIButtonTypeClose:                       // iOS 15+
+            [self _setSystemIcon:@"xmark"];
+            break;
+        case UIButtonTypeCustom:
+        default:
+            break;                                    // 完全自定义，保持默认
+    }
+}
+
+/// 用 SF Symbol 近似系统图标按钮（iOS 13+；低于 13 时 systemImageNamed 返回 nil，需自行 setImage:）
+- (void)_setSystemIcon:(NSString *)symbolName {
+    UIImage *img = [UIImage systemImageNamed:symbolName];
+    if (!img) return;
+    img = [img imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    [self setImage:img forState:UIControlStateNormal];
+    self.imageView.tintColor = [UIColor systemBlueColor];
+    self.backgroundColor = [UIColor clearColor];
+}
+
+
+
 #pragma mark - KVO
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
-                        change:(NSDictionary *)change context:(void *)context {
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if (object == _titleLabel &&
         (context == &kCustomButtonKVOTitleFont ||
          context == &kCustomButtonKVOTitleText ||
@@ -273,7 +322,7 @@ static char kCustomButtonKVOTitleAttr;
 }
 
 - (UIButtonType)buttonType {
-    return UIButtonTypeCustom;
+    return _buttonType;
 }
 
 #pragma mark - 事件机制
@@ -418,7 +467,7 @@ static char kCustomButtonKVOTitleAttr;
     UIImage *img = self.imageView.image;
     BOOL hasImage = img.size.width > 0 && img.size.height > 0;
     BOOL hasTitle = self.titleLabel.text.length > 0;
-    BOOL multiline = self.titleLabel.numberOfLines != 1;
+    BOOL multiline = self.titleLabel.numberOfLines != 1;     // 0 或 N 都算多行
     CGFloat gap = (hasImage && hasTitle) ? self.spacing : 0;
     
     BOOL horizontal = (self.imagePosition == ATButtonImagePositionLeft ||
