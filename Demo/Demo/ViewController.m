@@ -113,8 +113,8 @@
     ATButton *alignBtn = [[ATButton alloc] initWithFrame:CGRectMake(20, 200, 200, 60)];
     [alignBtn setTitle:@"收藏" forState:UIControlStateNormal];
     [alignBtn setImage:[UIImage systemImageNamed:@"star"] forState:UIControlStateNormal];
-    alignBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 20);
-    alignBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 20);
+    alignBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 10);
+    alignBtn.titleEdgeInsets = UIEdgeInsetsMake(10, 10, 0, 10);
 
     alignBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
     alignBtn.contentVerticalAlignment   = UIControlContentVerticalAlignmentTop;

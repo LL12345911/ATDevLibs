@@ -430,28 +430,9 @@ static char kCustomButtonKVOTitleAttr;
 }
 
 #pragma mark - 图文间距
-/// 图片与文字之间的总间距 = spacing + 两者相对面的 insets 之和
-/// Left（图左文右）  ：imageInsets.right + titleInsets.left
-/// Right（文左图右） ：titleInsets.right + imageInsets.left
-/// Top（图上文下）   ：imageInsets.bottom + titleInsets.top
-/// Bottom（文上图下）：titleInsets.bottom + imageInsets.top
+/// 图片与文字之间的基础间距，仅由spacing控制；
+/// imageEdgeInsets / titleEdgeInsets 仅做位置偏移，不参与图文间隙计算（对齐原生UIButton）
 - (CGFloat)_gapBetweenImageAndTitle {
-//    UIImage *img = self.imageView.image;
-//    BOOL hasImage = img.size.width > 0 && img.size.height > 0;
-//    BOOL hasTitle = self.titleLabel.text.length > 0;
-//    if (!hasImage || !hasTitle) return 0;
-//    switch (self.imagePosition) {
-//        case ATButtonImagePositionRight:
-//            return self.spacing + self.titleEdgeInsets.right + self.imageEdgeInsets.left;
-//        case ATButtonImagePositionTop:
-//            return self.spacing + self.imageEdgeInsets.bottom + self.titleEdgeInsets.top;
-//        case ATButtonImagePositionBottom:
-//            return self.spacing + self.titleEdgeInsets.bottom + self.imageEdgeInsets.top;
-//        case ATButtonImagePositionLeft:
-//        default:
-//            return self.spacing + self.imageEdgeInsets.right + self.titleEdgeInsets.left;
-//    }
-    
     UIImage *img = self.imageView.image;
     BOOL hasImage = img.size.width > 0 && img.size.height > 0;
     BOOL hasTitle = self.titleLabel.text.length > 0;
@@ -493,206 +474,30 @@ static char kCustomButtonKVOTitleAttr;
 }
 
 #pragma mark - 布局（edgeInsets + 图片位置 + 多行 + 单内容居中 + 对齐）
-//- (void)layoutSubviews {
-//    [super layoutSubviews];
-//    
-//    self.backgroundImageView.frame = self.bounds;            // 背景图始终铺满
-//    
-//    CGRect contentRect = UIEdgeInsetsInsetRect(self.bounds, self.contentEdgeInsets);
-//    
-//    UIImage *img = self.imageView.image;
-//    BOOL hasImage = img.size.width > 0 && img.size.height > 0;
-//    BOOL hasTitle = self.titleLabel.text.length > 0;
-//    BOOL multiline = self.titleLabel.numberOfLines != 1;     // 0 或 N 都算多行
-//    // CGFloat gap = (hasImage && hasTitle) ? self.spacing : 0;
-//    CGFloat gap = [self _gapBetweenImageAndTitle]; // 图文间距 = spacing + 相对面 insets
-//    
-//    BOOL horizontal = (self.imagePosition == ATButtonImagePositionLeft ||
-//                       self.imagePosition == ATButtonImagePositionRight);
-//    
-//    // 标题可用宽度：水平布局时扣掉图片 + 间距
-//    CGFloat availableTitleWidth = CGRectGetWidth(contentRect);
-//    if (horizontal && hasImage) {
-//        availableTitleWidth = MAX(0, availableTitleWidth - img.size.width - gap);
-//    }
-//    
-//    // 测量标题（多行按可用宽度换行）
-//    CGSize titleSize = CGSizeZero;
-//    if (hasTitle) {
-//        if (multiline) {
-//            titleSize = [self _measureTitleWithMaxWidth:availableTitleWidth];
-//            titleSize.width = MIN(titleSize.width, availableTitleWidth);
-//        } else {
-//            titleSize = [self _measureTitleWithMaxWidth:CGFLOAT_MAX];
-//        }
-//    }
-//    
-//    // 主轴总尺寸，默认整体居中
-//    CGFloat mainTotal = horizontal ? (img.size.width + gap + titleSize.width)
-//    : (img.size.height + gap + titleSize.height);
-//    CGFloat crossMax = horizontal ? MAX(img.size.height, titleSize.height)
-//    : MAX(img.size.width, titleSize.width);
-//    
-//    CGFloat startX = CGRectGetMidX(contentRect) - (horizontal ? mainTotal : crossMax) / 2;
-//    CGFloat startY = CGRectGetMidY(contentRect) - (horizontal ? crossMax : mainTotal) / 2;
-//    
-//    // 先按"图片在左/上"摆好
-//    CGRect imgFrame = CGRectZero, titleFrame = CGRectZero;
-//    if (horizontal) {
-//        imgFrame = CGRectMake(startX,
-//                              CGRectGetMidY(contentRect) - img.size.height / 2,
-//                              img.size.width, img.size.height);
-//        titleFrame = CGRectMake(startX + img.size.width + gap,
-//                                CGRectGetMidY(contentRect) - titleSize.height / 2,
-//                                titleSize.width, titleSize.height);
-//        if (self.imagePosition == ATButtonImagePositionRight) {
-//            imgFrame.origin.x = startX + titleSize.width + gap;
-//            titleFrame.origin.x = startX;
-//        }
-//    } else {
-//        imgFrame = CGRectMake(CGRectGetMidX(contentRect) - img.size.width / 2,
-//                              startY,
-//                              img.size.width, img.size.height);
-//        titleFrame = CGRectMake(CGRectGetMidX(contentRect) - titleSize.width / 2,
-//                                startY + img.size.height + gap,
-//                                titleSize.width, titleSize.height);
-//        if (self.imagePosition == ATButtonImagePositionBottom) {
-//            imgFrame.origin.y = startY + titleSize.height + gap;
-//            titleFrame.origin.y = startY;
-//        }
-//    }
-//    
-//    // 只有图片或只有文字时，单独居中
-//    if (!hasTitle) {
-//        imgFrame.origin.x = CGRectGetMidX(contentRect) - img.size.width / 2;
-//        imgFrame.origin.y = CGRectGetMidY(contentRect) - img.size.height / 2;
-//    } else if (!hasImage) {
-//        titleFrame.origin.x = CGRectGetMidX(contentRect) - titleSize.width / 2;
-//        titleFrame.origin.y = CGRectGetMidY(contentRect) - titleSize.height / 2;
-//    }
-//    
-//    // 应用废弃 API 的 insets（净偏移：正 left/top = 向右/向下）
-//    imgFrame.origin.x   += self.imageEdgeInsets.left - self.imageEdgeInsets.right;
-//    imgFrame.origin.y   += self.imageEdgeInsets.top  - self.imageEdgeInsets.bottom;
-//    titleFrame.origin.x += self.titleEdgeInsets.left - self.titleEdgeInsets.right;
-//    titleFrame.origin.y += self.titleEdgeInsets.top  - self.titleEdgeInsets.bottom;
-//    
-//    // 内容对齐：对齐方向的"边缘元素 inset"作为边距，与 insets 同时作用
-//    CGRect contentBox = CGRectZero;
-//    BOOL hasBox = NO;
-//    if (imgFrame.size.width > 0 || imgFrame.size.height > 0) {
-//        contentBox = imgFrame;
-//        hasBox = YES;
-//    }
-//    if (titleFrame.size.width > 0 || titleFrame.size.height > 0) {
-//        contentBox = hasBox ? CGRectUnion(contentBox, titleFrame) : titleFrame;
-//        hasBox = YES;   // 只有标题时也要标记有内容
-//    }
-//    if (hasBox) {
-//        // 解析 Leading/Trailing（iOS 11+）：按布局方向映射为 Left/Right
-//        UIControlContentHorizontalAlignment hAlign = self.contentHorizontalAlignment;
-//        if (@available(iOS 11.0, *)) {
-//            if (hAlign == UIControlContentHorizontalAlignmentLeading ||
-//                hAlign == UIControlContentHorizontalAlignmentTrailing) {
-//                BOOL isRTL = [UIView userInterfaceLayoutDirectionForSemanticContentAttribute:self.semanticContentAttribute] == UIUserInterfaceLayoutDirectionRightToLeft;
-//                if (hAlign == UIControlContentHorizontalAlignmentLeading) {
-//                    hAlign = isRTL ? UIControlContentHorizontalAlignmentRight : UIControlContentHorizontalAlignmentLeft;
-//                } else {
-//                    hAlign = isRTL ? UIControlContentHorizontalAlignmentLeft : UIControlContentHorizontalAlignmentRight;
-//                }
-//            }
-//        }
-//
-//        // 边缘元素判断：谁在左/右/上/下边缘，就用谁的对应 inset 作边距（与 insets 同时作用）
-//        BOOL titleOnLeft   = hasTitle && (!hasImage || titleFrame.origin.x        <= imgFrame.origin.x);
-//        BOOL titleOnRight  = hasTitle && (!hasImage || CGRectGetMaxX(titleFrame)  >= CGRectGetMaxX(imgFrame));
-//        BOOL titleOnTop    = hasTitle && (!hasImage || titleFrame.origin.y        <= imgFrame.origin.y);
-//        BOOL titleOnBottom = hasTitle && (!hasImage || CGRectGetMaxY(titleFrame)  >= CGRectGetMaxY(imgFrame));
-//        
-//        CGFloat dx = 0, dy = 0;
-//        switch (hAlign) {
-//            case UIControlContentHorizontalAlignmentLeft: {
-//                CGFloat margin = titleOnLeft ? self.titleEdgeInsets.left : self.imageEdgeInsets.left;
-//                dx = CGRectGetMinX(contentRect) + margin - CGRectGetMinX(contentBox);
-//                break;
-//            }
-//            case UIControlContentHorizontalAlignmentRight: {
-//                CGFloat margin = titleOnRight ? self.titleEdgeInsets.right : self.imageEdgeInsets.right;
-//                dx = CGRectGetMaxX(contentRect) - margin - CGRectGetMaxX(contentBox);
-//                break;
-//            }
-//            case UIControlContentHorizontalAlignmentFill: {
-//                // 标题横向拉伸到内容区宽度（计入 titleEdgeInsets 边距）
-//                if (hasTitle) {
-//                    titleFrame.origin.x = CGRectGetMinX(contentRect) + self.titleEdgeInsets.left;
-//                    titleFrame.size.width = CGRectGetWidth(contentRect) - self.titleEdgeInsets.left - self.titleEdgeInsets.right;
-//                }
-//                break;
-//            }
-//            default:
-//                break;                                  // Center：保持居中
-//        }
-//        switch (self.contentVerticalAlignment) {
-//            case UIControlContentVerticalAlignmentTop: {
-//                CGFloat margin = titleOnTop ? self.titleEdgeInsets.top : self.imageEdgeInsets.top;
-//                dy = CGRectGetMinY(contentRect) + margin - CGRectGetMinY(contentBox);
-//                break;
-//            }
-//            case UIControlContentVerticalAlignmentBottom: {
-//                CGFloat margin = titleOnBottom ? self.titleEdgeInsets.bottom : self.imageEdgeInsets.bottom;
-//                dy = CGRectGetMaxY(contentRect) - margin - CGRectGetMaxY(contentBox);
-//                break;
-//            }
-//            case UIControlContentVerticalAlignmentFill: {
-//                if (hasTitle) {
-//                    titleFrame.origin.y = CGRectGetMinY(contentRect) + self.titleEdgeInsets.top;
-//                    titleFrame.size.height = CGRectGetHeight(contentRect) - self.titleEdgeInsets.top - self.titleEdgeInsets.bottom;
-//                }
-//                break;
-//            }
-//            default:
-//                break;                                  // Center：保持居中
-//        }
-//        imgFrame.origin.x += dx;   imgFrame.origin.y += dy;
-//        titleFrame.origin.x += dx; titleFrame.origin.y += dy;
-//    }
-//    
-//    self.imageView.frame = imgFrame;
-//    self.titleLabel.frame = titleFrame;
-//    _highlightEffectView.frame = self.bounds;
-//
-//   
-//}
 
 - (void)layoutSubviews {
     [super layoutSubviews];
     
-    // 1. 背景图始终铺满
-    self.backgroundImageView.frame = self.bounds;
+    self.backgroundImageView.frame = self.bounds;            // 背景图始终铺满
     
-    // 2. 内容区域（仅受 contentEdgeInsets 影响）
     CGRect contentRect = UIEdgeInsetsInsetRect(self.bounds, self.contentEdgeInsets);
     
     UIImage *img = self.imageView.image;
-    CGSize imgSize = img ? img.size : CGSizeZero;
-    BOOL hasImage = (imgSize.width > 0 && imgSize.height > 0);
-    
-    NSString *text = self.titleLabel.text;
-    BOOL hasTitle = (text.length > 0);
-    
-    // 测量标题（使用纯间距，不考虑 title/image insets）
+    BOOL hasImage = img.size.width > 0 && img.size.height > 0;
+    BOOL hasTitle = self.titleLabel.text.length > 0;
+    BOOL multiline = self.titleLabel.numberOfLines != 1;
     CGFloat gap = [self _gapBetweenImageAndTitle];
+    
     BOOL horizontal = (self.imagePosition == ATButtonImagePositionLeft ||
                        self.imagePosition == ATButtonImagePositionRight);
     
     CGFloat availableTitleWidth = CGRectGetWidth(contentRect);
     if (horizontal && hasImage) {
-        availableTitleWidth = MAX(0, availableTitleWidth - imgSize.width - gap);
+        availableTitleWidth = MAX(0, availableTitleWidth - img.size.width - gap);
     }
     
     CGSize titleSize = CGSizeZero;
     if (hasTitle) {
-        BOOL multiline = (self.titleLabel.numberOfLines != 1);
         if (multiline) {
             titleSize = [self _measureTitleWithMaxWidth:availableTitleWidth];
             titleSize.width = MIN(titleSize.width, availableTitleWidth);
@@ -701,122 +506,134 @@ static char kCustomButtonKVOTitleAttr;
         }
     }
     
-    // 3. 计算整体内容包围盒尺寸（不含 insets 偏移）
-    CGSize totalSize;
+    CGFloat mainTotal = horizontal ? (img.size.width + gap + titleSize.width)
+    : (img.size.height + gap + titleSize.height);
+    CGFloat crossMax = horizontal ? MAX(img.size.height, titleSize.height)
+    : MAX(img.size.width, titleSize.width);
+    
+    CGFloat startX = CGRectGetMidX(contentRect) - (horizontal ? mainTotal : crossMax) / 2;
+    CGFloat startY = CGRectGetMidY(contentRect) - (horizontal ? crossMax : mainTotal) / 2;
+    
+    CGRect imgFrame = CGRectZero, titleFrame = CGRectZero;
     if (horizontal) {
-        totalSize.width = (hasImage ? imgSize.width : 0) + gap + (hasTitle ? titleSize.width : 0);
-        totalSize.height = MAX(imgSize.height, titleSize.height);
+        imgFrame = CGRectMake(startX,
+                              CGRectGetMidY(contentRect) - img.size.height / 2,
+                              img.size.width, img.size.height);
+        titleFrame = CGRectMake(startX + img.size.width + gap,
+                                CGRectGetMidY(contentRect) - titleSize.height / 2,
+                                titleSize.width, titleSize.height);
+        if (self.imagePosition == ATButtonImagePositionRight) {
+            imgFrame.origin.x = startX + titleSize.width + gap;
+            titleFrame.origin.x = startX;
+        }
     } else {
-        totalSize.width = MAX(imgSize.width, titleSize.width);
-        totalSize.height = (hasImage ? imgSize.height : 0) + gap + (hasTitle ? titleSize.height : 0);
+        imgFrame = CGRectMake(CGRectGetMidX(contentRect) - img.size.width / 2,
+                              startY,
+                              img.size.width, img.size.height);
+        titleFrame = CGRectMake(CGRectGetMidX(contentRect) - titleSize.width / 2,
+                                startY + img.size.height + gap,
+                                titleSize.width, titleSize.height);
+        if (self.imagePosition == ATButtonImagePositionBottom) {
+            imgFrame.origin.y = startY + titleSize.height + gap;
+            titleFrame.origin.y = startY;
+        }
     }
     
-    // 4. 根据 Alignment 确定内容包围盒的基准原点
-    CGFloat boxX = 0, boxY = 0;
-    
-    // 水平对齐
-    switch (self.contentHorizontalAlignment) {
-        case UIControlContentHorizontalAlignmentLeft:
-            boxX = CGRectGetMinX(contentRect);
-            break;
-        case UIControlContentHorizontalAlignmentRight:
-            boxX = CGRectGetMaxX(contentRect) - totalSize.width;
-            break;
-        case UIControlContentHorizontalAlignmentFill:
-            boxX = CGRectGetMinX(contentRect);
-            totalSize.width = CGRectGetWidth(contentRect); // Fill 时拉伸宽度
-            break;
-        case UIControlContentHorizontalAlignmentCenter:
-        default:
-            boxX = CGRectGetMidX(contentRect) - totalSize.width / 2.0;
-            break;
+    if (!hasTitle) {
+        imgFrame.origin.x = CGRectGetMidX(contentRect) - img.size.width / 2;
+        imgFrame.origin.y = CGRectGetMidY(contentRect) - img.size.height / 2;
+    } else if (!hasImage) {
+        titleFrame.origin.x = CGRectGetMidX(contentRect) - titleSize.width / 2;
+        titleFrame.origin.y = CGRectGetMidY(contentRect) - titleSize.height / 2;
     }
     
-    // 垂直对齐
-    switch (self.contentVerticalAlignment) {
-        case UIControlContentVerticalAlignmentTop:
-            boxY = CGRectGetMinY(contentRect);
-            break;
-        case UIControlContentVerticalAlignmentBottom:
-            boxY = CGRectGetMaxY(contentRect) - totalSize.height;
-            break;
-        case UIControlContentVerticalAlignmentFill:
-            boxY = CGRectGetMinY(contentRect);
-            totalSize.height = CGRectGetHeight(contentRect); // Fill 时拉伸高度
-            break;
-        case UIControlContentVerticalAlignmentCenter:
-        default:
-            boxY = CGRectGetMidY(contentRect) - totalSize.height / 2.0;
-            break;
+    // ========== 重点改动：先做内容对齐（基于未应用image/titleInsets的原始frame）==========
+    CGRect contentBox = CGRectZero;
+    BOOL hasBox = NO;
+    if (imgFrame.size.width > 0 || imgFrame.size.height > 0) {
+        contentBox = imgFrame;
+        hasBox = YES;
     }
-    
-    // 5. 在包围盒内分配 Image 和 Title 的基准 Frame
-    CGRect imgFrame = CGRectZero;
-    CGRect titleFrame = CGRectZero;
-    
-    if (horizontal) {
-        CGFloat imgX = boxX;
-        CGFloat titleX = boxX;
-        
-        if (self.imagePosition == ATButtonImagePositionLeft) {
-            imgX = boxX;
-            titleX = boxX + imgSize.width + gap;
-        } else { // Right
-            titleX = boxX;
-            imgX = boxX + titleSize.width + gap;
+    if (titleFrame.size.width > 0 || titleFrame.size.height > 0) {
+        contentBox = hasBox ? CGRectUnion(contentBox, titleFrame) : titleFrame;
+        hasBox = YES;
+    }
+    if (hasBox) {
+        UIControlContentHorizontalAlignment hAlign = self.contentHorizontalAlignment;
+        if (@available(iOS 11.0, *)) {
+            if (hAlign == UIControlContentHorizontalAlignmentLeading ||
+                hAlign == UIControlContentHorizontalAlignmentTrailing) {
+                BOOL isRTL = [UIView userInterfaceLayoutDirectionForSemanticContentAttribute:self.semanticContentAttribute] == UIUserInterfaceLayoutDirectionRightToLeft;
+                if (hAlign == UIControlContentHorizontalAlignmentLeading) {
+                    hAlign = isRTL ? UIControlContentHorizontalAlignmentRight : UIControlContentHorizontalAlignmentLeft;
+                } else {
+                    hAlign = isRTL ? UIControlContentHorizontalAlignmentLeft : UIControlContentHorizontalAlignmentRight;
+                }
+            }
         }
         
-        // 垂直方向在包围盒内居中
-        imgFrame = CGRectMake(imgX, boxY + (totalSize.height - imgSize.height) / 2.0, imgSize.width, imgSize.height);
-        titleFrame = CGRectMake(titleX, boxY + (totalSize.height - titleSize.height) / 2.0, titleSize.width, titleSize.height);
+        BOOL titleOnLeft   = hasTitle && (!hasImage || titleFrame.origin.x        <= imgFrame.origin.x);
+        BOOL titleOnRight  = hasTitle && (!hasImage || CGRectGetMaxX(titleFrame)  >= CGRectGetMaxX(imgFrame));
+        BOOL titleOnTop    = hasTitle && (!hasImage || titleFrame.origin.y        <= imgFrame.origin.y);
+        BOOL titleOnBottom = hasTitle && (!hasImage || CGRectGetMaxY(titleFrame)  >= CGRectGetMaxY(imgFrame));
         
-    } else { // Vertical (Top / Bottom)
-        CGFloat imgY = boxY;
-        CGFloat titleY = boxY;
-        
-        if (self.imagePosition == ATButtonImagePositionTop) {
-            imgY = boxY;
-            titleY = boxY + imgSize.height + gap;
-        } else { // Bottom
-            titleY = boxY;
-            imgY = boxY + titleSize.height + gap;
+        CGFloat dx = 0, dy = 0;
+        switch (hAlign) {
+            case UIControlContentHorizontalAlignmentLeft: {
+                CGFloat margin = titleOnLeft ? self.titleEdgeInsets.left : self.imageEdgeInsets.left;
+                dx = CGRectGetMinX(contentRect) + margin - CGRectGetMinX(contentBox);
+                break;
+            }
+            case UIControlContentHorizontalAlignmentRight: {
+                CGFloat margin = titleOnRight ? self.titleEdgeInsets.right : self.imageEdgeInsets.right;
+                dx = CGRectGetMaxX(contentRect) - margin - CGRectGetMaxX(contentBox);
+                break;
+            }
+            case UIControlContentHorizontalAlignmentFill: {
+                if (hasTitle) {
+                    titleFrame.origin.x = CGRectGetMinX(contentRect) + self.titleEdgeInsets.left;
+                    titleFrame.size.width = CGRectGetWidth(contentRect) - self.titleEdgeInsets.left - self.titleEdgeInsets.right;
+                }
+                break;
+            }
+            default: break;
         }
-        
-        // 水平方向在包围盒内居中
-        imgFrame = CGRectMake(boxX + (totalSize.width - imgSize.width) / 2.0, imgY, imgSize.width, imgSize.height);
-        titleFrame = CGRectMake(boxX + (totalSize.width - titleSize.width) / 2.0, titleY, titleSize.width, titleSize.height);
+        switch (self.contentVerticalAlignment) {
+            case UIControlContentVerticalAlignmentTop: {
+                CGFloat margin = titleOnTop ? self.titleEdgeInsets.top : self.imageEdgeInsets.top;
+                dy = CGRectGetMinY(contentRect) + margin - CGRectGetMinY(contentBox);
+                break;
+            }
+            case UIControlContentVerticalAlignmentBottom: {
+                CGFloat margin = titleOnBottom ? self.titleEdgeInsets.bottom : self.imageEdgeInsets.bottom;
+                dy = CGRectGetMaxY(contentRect) - margin - CGRectGetMaxY(contentBox);
+                break;
+            }
+            case UIControlContentVerticalAlignmentFill: {
+                if (hasTitle) {
+                    titleFrame.origin.y = CGRectGetMinY(contentRect) + self.titleEdgeInsets.top;
+                    titleFrame.size.height = CGRectGetHeight(contentRect) - self.titleEdgeInsets.top - self.titleEdgeInsets.bottom;
+                }
+                break;
+            }
+            default: break;
+        }
+        imgFrame.origin.x += dx;   imgFrame.origin.y += dy;
+        titleFrame.origin.x += dx; titleFrame.origin.y += dy;
     }
     
-    // Handle Fill 拉伸标题
-    if (self.contentHorizontalAlignment == UIControlContentHorizontalAlignmentFill && hasTitle) {
-        titleFrame.origin.x = CGRectGetMinX(contentRect);
-        titleFrame.size.width = CGRectGetWidth(contentRect);
-    }
-    if (self.contentVerticalAlignment == UIControlContentVerticalAlignmentFill && hasTitle) {
-        titleFrame.origin.y = CGRectGetMinY(contentRect);
-        titleFrame.size.height = CGRectGetHeight(contentRect);
-    }
+    // ========== 最后一步：叠加 imageEdgeInsets / titleEdgeInsets 偏移（原生顺序：先整体对齐，再单独偏移图文） ==========
+    imgFrame.origin.x   += self.imageEdgeInsets.left - self.imageEdgeInsets.right;
+    imgFrame.origin.y   += self.imageEdgeInsets.top  - self.imageEdgeInsets.bottom;
+    titleFrame.origin.x += self.titleEdgeInsets.left - self.titleEdgeInsets.right;
+    titleFrame.origin.y += self.titleEdgeInsets.top  - self.titleEdgeInsets.bottom;
     
-    // 6. 【关键修复】最后才应用 Insets 作为偏移量
-    // UIButton 的 insets 语义：left/top 为正表示向右/下偏移，right/bottom 为正表示向左/上偏移
-    if (hasImage) {
-        imgFrame.origin.x += self.imageEdgeInsets.left - self.imageEdgeInsets.right;
-        imgFrame.origin.y += self.imageEdgeInsets.top - self.imageEdgeInsets.bottom;
-    }
-    if (hasTitle) {
-        titleFrame.origin.x += self.titleEdgeInsets.left - self.titleEdgeInsets.right;
-        titleFrame.origin.y += self.titleEdgeInsets.top - self.titleEdgeInsets.bottom;
-    }
-    
-    // 7. 应用最终 Frame
     self.imageView.frame = imgFrame;
     self.titleLabel.frame = titleFrame;
-    
-    // 高亮层跟随按钮边界
-    if (_highlightEffectView) {
-        _highlightEffectView.frame = self.bounds;
-    }
+    _highlightEffectView.frame = self.bounds;
 }
+
+
 
 #pragma mark - 尺寸计算（sizeThatFits / sizeToFit / intrinsicContentSize 统一入口）
 
