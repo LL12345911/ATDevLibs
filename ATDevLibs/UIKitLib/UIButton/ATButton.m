@@ -128,12 +128,8 @@ static char kCustomButtonKVOTitleAttr;
     _buttonType = buttonType;
     switch (buttonType) {
         case UIButtonTypeSystem:                      // iOS 7+，近似系统样式
-        case UIButtonTypePlain: {                     // iOS 15+
-            [self setTitleColor:[UIColor systemBlueColor] forState:UIControlStateNormal];
-            [self setTitleColor:[UIColor systemGrayColor] forState:UIControlStateHighlighted];
-            self.backgroundColor = [UIColor clearColor];
+            [self applySystemStyle];
             break;
-        }
         case UIButtonTypeDetailDisclosure:
             [self _setSystemIcon:@"info.circle"];
             break;
@@ -153,13 +149,22 @@ static char kCustomButtonKVOTitleAttr;
     }
 }
 
+/// 近似系统样式：蓝色文字、透明背景、按压变灰
+- (void)applySystemStyle {
+    [self setTitleColor:[UIColor systemBlueColor] forState:UIControlStateNormal];
+    [self setTitleColor:[UIColor systemGrayColor] forState:UIControlStateHighlighted];
+    self.backgroundColor = [UIColor clearColor];
+}
+
 /// 用 SF Symbol 近似系统图标按钮（iOS 13+；低于 13 时 systemImageNamed 返回 nil，需自行 setImage:）
 - (void)_setSystemIcon:(NSString *)symbolName {
-    UIImage *img = [UIImage systemImageNamed:symbolName];
-    if (!img) return;
-    img = [img imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-    [self setImage:img forState:UIControlStateNormal];
-    self.imageView.tintColor = [UIColor systemBlueColor];
+    if (@available(iOS 13.0, *)) {
+        UIImage *img = [UIImage systemImageNamed:symbolName];
+        if (!img) return;
+        img = [img imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        [self setImage:img forState:UIControlStateNormal];
+        self.imageView.tintColor = [UIColor systemBlueColor];
+    }
     self.backgroundColor = [UIColor clearColor];
 }
 
