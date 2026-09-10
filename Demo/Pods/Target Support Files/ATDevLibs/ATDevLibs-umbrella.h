@@ -53,6 +53,7 @@
 #import "UIImageView+SFSymbol.h"
 #import "MarsTabBar.h"
 #import "Helper.h"
+#import "ATButton.h"
 #import "UIButton+ATImagePosition.h"
 #import "UIButton+ATIndicator.h"
 #import "UIColor+HexColor.h"

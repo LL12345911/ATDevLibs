@@ -28,8 +28,7 @@ NS_ASSUME_NONNULL_BEGIN
  attachment.image = [UIImage sf_defaultSymbolImageWithName:@"arrow.up.circle.fill" tintColor:themeColor pointSize:36];;
  attachment.bounds = CGRectMake(0, -4, 16, 16);
  
- NSString *reasonStr = @"DCloud还提供了使用js编写服务器代码的uniCloud云引擎。所以只需掌握js，你可以开发web、Android、iOS、各家小程序以及服务器等全栈应用。";
- 
+ NSString *reasonStr = @"使用js编写服务器代码的uniCloud云引擎。所以只需掌握js，你可以开发web、Android、iOS、各家小程序以及服务器等全栈应用。";
  
  AttributeStringBuilder *build =  AttributeStringBuilder.build(@"颜色字体\n").fontSize(30).color([UIColor purpleColor])
      // 匹配（match/matchFirst/matchLast/regular）
@@ -47,7 +46,6 @@ NS_ASSUME_NONNULL_BEGIN
      .headInsertImage(smallIcon, CGSizeMake(18, 18), f14)
      .insertImage(smallIcon, CGSizeMake(18, 18), 0, f14)
      .append(@" 附件：").font(f14).appendAttachment(attachment)
-     
      
      // 圆角文字标签（appendRoundedTag/tagFont/tagTextColor/tagBackgroundColor/tagCornerRadius/tagInsets）
      .appendRoundedTag(@"红色标签")
@@ -112,7 +110,7 @@ NS_ASSUME_NONNULL_BEGIN
      .append(@" 压缩").font(f14).expansion(-0.3)
      .append(@" 连字").font(f14).ligature(1)
      
-     //  dynamicKern（对齐已追加的末尾文本宽度）
+     // dynamicKern（对齐已追加的末尾文本宽度）
      .append(@"道路名称：").font(labelFont)
      .append(@"\n").font(labelFont)
      .append(@"上报人").font(labelFont).dynamicKern(@"道路名称", @"上报人", labelFont)

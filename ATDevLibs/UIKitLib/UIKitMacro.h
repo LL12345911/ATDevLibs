@@ -38,6 +38,9 @@
 //UIButton
 #import "UIButton+ATImagePosition.h"
 #import "UIButton+ATIndicator.h"
+#import "ATButton.h"
+
+
 //#import "ATCustomButton.h"
 #import "AuthcodeView.h"
 

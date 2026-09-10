@@ -62,7 +62,70 @@
     [btn2 addTarget:self action:@selector(click) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:btn2];
     
+    ATButton *btn = [[ATButton alloc] init];
+    [btn setTitle:@"收藏" forState:UIControlStateNormal];
+    [btn setTitleColor:[UIColor systemBlueColor] forState:UIControlStateNormal];
+    [btn setTitleColor:[UIColor systemGreenColor] forState:UIControlStateSelected];
+    [btn setImage:[UIImage systemImageNamed:@"star"] forState:UIControlStateNormal];
+    [btn setImage:[UIImage systemImageNamed:@"star.fill"] forState:UIControlStateSelected];
+    [btn setBackgroundImage:[UIImage systemImageNamed:@"rectangle.rounded"] forState:UIControlStateNormal];
+    
+    btn.imagePosition = ATButtonImagePositionTop;
+    btn.spacing = 6;
+    btn.contentEdgeInsets = UIEdgeInsetsMake(10, 20, 10, 20);
+    btn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
+    btn.cornerRadius = 10;
+    btn.backgroundColor = [UIColor systemGray6Color];
+    
+    [btn sizeToFit];
+    btn.center = CGPointMake(200, 300);
+    [btn addTarget:self action:@selector(toggleStar:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:btn];
+
+    
+    
+    // 配置 A：numberOfLines = 0（多行，不限行数）
+    ATButton *btnA = [[ATButton alloc] init];
+    btnA.titleLabel.numberOfLines = 0;
+    [btnA setTitle:@"第一行\n第二行\n第三行\n第四行" forState:UIControlStateNormal];
+    [btnA setImage:[UIImage systemImageNamed:@"star"] forState:UIControlStateNormal];
+    btnA.imagePosition = ATButtonImagePositionTop;
+    btnA.contentEdgeInsets = UIEdgeInsetsMake(10, 12, 10, 12);
+    
+    CGSize fitA = [btnA sizeThatFits:CGSizeMake(120, CGFLOAT_MAX)];
+    // 预期：宽度 = 120（受限），高度 = 4 行完整高度（约 4 × 行高 + 上下内边距），不截断
+    btnA.frame = CGRectMake(20, 100, fitA.width, fitA.height);
+    [self.view addSubview:btnA];
+    
+    // 配置 B：numberOfLines = 2（最多两行）
+    ATButton *btnB = [[ATButton alloc] init];
+    btnB.titleLabel.numberOfLines = 2;
+    btnB.titleLabel.lineBreakMode = NSLineBreakByTruncatingTail;   // 第二行末尾省略号
+    [btnB setTitle:@"第一行\n第二行\n第三行\n第四行" forState:UIControlStateNormal];
+    
+    CGSize fitB = [btnB sizeThatFits:CGSizeMake(120, CGFLOAT_MAX)];
+    // 预期：宽度 = 120，高度 = 2 行高度（第 3、4 行截断，末尾显示"…"）
+    btnB.frame = CGRectMake(200, 220, fitB.width, fitB.height);
+    [self.view addSubview:btnB];
+
 }
+
+- (void)toggleStar:(ATButton *)sender {
+    sender.selected = !sender.selected;
+    
+    // 读取 API，与 UIButton 完全一致
+    NSLog(@"标题: %@", sender.currentTitle);            // "收藏"
+    NSLog(@"标题色: %@", sender.currentTitleColor);
+    NSLog(@"图片: %@", sender.currentImage);
+    NSLog(@"背景图: %@", sender.currentBackgroundImage);
+    NSLog(@"富文本: %@", sender.currentAttributedTitle);
+    
+    // titleLabel / imageView 直接操作，改完自动刷新布局
+    sender.titleLabel.font = [UIFont boldSystemFontOfSize:18];
+    sender.titleLabel.shadowColor = [UIColor grayColor];
+    sender.imageView.contentMode = UIViewContentModeScaleAspectFit;
+}
+
 
 - (void)click {
     AttributeStringBuilderAllFeaturesDemoViewController *vx = [[AttributeStringBuilderAllFeaturesDemoViewController alloc] init];
@@ -229,118 +292,7 @@
 }
 
 - (void)test3 {
-    NSShadow *shadow = [[NSShadow alloc] init];
-    shadow.shadowColor = [UIColor blueColor];
-    shadow.shadowOffset = CGSizeMake(2, 2);
     
-    NSTextAttachment *attachment = [[NSTextAttachment alloc] init];
-    attachment.image = [UIImage sf_defaultSymbolImageWithName:@"arrow.up.circle.fill" tintColor:themeColor pointSize:36];;
-    attachment.bounds = CGRectMake(0, -4, 16, 16);
-    
-    NSString *reasonStr = @"DCloud还提供了使用js编写服务器代码的uniCloud云引擎。所以只需掌握js，你可以开发web、Android、iOS、各家小程序以及服务器等全栈应用。";
-    
-    
-    AttributeStringBuilder *build =  AttributeStringBuilder.build(@"颜色字体\n").fontSize(30).color([UIColor purpleColor])
-    // 匹配（match/matchFirst/matchLast/regular）
-        .append(@"链接A 链接B 链接C 数字123 数字456")
-        .match(@"链接").hexColor(0xFF4400).underlineStyle(NSUnderlineStyleSingle).underlineColor([UIColor redColor])
-        .matchFirst(@"数字").backgroundColor([UIColor yellowColor])
-        .matchLast(@"数字").backgroundColor([UIColor cyanColor])
-        .regular(@"\\d+", YES).color([UIColor blueColor])
-    
-    // 图片附件（appendImage/appendSizeImage/appendFontImage/appendCustomImage / insertImage/headInsertImag）
-        .appendImage(icon)
-        .appendSizeImage(icon, CGSizeMake(28, 28))
-        .appendFontImage(smallIcon, [UIFont systemFontOfSize:18])
-        .appendCustomImage(icon, CGSizeMake(24, 24), f14)
-        .headInsertImage(smallIcon, CGSizeMake(18, 18), f14)
-        .insertImage(smallIcon, CGSizeMake(18, 18), 0, f14)
-        .append(@" 附件：").font(f14).appendAttachment(attachment)
-    
-    
-    // 圆角文字标签（appendRoundedTag/tagFont/tagTextColor/tagBackgroundColor/tagCornerRadius/tagInsets）
-        .appendRoundedTag(@"红色标签")
-        .tagFont([UIFont boldSystemFontOfSize:14])
-        .tagTextColor([UIColor whiteColor])
-        .tagBackgroundColor([UIColor redColor])
-        .tagCornerRadius(8)
-        .tagInsets(UIEdgeInsetsMake(3, 6, 3, 6))
-    
-    // 圆角文字标签‑生成图片（appendBackgroundColor 系列，共 7 种变体）
-        .appendBackgroundColor(@"基础款", [UIFont systemFontOfSize:13], [UIColor whiteColor], fill, 6, 0)
-        .appendBackgroundColor(@"上偏移", [UIFont systemFontOfSize:13], [UIColor whiteColor], fill, 6, -3)
-        .appendBackgroundInsetsColor(@"内边距款", [UIFont systemFontOfSize:13], [UIColor whiteColor], fill, 6, UIEdgeInsetsMake(4, 12, 4, 12), 0)
-        .appendBackgroundMarginsColor(@"外边距款", [UIFont systemFontOfSize:13], [UIColor whiteColor], fill, 6, UIEdgeInsetsMake(2, 6, 2, 6), UIEdgeInsetsMake(2, 4, 2, 4), 0)
-        .appendBackgroundSize(@"固定尺寸款", [UIFont systemFontOfSize:13], [UIColor whiteColor], fill, 6, CGSizeMake(48, 28), 0)
-        .appendBackgroundCornerColor(@"圆角方向 - 左上圆角", [UIFont systemFontOfSize:13], [UIColor whiteColor], fill, r,UIRectCornerTopLeft, 0)
-        .appendBackgroundCornerColor(@"圆角方向 - 右侧圆角", [UIFont systemFontOfSize:13], [UIColor whiteColor], fill, r, UIRectCornerTopRight | UIRectCornerBottomRight, 0)
-        .appendBackgroundCornerSize(@"圆角方向+尺寸款", [UIFont systemFontOfSize:13], [UIColor whiteColor], fill, 6, UIRectCornerAllCorners, CGSizeMake(30, 30), 0)
-        .appendBackgroundRadiusColor(@"完整参数（描边/线宽/内外边距）", [UIFont systemFontOfSize:13], [UIColor blueColor], [UIColor clearColor], 6,UIRectCornerAllCorners, CGSizeMake(0, 0),UIEdgeInsetsMake(3, 10, 3, 10),UIEdgeInsetsZero,[UIColor blueColor], 1, 0)
-    
-    // 左侧标题 + 右侧内容（内容多行，自动留出左侧标题空白）
-        .append([NSString stringWithFormat:@"位置信息：%@", reasonStr]).font(AutoFont(12)).color([UIColor redColor])
-        .headIndent(padding).tailIndent(0).lineBreakMode(NSLineBreakByCharWrapping)
-        .append(@"\n\n").font([UIFont systemFontOfSize:2])
-        .append([NSString stringWithFormat:@"位置信息：%@", reasonStr]).font(AutoFont(12)).color([UIColor blackColor])
-        .headIndentCharacters(5, AutoFont(12)).tailIndent(0).lineBreakMode(NSLineBreakByCharWrapping)
-        .append(@"\n\n").font([UIFont systemFontOfSize:2]);
-    
-    // 分割线
-        .appendDividerLine(16, 16)
-        .appendDividerLine(0, 0).dividerColor([UIColor lightGrayColor]).dividerThickness(1);
-    
-    // Glyph 属性（strikethrough/underline/stroke/textEffect/shadow/link/linkUrlStr）
-        .append(@"删除线 ").font(f14).strikethroughStyle(NSUnderlineStyleSingle).strikethroughColor([UIColor redColor])
-        .append(@"下划线 ").font(f14).underlineStyle(NSUnderlineStyleThick).underlineColor([UIColor greenColor])
-        .append(@"中空字").font([UIFont boldSystemFontOfSize:18]).strokeColor([UIColor purpleColor]).strokeWidth(2)
-        .append(@"\n浮雕效果").font(f16).textEffect(NSTextEffectLetterpressStyle)
-        .append(@" 阴影").font(f16).shadow(shadow)
-        .append(@" 链接").font(f16).link([NSURL URLWithString:@"https://www.apple.com"])
-        .append(@" 链接字符串").font(f16).linkUrlStr(@"https://www.apple.com")
-    
-    // appendLeftRightLine（一行两段对齐，自动独占一行）
-        .appendLeftRightLine(@"商品名称", @"¥99.00", kDemoWidth, f14)
-        .appendLeftRightLine(@"运费", @"包邮", kDemoWidth, f14)
-        .appendLeftRightLine(@"实付款", @"¥99.00", kDemoWidth, [UIFont boldSystemFontOfSize:14])
-    
-    // alignLeftRight（手动 \\t，右段为文本+图片）
-        .append(@"金额：").font(f14)
-        .append(@"\t")
-        .appendSizeImage(smallIcon, CGSizeMake(18, 18)).append(@" ¥99.00").font(f14)
-        .alignLeftRight(340) // 演示区域的固定内容宽度（Label使用该宽度）
-    
-    // headIndent / tailIndent
-        .append(@"整体左缩进 + 右缩进。这段文字设置了 headIndent(20) 与 tailIndent(-20)，展示左右缩进后的排版。").font(f14).headIndent(20).tailIndent(-20)
-    
-    // 特殊属性（baselineOffset/kern/obliqueness/expansion/ligature）
-        .append(@"上标").font(f14).baselineOffset(8).fontSize(10)
-        .append(@" 下标").font(f14).baselineOffset(-6).fontSize(10)
-        .append(@" 字间距").font(f14).kern(4)
-        .append(@" 倾斜").font(f14).obliqueness(0.3)
-        .append(@" 拉伸").font(f14).expansion(0.5)
-        .append(@" 压缩").font(f14).expansion(-0.3)
-        .append(@" 连字").font(f14).ligature(1)
-    
-    //  dynamicKern（对齐已追加的末尾文本宽度）
-        .append(@"道路名称：").font(labelFont)
-        .append(@"\n").font(labelFont)
-        .append(@"上报人").font(labelFont).dynamicKern(@"道路名称", @"上报人", labelFont)
-    
-    // appendDynamicKern（追加并对齐
-        .append(@"道路名称：").font(labelFont)
-        .append(@"\n").font(labelFont)
-        .appendDynamicKern(@"道路名称：", @"上报人：", labelFont).font(labelFont)
-        .append(@"\n").font(labelFont)
-        .appendDynamicKern(@"道路名称：", @"审核意见：", labelFont).font(labelFont)
-    
-    // appendDynamicFitKern（指定后缀长度）
-        .append(@"道路名称：").font(labelFont)
-        .append(@"\n").font(labelFont)
-        .appendDynamicFitKern(@"道路名称：", @"上报人：", labelFont, 2).font(labelFont)
-        .append(@"\n").font(labelFont)
-        .appendDynamicFitKern(@"道路名称：", @"审核意见：", labelFont, 1).font(labelFont);
-    
-    _label.attributedText = [build commit];
     
 }
 
