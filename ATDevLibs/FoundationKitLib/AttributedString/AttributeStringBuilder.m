@@ -1554,275 +1554,275 @@ NSAttributedStringKey const SCRAttributedStringTapActionsAttributeName = @"SCRAt
     };
 }
 
-#pragma mark - 点击事件（无需子类化 UILabel）
-//
-///**
-// 用 TextKit 把 label 上的点击点解析为字符索引（与 label 当前布局一致）。
-// 未命中（文本外 / 行内空白）返回 NSNotFound。
-// */
-////static NSUInteger scr_characterIndexInLabel(UILabel *label, CGPoint point) {
-////    NSAttributedString *attributedText = label.attributedText;
-////    if (attributedText.length == 0) {
-////        return NSNotFound;
-////    }
-////
-////    NSTextStorage *storage = [[NSTextStorage alloc] initWithAttributedString:attributedText];
-////    NSLayoutManager *layoutManager = [[NSLayoutManager alloc] init];
-////    [storage addLayoutManager:layoutManager];
-////
-////    // ✅ 关键修复：使用 label 的实际内容尺寸，并扣除 textContainerInset
-////    UIEdgeInsets inset = label.textContainerInset; // iOS 15+ API，低版本用 @available 保护
-////    CGSize containerSize = CGSizeMake(
-////                                      label.bounds.size.width - inset.left - inset.right,
-////                                      label.bounds.size.height - inset.top - inset.bottom
-////                                      );
-////
-////
-////    NSTextContainer *textContainer = [[NSTextContainer alloc] initWithSize:label.bounds.size];
-////    textContainer.lineFragmentPadding = 0;
-////    textContainer.lineBreakMode = label.lineBreakMode;
-////    [layoutManager addTextContainer:textContainer];
-////
-////    NSRange glyphRange = [layoutManager glyphRangeForTextContainer:textContainer];
-////    if (glyphRange.length == 0) {
-////        return NSNotFound;
-////    }
-////
-////    // 取距离点击点最近的字形
-////    NSUInteger glyphIndex = [layoutManager glyphIndexForPoint:point
-////                                              inTextContainer:textContainer
-////                       fractionOfDistanceThroughGlyph:NULL];
-////    if (glyphIndex == NSNotFound || glyphIndex >= NSMaxRange(glyphRange)) {
-////        return NSNotFound;
-////    }
-////
-////    // 校验点确实落在该字形所在的行内，避免点击文本区域下方空白误命中最后一行
-////    NSRange lineRange;
-////    CGRect lineRect = [layoutManager lineFragmentRectForGlyphAtIndex:glyphIndex
-////                                                       effectiveRange:&lineRange];
-////    if (!CGRectContainsPoint(lineRect, point)) {
-////        return NSNotFound;
-////    }
-////
-////    // 行内未占满的区域（如行尾空白）不应触发：校验字形包围盒，左右各留 4pt 容差
-////    NSRange glyphBoundRange = NSMakeRange(glyphIndex, 1);
-////    CGRect glyphRect = [layoutManager boundingRectForGlyphRange:glyphBoundRange
-////                                                inTextContainer:textContainer];
-////    if (point.x < CGRectGetMinX(glyphRect) - 4 || point.x > CGRectGetMaxX(glyphRect) + 4) {
-////        return NSNotFound;
-////    }
-////
-////    NSUInteger charIndex = [layoutManager characterIndexForGlyphAtIndex:glyphIndex];
-////    if (charIndex == NSNotFound || charIndex >= attributedText.length) {
-////        return NSNotFound;
-////    }
-////    return charIndex;
-////}
-//static NSUInteger scr_characterIndexInLabel(UILabel *label, CGPoint point) {
-//    // 1. 基础校验
-//    NSAttributedString *attributedText = label.attributedText;
-//    if (!attributedText || attributedText.length == 0) {
+#pragma mark - 点击事件（通用 TextKit 命中测试）
+
+///// 通用命中测试：使用标准 TextKit 栈将触摸点映射到字符索引
+///// @param point 相对于视图的触摸点
+///// @param attributedText 当前显示的富文本
+///// @param bounds 视图的内容边界
+///// @param lineBreakMode 换行模式（UILabel/UITextView 可能不同）
+///// @param maxLines 最大行数（0 表示无限制）
+//static NSUInteger scr_characterIndexAtPoint(CGPoint point,
+//                                            NSAttributedString *attributedText,
+//                                            CGRect bounds,
+//                                            NSLineBreakMode lineBreakMode,
+//                                            NSUInteger maxLines) {
+//    if (!attributedText || attributedText.length == 0 || CGRectIsEmpty(bounds)) {
 //        return NSNotFound;
 //    }
 //    
-//    NSLayoutManager *layoutManager = nil;
-//    NSTextContainer *textContainer = nil;
-//    BOOL useInternalLayout = NO;
+//    // 1. 构建标准 TextKit 栈（不依赖任何私有 API）
+//    NSTextStorage *textStorage = [[NSTextStorage alloc] initWithAttributedString:attributedText];
+//    NSLayoutManager *layoutManager = [[NSLayoutManager alloc] init];
+//    [textStorage addLayoutManager:layoutManager];
 //    
-//    // 2. 安全尝试获取 UILabel 内部的排版对象 (仅 iOS 真机/模拟器有效)
-//    @try {
-//        layoutManager = [label valueForKey:@"_layoutManager"];
-//        id containerObj = [label valueForKey:@"_textContainer"];
-//        
-//        if ([containerObj isKindOfClass:[NSArray class]]) {
-//            textContainer = [(NSArray *)containerObj firstObject];
-//        } else if ([containerObj isKindOfClass:[NSTextContainer class]]) {
-//            textContainer = (NSTextContainer *)containerObj;
-//        }
-//        
-//        if (layoutManager && textContainer) {
-//            useInternalLayout = YES;
-//        }
-//    } @catch (NSException *exception) {
-//        // Mac Catalyst 或某些特殊环境下会抛出 NSUnknownKeyException，安全忽略
-//        NSLog(@"⚠️ [ScrTap] KVC 获取内部 LayoutManager 失败，将启用 Fallback 模式: %@", exception.reason);
+//    NSTextContainer *textContainer = [[NSTextContainer alloc] initWithSize:bounds.size];
+//    textContainer.lineFragmentPadding = 0.0; // UILabel/UITextView 默认均为 0
+//    textContainer.lineBreakMode = lineBreakMode;
+//    if (maxLines > 0) {
+//        textContainer.maximumNumberOfLines = maxLines;
 //    }
+//    [layoutManager addTextContainer:textContainer];
 //    
-//    // 3. 降级兜底：手动构建 TextKit 栈 (Mac Catalyst 或 KVC 失败时走这里)
-//    NSTextStorage *fallbackStorage = nil;
-//    NSLayoutManager *fallbackLM = nil;
-//    NSTextContainer *fallbackTC = nil;
+//    // 2. 强制完成排版
+//    [layoutManager ensureLayoutForTextContainer:textContainer];
 //    
-//    if (!useInternalLayout) {
-//        fallbackStorage = [[NSTextStorage alloc] initWithAttributedString:attributedText];
-//        fallbackLM = [[NSLayoutManager alloc] init];
-//        [fallbackStorage addLayoutManager:fallbackLM];
-//        
-//        fallbackTC = [[NSTextContainer alloc] initWithSize:label.bounds.size];
-//        fallbackTC.lineFragmentPadding = 0; // UILabel 默认为 0
-//        fallbackTC.lineBreakMode = label.lineBreakMode;
-//        if (label.numberOfLines > 0) {
-//            fallbackTC.maximumNumberOfLines = label.numberOfLines;
-//        }
-//        [fallbackLM addTextContainer:fallbackTC];
-//        
-//        layoutManager = fallbackLM;
-//        textContainer = fallbackTC;
-//    }
-//    
-//    // 4. 查询 Glyph
 //    NSRange glyphRange = [layoutManager glyphRangeForTextContainer:textContainer];
-//    if (glyphRange.length == 0) {
+//    if (glyphRange.length == 0)
 //        return NSNotFound;
-//    }
 //    
+//    // 3. 查找触摸点对应的 Glyph
 //    CGFloat fraction = 0;
 //    NSUInteger glyphIndex = [layoutManager glyphIndexForPoint:point
 //                                              inTextContainer:textContainer
 //                               fractionOfDistanceThroughGlyph:&fraction];
 //    
-//    if (glyphIndex == NSNotFound || glyphIndex >= NSMaxRange(glyphRange)) {
+//    // glyphIndexForPoint 在点超出范围时返回最接近的 glyph，需要二次校验
+//    if (glyphIndex >= NSMaxRange(glyphRange))
 //        return NSNotFound;
-//    }
 //    
-//    // 5. 行级校验 (Y 轴)
+//    // 4. Y 轴校验：确保点确实在该行内（防止点到行间距区域误触发）
 //    NSRange lineRange;
-//    CGRect lineRect = [layoutManager lineFragmentRectForGlyphAtIndex:glyphIndex effectiveRange:&lineRange];
-//    
-//    // UILabel 可能有微小的内部上下 padding，给 Y 轴加 2pt 容差
-//    CGRect expandedLineRect = CGRectInset(lineRect, 0, -2.0);
-//    if (!CGRectContainsPoint(expandedLineRect, point)) {
+//    CGRect lineRect = [layoutManager lineFragmentRectForGlyphAtIndex:glyphIndex
+//                                                      effectiveRange:&lineRange];
+//    // 放宽容差 3pt，覆盖行间距和控件内部 padding
+//    if (!CGRectContainsPoint(CGRectInset(lineRect, 0, -3.0), point)) {
 //        return NSNotFound;
 //    }
 //    
-//    // 6. 字形级校验 (X 轴) 与 HeadIndent 补偿
-//    CGRect glyphRect = [layoutManager boundingRectForGlyphRange:NSMakeRange(glyphIndex, 1)
-//                                                inTextContainer:textContainer];
-//    CGFloat tolerance = 4.0; // 默认严格容差
+////    // 5. X 轴校验：确保点在 glyph 的水平范围内
+////    CGRect glyphRect = [layoutManager boundingRectForGlyphRange:NSMakeRange(glyphIndex, 1)
+////                                                inTextContainer:textContainer];
+////    // 对自定义附件（SCRoundedTagAttachment）和普通文本统一放宽 6pt 容差
+////    CGRect expandedGlyphRect = CGRectInset(glyphRect, -6.0, 0);
+////    if (!CGRectContainsPoint(expandedGlyphRect, point)) {
+////        return NSNotFound;
+////    }
+////    
+////    // 6. 映射到字符索引并校验 TapID
+////    NSUInteger charIndex = [layoutManager characterIndexForGlyphAtIndex:glyphIndex];
+////    if (charIndex == NSNotFound || charIndex >= attributedText.length) {
+////        return NSNotFound;
+////    }
+////    
+////    NSString *tapID = [attributedText attribute:SCRAttributedStringTapIDAttributeName
+////                                        atIndex:charIndex
+////                                 effectiveRange:nil];
+////    return (tapID.length > 0) ? charIndex : NSNotFound;
 //    
-//    if (!useInternalLayout) {
-//        // ===== Fallback 模式专属逻辑 =====
+//    // 5. 映射到字符索引
+//    NSUInteger charIndex = [layoutManager characterIndexForGlyphAtIndex:glyphIndex];
+//    if (charIndex == NSNotFound || charIndex >= attributedText.length) {
+//        return NSNotFound;
+//    }
+//    
+//    // 6. 针对自定义附件（U+FFFC）进行精确命中测试
+//    unichar c = [attributedText.string characterAtIndex:charIndex];
+//    if (c == 0xFFFC) {
+//        // ✅ 修复1: id<NSTextAttachment> 必须加 * 表示指针类型
+//      NSTextAttachment * attachment = [attributedText attribute:NSAttachmentAttributeName
+//                                                            atIndex:charIndex
+//                                                     effectiveRange:nil];
 //        
-//        // 读取该 glyph 对应字符的段落缩进
-//        NSUInteger charIdxForGlyph = [layoutManager characterIndexForGlyphAtIndex:glyphIndex];
-//        if (charIdxForGlyph != NSNotFound && charIdxForGlyph < attributedText.length) {
-//            NSRange paraRange;
-//            NSParagraphStyle *style = [attributedText attribute:NSParagraphStyleAttributeName
-//                                                        atIndex:charIdxForGlyph
-//                                                 effectiveRange:&paraRange];
-//            CGFloat headIndent = style.headIndent;
+//        if ([attachment respondsToSelector:@selector(attachmentBoundsForTextContainer:proposedLineFragment:glyphPosition:characterIndex:)]) {
+//            CGRect proposedLineFragment = [layoutManager lineFragmentRectForGlyphAtIndex:glyphIndex
+//                                                                          effectiveRange:nil];
 //            
-//            // 补偿逻辑：UILabel 实际渲染位置通常比标准 TextKit 偏左
-//            if (headIndent > 0) {
-//                CGFloat compensation = headIndent * 0.75; // 经验系数，可根据日志微调
-//                glyphRect = CGRectOffset(glyphRect, -compensation, 0);
-//                tolerance = 8.0; // 补偿后适当放宽容差
+//            // ✅ 修复2: ObjC 中获取 glyph 位置的正确方法是 locationForGlyphAtIndex:
+//            CGPoint glyphPosition = [layoutManager locationForGlyphAtIndex:glyphIndex];
+//            
+//            // 获取附件自己声明的真实渲染边界
+//            CGRect realAttachmentBounds = [(id)attachment attachmentBoundsForTextContainer:textContainer
+//                                                                      proposedLineFragment:proposedLineFragment
+//                                                                             glyphPosition:glyphPosition
+//                                                                            characterIndex:charIndex];
+//            
+//            // 将 attachmentBounds 转换为 TextContainer 坐标系
+//            CGRect realRectInContainer = CGRectMake(
+//                                                    glyphPosition.x + realAttachmentBounds.origin.x,
+//                                                    glyphPosition.y + realAttachmentBounds.origin.y,
+//                                                    realAttachmentBounds.size.width,
+//                                                    realAttachmentBounds.size.height
+//                                                    );
+//            
+//            // ⚠️ 仅允许 2pt 极小容差，防止误触相邻元素
+//            if (!CGRectContainsPoint(CGRectInset(realRectInContainer, -2.0, -2.0), point)) {
+//                return NSNotFound;
+//            }
+//        } else {
+//            // 普通系统 NSTextAttachment，使用原有放宽容差
+//            CGRect glyphRect = [layoutManager boundingRectForGlyphRange:NSMakeRange(glyphIndex, 1)
+//                                                        inTextContainer:textContainer];
+//            if (!CGRectContainsPoint(CGRectInset(glyphRect, -6.0, 0), point)) {
+//                return NSNotFound;
 //            }
 //        }
-//        
-//        // 打印诊断日志 (方便排查 Fallback 模式下的偏移问题)
-//        NSUInteger ci = [layoutManager characterIndexForGlyphAtIndex:glyphIndex];
-//        unichar c = (ci != NSNotFound && ci < attributedText.length) ? [attributedText.string characterAtIndex:ci] : '?';
-//        NSLog(@"🔎 [Fallback] tap=(%.1f,%.1f) | char='%C' idx=%lu | glyphRect=[%.1f~%.1f] | dx=%.1f",
-//              point.x, point.y, c, (unsigned long)ci,
-//              CGRectGetMinX(glyphRect), CGRectGetMaxX(glyphRect),
-//              point.x - CGRectGetMidX(glyphRect));
+//    } else {
+//        // 7. 普通文本 X 轴校验
+//        CGRect glyphRect = [layoutManager boundingRectForGlyphRange:NSMakeRange(glyphIndex, 1)
+//                                                    inTextContainer:textContainer];
+//        if (!CGRectContainsPoint(CGRectInset(glyphRect, -4.0, 0), point)) {
+//            return NSNotFound;
+//        }
 //    }
 //    
-//    // X 轴容差过滤
-//    if (point.x < CGRectGetMinX(glyphRect) - tolerance ||
-//        point.x > CGRectGetMaxX(glyphRect) + tolerance) {
-//        return NSNotFound;
-//    }
-//    
-//    // 7. 最终业务校验：确保命中位置确实携带了 Tap Action
-//    NSUInteger finalCharIndex = [layoutManager characterIndexForGlyphAtIndex:glyphIndex];
-//    if (finalCharIndex == NSNotFound || finalCharIndex >= attributedText.length) {
-//        return NSNotFound;
-//    }
-//    
-//    NSDictionary *attrs = [attributedText attributesAtIndex:finalCharIndex effectiveRange:NULL];
-//    if (!attrs[SCRAttributedStringTapActionsAttributeName]) {
-//        // 点中了文字，但该文字没有绑定点击事件，拒绝响应
-//        return NSNotFound;
-//    }
-//    
-//    return finalCharIndex;
+//    // 8. 最终业务校验
+//    NSString *tapID = [attributedText attribute:SCRAttributedStringTapIDAttributeName
+//                                        atIndex:charIndex
+//                                 effectiveRange:nil];
+//    return (tapID.length > 0) ? charIndex : NSNotFound;
 //}
 //
-//
-//
-//
-//+ (void)scr_handleTapAtPoint:(CGPoint)point onLabel:(UILabel *)label {
-//    if (!label) {
+//static void scr_executeTapAction(NSAttributedString *attributedText, NSUInteger charIndex) {
+//    if (!attributedText || charIndex >= attributedText.length)
 //        return;
-//    }
-//    NSLog(@"🔍 tap at (%.1f, %.1f), label bounds=%@", point.x, point.y, NSStringFromCGRect(label.bounds));
-//    NSUInteger charIndex = scr_characterIndexInLabel(label, point);
-//    NSLog(@"🎯 charIndex=%lu, char='%@'", (unsigned long)charIndex,
-//          charIndex != NSNotFound ? [label.attributedText.string substringWithRange:NSMakeRange(charIndex, 1)] : @"N/A");
-//    
-//    if (charIndex == NSNotFound) {
-//        return;
-//    }
-//    
-//    NSAttributedString *attributedText = label.attributedText;
-//    if (!attributedText || attributedText.length == 0 || charIndex >= attributedText.length) {
-//        return;
-//    }
-//    
-//    NSDictionary *attrs = [label.attributedText attributesAtIndex:charIndex effectiveRange:NULL];
-//    NSLog(@"🏷️ attrs at %lu: %@", (unsigned long)charIndex, attrs);
 //    
 //    NSString *tapID = [attributedText attribute:SCRAttributedStringTapIDAttributeName
 //                                        atIndex:charIndex
-//                                 effectiveRange:NULL];
-//    if (tapID.length == 0) {
+//                                 effectiveRange:nil];
+//    if (tapID.length == 0)
 //        return;
-//    }
 //    
+//    // ✅ 获取同一 TapID 覆盖的完整文本范围
+//    NSRange effectiveRange = NSMakeRange(0, 0);
+//    [attributedText attribute:SCRAttributedStringTapIDAttributeName
+//                      atIndex:charIndex
+//               effectiveRange:&effectiveRange];
+//    
+//    NSString *clickedText = [attributedText.string substringWithRange:effectiveRange];
+//    
+//    NSLog(@"[ScrTap] ✅ 点击触发 | range=(%lu,%lu) | tapID=%@ | text='%@'",
+//          (unsigned long)effectiveRange.location,
+//          (unsigned long)effectiveRange.length,
+//          tapID,
+//          clickedText);
+//    
+//    // 执行回调
 //    NSDictionary<NSString *, id> *actions = [attributedText attribute:SCRAttributedStringTapActionsAttributeName
 //                                                              atIndex:0
-//                                                       effectiveRange:NULL];
-//    if (![actions isKindOfClass:[NSDictionary class]]) {
-//        return;
-//    }
-//    
-//    void (^action)(void) = actions[tapID];
-//    if (action) {
-//        action();
+//                                                       effectiveRange:nil];
+//    if ([actions isKindOfClass:[NSDictionary class]]) {
+//        void (^action)(void) = actions[tapID];
+//        if (action)
+//            action();
 //    }
 //}
 //
+//
+//#pragma mark - UILabel 支持
+//
 //+ (void)scr_handleLabelTap:(UITapGestureRecognizer *)gesture {
-//    if (gesture.state != UIGestureRecognizerStateRecognized) {
+//    if (gesture.state != UIGestureRecognizerStateRecognized)
 //        return;
-//    }
 //    UIView *view = gesture.view;
-//    if (![view isKindOfClass:[UILabel class]]) {
-//        return;
-//    }
+//    if (![view isKindOfClass:[UILabel class]]) return;
 //    UILabel *label = (UILabel *)view;
-//    [self scr_handleTapAtPoint:[gesture locationInView:label] onLabel:label];
+//    
+//    
+//    CGPoint point = [gesture locationInView:label];
+//    NSUInteger charIndex = scr_characterIndexAtPoint(point,
+//                                                     label.attributedText,
+//                                                     label.bounds,
+//                                                     label.lineBreakMode,
+//                                                     (NSUInteger)label.numberOfLines);
+//    scr_executeTapAction(label.attributedText, charIndex);
 //}
 //
 //+ (void)scr_enableTapOnLabel:(UILabel *)label {
-//    if (!label) {
+//    if (!label)
 //        return;
-//    }
 //    
-//    // 幂等：同一个 label 只挂一次手势
-//    static char kSCRTapGestureAssociatedKey;
-//    if (objc_getAssociatedObject(label, &kSCRTapGestureAssociatedKey)) {
+//    static char kSCRTapGestureKey;
+//    if (objc_getAssociatedObject(label, &kSCRTapGestureKey))
 //        return;
-//    }
 //    
 //    label.userInteractionEnabled = YES;
 //    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
 //                                                                          action:@selector(scr_handleLabelTap:)];
+//    tap.cancelsTouchesInView = NO;
 //    [label addGestureRecognizer:tap];
-//    objc_setAssociatedObject(label, &kSCRTapGestureAssociatedKey, @YES, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+//    objc_setAssociatedObject(label, &kSCRTapGestureKey, @YES, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 //}
+//
+//+ (void)scr_handleTapAtPoint:(CGPoint)point onLabel:(UILabel *)label {
+//    if (!label)
+//        return;
+//    NSUInteger charIndex = scr_characterIndexAtPoint(point,
+//                                                     label.attributedText,
+//                                                     label.bounds,
+//                                                     label.lineBreakMode,
+//                                                     (NSUInteger)label.numberOfLines);
+//    scr_executeTapAction(label.attributedText, charIndex);
+//}
+//
+//#pragma mark - UITextView / UITextField 支持
+//
+//+ (void)scr_handleTextViewTap:(UITapGestureRecognizer *)gesture {
+//    if (gesture.state != UIGestureRecognizerStateRecognized)
+//        return;
+//    UIView *view = gesture.view;
+//    if (![view isKindOfClass:[UITextView class]]) return;
+//    UITextView *textView = (UITextView *)view;
+//    
+//    // UITextView 有 contentInset 和 textContainerInset，需要转换坐标系
+//    CGPoint point = [gesture locationInView:textView];
+//    point.x -= textView.textContainerInset.left + textView.contentInset.left;
+//    point.y -= textView.textContainerInset.top + textView.contentInset.top;
+//    
+//    NSUInteger charIndex = scr_characterIndexAtPoint(point,
+//                                                     textView.attributedText,
+//                                                     CGRectMake(0, 0,
+//                                                                textView.bounds.size.width - textView.textContainerInset.left - textView.textContainerInset.right,
+//                                                                textView.bounds.size.height - textView.textContainerInset.top - textView.textContainerInset.bottom),
+//                                                     textView.textContainer.lineBreakMode,
+//                                                     0);
+//    scr_executeTapAction(textView.attributedText, charIndex);
+//}
+//
+//+ (void)scr_enableTapOnTextView:(UITextView *)textView {
+//    if (!textView)
+//        return;
+//    
+//    static char kSCTextViewTapKey;
+//    if (objc_getAssociatedObject(textView, &kSCTextViewTapKey))
+//        return;
+//    
+//    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
+//                                                                          action:@selector(scr_handleTextViewTap:)];
+//    tap.cancelsTouchesInView = NO;
+//    // 不阻断 UITextView 自身的编辑/选择手势
+//    tap.delegate = (id<UIGestureRecognizerDelegate>)self;
+//    [textView addGestureRecognizer:tap];
+//    objc_setAssociatedObject(textView, &kSCTextViewTapKey, @YES, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+//}
+//
+//#pragma mark - UIGestureRecognizerDelegate
+//
+//+ (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer
+//shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+//    return YES;
+//}
+//
 
 
 #pragma mark - Private

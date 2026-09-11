@@ -669,36 +669,36 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 #pragma mark - 点击事件
-//
-///// 点击标记属性名：作用于被 tapAction 标记的字符，值 = 字符串 ID
-//FOUNDATION_EXPORT NSAttributedStringKey const SCRAttributedStringTapIDAttributeName;
-//
-///// 点击回调注册表属性名：作用于整个字符串，值 = NSDictionary<NSString*, void(^)(void)>
-//FOUNDATION_EXPORT NSAttributedStringKey const SCRAttributedStringTapActionsAttributeName;
-//
-///**
-// 给当前 Range 注册点击事件
-// 
-// @brief 将当前 Range 标记为可点击，点击时回调 action。
-// 无需自定义 UILabel 子类：把 commit 出的富文本赋给任意 UILabel，
-// 再调用 [AttributeStringBuilder scr_enableTapOnLabel:label] 即可生效。
-// 标记的视觉样式（颜色 / 下划线等）需调用方自行设置。
-// 图片附件也是一个字符，可通过 .range(idx, 1) 选中后同样注册点击。
-// 
-// @code
-// AttributeStringBuilder.build(@"")
-// .append(@"点击我").font([UIFont systemFontOfSize:14])
-// .color([UIColor blueColor]).underlineStyle(NSUnderlineStyleSingle)
-// .tapAction(^{ NSLog(@"被点击了"); });
-// // label.attributedText = [builder commit];
-// // [AttributeStringBuilder scr_enableTapOnLabel:label];
-// @endcode
-// 
-// @note 通过 attributedAppend 拼接的富文本若带有点击标记，其回调会自动合并，
-// 拼接后点击事件仍然可用。
-// */
-//- (AttributeStringBuilder *(^)(void (^action)(void)))tapAction;
-//
+
+/// 点击标记属性名：作用于被 tapAction 标记的字符，值 = 字符串 ID
+FOUNDATION_EXPORT NSAttributedStringKey const SCRAttributedStringTapIDAttributeName;
+
+/// 点击回调注册表属性名：作用于整个字符串，值 = NSDictionary<NSString*, void(^)(void)>
+FOUNDATION_EXPORT NSAttributedStringKey const SCRAttributedStringTapActionsAttributeName;
+
+/**
+ 给当前 Range 注册点击事件
+ 
+ @brief 将当前 Range 标记为可点击，点击时回调 action。
+ 无需自定义 UILabel 子类：把 commit 出的富文本赋给任意 UILabel，
+ 再调用 [AttributeStringBuilder scr_enableTapOnLabel:label] 即可生效。
+ 标记的视觉样式（颜色 / 下划线等）需调用方自行设置。
+ 图片附件也是一个字符，可通过 .range(idx, 1) 选中后同样注册点击。
+ 
+ @code
+ AttributeStringBuilder.build(@"")
+ .append(@"点击我").font([UIFont systemFontOfSize:14])
+ .color([UIColor blueColor]).underlineStyle(NSUnderlineStyleSingle)
+ .tapAction(^{ NSLog(@"被点击了"); });
+ // label.attributedText = [builder commit];
+ // [AttributeStringBuilder scr_enableTapOnLabel:label];
+ @endcode
+ 
+ @note 通过 attributedAppend 拼接的富文本若带有点击标记，其回调会自动合并，
+ 拼接后点击事件仍然可用。
+ */
+- (AttributeStringBuilder *(^)(void (^action)(void)))tapAction;
+
 ///**
 // 让普通 UILabel 支持富文本点击（无需子类化 UILabel）
 // 

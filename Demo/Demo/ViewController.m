@@ -49,104 +49,11 @@
     
     
     // 测试1
-    [self test1];
+//    [self test1];
     
+    [self testButton];
     
-    UIButton *btn2 = [UIButton sf_buttonWithSymbol:@"arrow.right"
-                                          forState:UIControlStateNormal
-                                         pointSize:90
-                                            weight:UIImageSymbolWeightSemibold
-                                             scale:UIImageSymbolScaleMedium];
-    
-    btn2.frame = CGRectMake(100, 400, 100, 100);
-    [btn2 addTarget:self action:@selector(click) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:btn2];
-    
-    ATButton *btn = [[ATButton alloc] init];
-    [btn setTitle:@"收藏" forState:UIControlStateNormal];
-    [btn setTitleColor:[UIColor systemBlueColor] forState:UIControlStateNormal];
-    [btn setTitleColor:[UIColor systemGreenColor] forState:UIControlStateSelected];
-    [btn setImage:[UIImage systemImageNamed:@"star"] forState:UIControlStateNormal];
-    [btn setImage:[UIImage systemImageNamed:@"star.fill"] forState:UIControlStateSelected];
-    [btn setBackgroundImage:[UIImage systemImageNamed:@"rectangle.rounded"] forState:UIControlStateNormal];
-    
-    btn.imagePosition = ATButtonImagePositionTop;
-    btn.spacing = 6;
-    btn.contentEdgeInsets = UIEdgeInsetsMake(10, 20, 10, 20);
-    btn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
-    btn.cornerRadius = 10;
-    btn.backgroundColor = [UIColor systemGray6Color];
-    
-    [btn sizeToFit];
-    btn.center = CGPointMake(200, 300);
-    [btn addTarget:self action:@selector(toggleStar:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:btn];
-
-    [UIButton buttonWithType:0];
-    
-    // 配置 A：numberOfLines = 0（多行，不限行数）
-    ATButton *btnA = [[ATButton alloc] init];
-    btnA.titleLabel.numberOfLines = 0;
-    [btnA setTitle:@"第一行\n第二行\n第三行\n第四行" forState:UIControlStateNormal];
-    [btnA setImage:[UIImage systemImageNamed:@"star"] forState:UIControlStateNormal];
-    btnA.imagePosition = ATButtonImagePositionTop;
-    btnA.contentEdgeInsets = UIEdgeInsetsMake(10, 12, 10, 12);
-    
-    CGSize fitA = [btnA sizeThatFits:CGSizeMake(120, CGFLOAT_MAX)];
-    // 预期：宽度 = 120（受限），高度 = 4 行完整高度（约 4 × 行高 + 上下内边距），不截断
-    btnA.frame = CGRectMake(20, 100, fitA.width, fitA.height);
-    [self.view addSubview:btnA];
-    
-    // 配置 B：numberOfLines = 2（最多两行）
-    ATButton *btnB = [[ATButton alloc] init];
-    btnB.titleLabel.numberOfLines = 2;
-    btnB.titleLabel.lineBreakMode = NSLineBreakByTruncatingTail;   // 第二行末尾省略号
-    [btnB setTitle:@"第一行\n第二行\n第三行\n第四行" forState:UIControlStateNormal];
-    
-    CGSize fitB = [btnB sizeThatFits:CGSizeMake(120, CGFLOAT_MAX)];
-    // 预期：宽度 = 120，高度 = 2 行高度（第 3、4 行截断，末尾显示"…"）
-    btnB.frame = CGRectMake(200, 220, fitB.width, fitB.height);
-    [self.view addSubview:btnB];
-    
-    
-    // 对齐：按钮尺寸必须大于内容才有空间
-    ATButton *alignBtn = [[ATButton alloc] initWithFrame:CGRectMake(20, 200, 200, 60)];
-    [alignBtn setTitle:@"收藏" forState:UIControlStateNormal];
-    [alignBtn setImage:[UIImage systemImageNamed:@"star"] forState:UIControlStateNormal];
-    alignBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 10);
-    alignBtn.titleEdgeInsets = UIEdgeInsetsMake(10, 10, 0, 10);
-
-    alignBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
-    alignBtn.contentVerticalAlignment   = UIControlContentVerticalAlignmentTop;
-
-    alignBtn.backgroundColor = [UIColor redColor];
-    [self.view addSubview:alignBtn];
-
-}
-
-- (void)toggleStar:(ATButton *)sender {
-    sender.selected = !sender.selected;
-    
-    // 读取 API，与 UIButton 完全一致
-    NSLog(@"标题: %@", sender.currentTitle);            // "收藏"
-    NSLog(@"标题色: %@", sender.currentTitleColor);
-    NSLog(@"图片: %@", sender.currentImage);
-    NSLog(@"背景图: %@", sender.currentBackgroundImage);
-    NSLog(@"富文本: %@", sender.currentAttributedTitle);
-    
-    // titleLabel / imageView 直接操作，改完自动刷新布局
-    sender.titleLabel.font = [UIFont boldSystemFontOfSize:18];
-    sender.titleLabel.shadowColor = [UIColor grayColor];
-    sender.imageView.contentMode = UIViewContentModeScaleAspectFit;
-}
-
-
-- (void)click {
-    AttributeStringBuilderAllFeaturesDemoViewController *vx = [[AttributeStringBuilderAllFeaturesDemoViewController alloc] init];
-    vx.modalPresentationStyle = UIModalPresentationFullScreen;
-    [self presentViewController:vx animated:YES completion:^{
-        
-    } ];
+   
 }
 
 
@@ -187,7 +94,7 @@
     
     AttributeStringBuilder *build = AttributeStringBuilder.build(@"NSBackgroundColorAttributeName 圆角")
         .append(@"\n").font([UIFont systemFontOfSize:14])
-        .append(@"道路路路名名称：").font([UIFont systemFontOfSize:14])
+        .append(@"道路路路名名称：").font([UIFont systemFontOfSize:14]) .tapAction(^{ NSLog(@"被点击了"); })
         .append(@"\n").font([UIFont systemFontOfSize:14])
         .append(@"上报人").font([UIFont systemFontOfSize:14]).dynamicKern(@"道路路路名名称", @"上报人", [UIFont systemFontOfSize:14])
         .append(@"\n").font([UIFont systemFontOfSize:14])
@@ -212,7 +119,9 @@
             .tagTextColor(RGBCOLOR(0x333333))
             .tagBackgroundColor(RGBCOLOR(0xF0F0F0))
             .tagCornerRadius(4)
-            .tagInsets(UIEdgeInsetsMake(13, 8, 13, 8));
+            .tagInsets(UIEdgeInsetsMake(13, 8, 13, 8))
+            .tapAction(^{ NSLog(@"被点击了2"); })
+        ;
         
         // 标签之间加间距（不是空格，是固定宽度的 attachment）
         if (i < tags.count - 1) {
@@ -239,7 +148,7 @@
     
     
     label.attributedText = [build commit];
-    
+//    [AttributeStringBuilder scr_enableTapOnLabel:label];
     
     
     //    ATPlaceholdTextView *_textView = [[ATPlaceholdTextView alloc] initWithFrame:CGRectMake(10, 600, 300, 200)];
@@ -305,9 +214,118 @@
     //    [self.scrollView addSubview:btn2];
 }
 
-- (void)test3 {
+
+- (void)testButton {
+    UIButton *btn2 = [UIButton sf_buttonWithSymbol:@"arrow.right"
+                                          forState:UIControlStateNormal
+                                         pointSize:90
+                                            weight:UIImageSymbolWeightSemibold
+                                             scale:UIImageSymbolScaleMedium];
+    
+    btn2.frame = CGRectMake(100, 400, 100, 100);
+    [btn2 addTarget:self action:@selector(click) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:btn2];
+    
+    ATButton *btn = [[ATButton alloc] init];
+    [btn setTitle:@"收藏" forState:UIControlStateNormal];
+    [btn setTitleColor:[UIColor systemBlueColor] forState:UIControlStateNormal];
+    [btn setTitleColor:[UIColor systemGreenColor] forState:UIControlStateSelected];
+    [btn setImage:[UIImage systemImageNamed:@"star"] forState:UIControlStateNormal];
+    [btn setImage:[UIImage systemImageNamed:@"star.fill"] forState:UIControlStateSelected];
+    [btn setBackgroundImage:[UIImage systemImageNamed:@"rectangle.rounded"] forState:UIControlStateNormal];
+    
+    btn.imagePosition = ATButtonImagePositionTop;
+    btn.spacing = 6;
+    btn.contentEdgeInsets = UIEdgeInsetsMake(10, 20, 10, 20);
+    btn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
+    btn.cornerRadius = 10;
+    btn.backgroundColor = [UIColor systemGray6Color];
+    
+    [btn sizeToFit];
+    btn.center = CGPointMake(200, 300);
+    [btn addTarget:self action:@selector(toggleStar:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:btn];
+    
+    [UIButton buttonWithType:0];
+    
+    // 配置 A：numberOfLines = 0（多行，不限行数）
+    ATButton *btnA = [[ATButton alloc] init];
+    btnA.titleLabel.numberOfLines = 0;
+    [btnA setTitle:@"第一行\n第二行\n第三行\n第四行" forState:UIControlStateNormal];
+    [btnA setImage:[UIImage systemImageNamed:@"star"] forState:UIControlStateNormal];
+    btnA.imagePosition = ATButtonImagePositionTop;
+    [btnA setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+    btnA.contentEdgeInsets = UIEdgeInsetsMake(10, 12, 10, 12);
+    
+    CGSize fitA = [btnA sizeThatFits:CGSizeMake(120, CGFLOAT_MAX)];
+    // 预期：宽度 = 120（受限），高度 = 4 行完整高度（约 4 × 行高 + 上下内边距），不截断
+    btnA.frame = CGRectMake(20, 100, fitA.width, fitA.height);
+    [self.view addSubview:btnA];
+    
+    // 配置 B：numberOfLines = 2（最多两行）
+    ATButton *btnB = [[ATButton alloc] init];
+    btnB.titleLabel.numberOfLines = 2;
+    btnB.titleLabel.lineBreakMode = NSLineBreakByTruncatingTail;   // 第二行末尾省略号
+    [btnB setTitle:@"第一行\n第二行\n第三行\n第四行" forState:UIControlStateNormal];
+    [btnB setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+    CGSize fitB = [btnB sizeThatFits:CGSizeMake(120, CGFLOAT_MAX)];
+    // 预期：宽度 = 120，高度 = 2 行高度（第 3、4 行截断，末尾显示"…"）
+    btnB.frame = CGRectMake(200, 220, fitB.width, fitB.height);
+    [self.view addSubview:btnB];
     
     
+    // 对齐：按钮尺寸必须大于内容才有空间
+    ATButton *alignBtn = [[ATButton alloc] initWithFrame:CGRectMake(20, 200, 200, 60)];
+    [alignBtn setTitle:@"收藏" forState:UIControlStateNormal];
+    [alignBtn setImage:[UIImage systemImageNamed:@"star"] forState:UIControlStateNormal];
+    alignBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 10);
+    alignBtn.titleEdgeInsets = UIEdgeInsetsMake(10, 10, 0, 10);
+    
+    alignBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
+    alignBtn.contentVerticalAlignment   = UIControlContentVerticalAlignmentTop;
+    [alignBtn setTitleColor:[UIColor yellowColor] forState:UIControlStateNormal];
+    alignBtn.backgroundColor = [UIColor redColor];
+    [self.view addSubview:alignBtn];
+    
+    
+    ATButton *btnw = [ATButton buttonWithType:UIButtonTypeCustom];
+    [btnw setTitle:@"筛选" forState:UIControlStateNormal];
+    [btnw setImage:[UIImage systemImageNamed:@"star"] forState:UIControlStateNormal];
+    btnw.imagePosition = ATButtonImagePositionRight;   // 图在左端，文字在右端
+//    btnw.spacing = 12;                                // 图距左端、文字距右端各 12pt
+    btnw.twoEndsAlignment = YES;                      // 开启两端对齐
+    btnw.frame = CGRectMake(100, 20, 200, 100);
+    btnw.titleEdgeInsets = UIEdgeInsetsMake(10, 20, 0, 10);
+
+    [btnw setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+    btnw.backgroundColor = [UIColor brownColor];
+    [self.view addSubview:btnw];
+    
+}
+
+- (void)toggleStar:(ATButton *)sender {
+    sender.selected = !sender.selected;
+    
+    // 读取 API，与 UIButton 完全一致
+    NSLog(@"标题: %@", sender.currentTitle);            // "收藏"
+    NSLog(@"标题色: %@", sender.currentTitleColor);
+    NSLog(@"图片: %@", sender.currentImage);
+    NSLog(@"背景图: %@", sender.currentBackgroundImage);
+    NSLog(@"富文本: %@", sender.currentAttributedTitle);
+    
+    // titleLabel / imageView 直接操作，改完自动刷新布局
+    sender.titleLabel.font = [UIFont boldSystemFontOfSize:18];
+    sender.titleLabel.shadowColor = [UIColor grayColor];
+    sender.imageView.contentMode = UIViewContentModeScaleAspectFit;
+}
+
+
+- (void)click {
+    AttributeStringBuilderAllFeaturesDemoViewController *vx = [[AttributeStringBuilderAllFeaturesDemoViewController alloc] init];
+    vx.modalPresentationStyle = UIModalPresentationFullScreen;
+    [self presentViewController:vx animated:YES completion:^{
+        
+    } ];
 }
 
 @end

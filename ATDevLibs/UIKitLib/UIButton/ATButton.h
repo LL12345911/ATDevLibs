@@ -66,6 +66,12 @@ typedef NS_ENUM(NSUInteger, ATButtonImagePosition) {
 @property (nonatomic, assign) ATButtonImagePosition imagePosition;
 @property (nonatomic, assign) CGFloat spacing;   // 图片与文字间距，默认 4
 
+/// 两端对齐：YES 时图片贴一端、文字贴另一端（仅水平方向 Left/Right 生效；垂直方向或缺图/缺文字时回退默认布局）
+/// 此时 spacing 复用为两端的端边距（图与文字各距其端 edge 距离）；
+/// imagePosition 决定图与文字各在哪一端：Left=图在左端文字在右端，Right=文字在左端图在右端
+/// 忽略 contentHorizontalAlignment；imageEdgeInsets / titleEdgeInsets 仍作为最终偏移叠加
+@property (nonatomic, assign) BOOL twoEndsAlignment;
+
 #pragma mark - iOS 15 起废弃的 insets（保留旧版语义，设置后自动刷新）
 @property (nonatomic) UIEdgeInsets contentEdgeInsets;
 @property (nonatomic) UIEdgeInsets titleEdgeInsets;

@@ -79,6 +79,7 @@ static char kCustomButtonKVOTitleAttr;
     _buttonType = UIButtonTypeCustom;   // 新增这一行
     _imagePosition = ATButtonImagePositionLeft;
     _spacing = 0.0;
+    _twoEndsAlignment = NO;
     _contentEdgeInsets = UIEdgeInsetsZero;
     _titleEdgeInsets = UIEdgeInsetsZero;
     _imageEdgeInsets = UIEdgeInsetsZero;
@@ -473,6 +474,71 @@ static char kCustomButtonKVOTitleAttr;
     return size;
 }
 
+#pragma mark - 两端对齐（水平方向：图与文字分别贴左右两端）
+/// 仅当 twoEndsAlignment == YES 且同时存在图片与文字、且为水平方向时调用
+/// spacing 复用为两端端边距（图距其端 = spacing，文字距其端 = spacing）
+/// imagePosition: Left → 图在左端、文字在右端；Right → 文字在左端、图在右端
+/// imageEdgeInsets / titleEdgeInsets 作为最终偏移叠加；垂直方向沿用 contentVerticalAlignment
+- (void)_layoutTwoEndsHorizontalInRect:(CGRect)contentRect image:(UIImage *)img {
+    UIImage *image = img ?: self.imageView.image;
+    if (!image) return;
+
+    CGFloat gap = self.spacing;                       // 端边距
+    CGFloat cw = CGRectGetWidth(contentRect);
+    CGFloat imgW = image.size.width;
+    CGFloat imgH = image.size.height;
+
+    // 标题可用宽度：总宽 - 图宽 - 两端 gap
+    CGFloat availableTitleWidth = MAX(0, cw - imgW - gap * 2);
+    CGSize titleSize = [self _measureTitleWithMaxWidth:availableTitleWidth];
+    titleSize.width  = MIN(titleSize.width, availableTitleWidth);
+
+    // 垂直对齐：以图文整体在 contentRect 内对齐
+    CGFloat contentHeight = MAX(imgH, titleSize.height);
+    CGFloat startY;
+    switch (self.contentVerticalAlignment) {
+        case UIControlContentVerticalAlignmentTop:
+            startY = CGRectGetMinY(contentRect);
+            break;
+        case UIControlContentVerticalAlignmentBottom:
+            startY = CGRectGetMaxY(contentRect) - contentHeight;
+            break;
+        case UIControlContentVerticalAlignmentFill:
+            startY = CGRectGetMinY(contentRect);
+            break;
+        default: // Center
+            startY = CGRectGetMidY(contentRect) - contentHeight / 2.0;
+            break;
+    }
+
+    CGFloat imgY   = startY + (contentHeight - imgH) / 2.0;
+    CGFloat titleY = startY + (contentHeight - titleSize.height) / 2.0;
+
+    CGFloat leftX       = CGRectGetMinX(contentRect) + gap;                          // 左端起点
+    CGFloat rightImgX   = CGRectGetMaxX(contentRect) - gap - imgW;                  // 右端图起点
+    CGFloat rightTitleX = CGRectGetMaxX(contentRect) - gap - titleSize.width;       // 右端文字起点
+
+    CGRect imgFrame, titleFrame;
+    if (self.imagePosition == ATButtonImagePositionLeft) {
+        // 图在左端，文字在右端
+        imgFrame   = CGRectMake(leftX,       imgY,   imgW,         imgH);
+        titleFrame = CGRectMake(rightTitleX, titleY, titleSize.width, titleSize.height);
+    } else {
+        // 文字在左端，图在右端
+        imgFrame   = CGRectMake(rightImgX,   imgY,   imgW,           imgH);
+        titleFrame = CGRectMake(leftX,       titleY, titleSize.width, titleSize.height);
+    }
+
+    // 最终叠加 imageEdgeInsets / titleEdgeInsets（与默认布局尾部偏移语义一致）
+    imgFrame.origin.x   += self.imageEdgeInsets.left - self.imageEdgeInsets.right;
+    imgFrame.origin.y   += self.imageEdgeInsets.top  - self.imageEdgeInsets.bottom;
+    titleFrame.origin.x += self.titleEdgeInsets.left - self.titleEdgeInsets.right;
+    titleFrame.origin.y += self.titleEdgeInsets.top  - self.titleEdgeInsets.bottom;
+
+    self.imageView.frame = imgFrame;
+    self.titleLabel.frame = titleFrame;
+}
+
 #pragma mark - 布局（edgeInsets + 图片位置 + 多行 + 单内容居中 + 对齐）
 
 - (void)layoutSubviews {
@@ -485,6 +551,17 @@ static char kCustomButtonKVOTitleAttr;
     UIImage *img = self.imageView.image;
     BOOL hasImage = img.size.width > 0 && img.size.height > 0;
     BOOL hasTitle = self.titleLabel.text.length > 0;
+    
+    // ========== 两端对齐：图与文字分别贴左右两端（仅水平方向 + 同时有图文时生效）==========
+    if (self.twoEndsAlignment && hasImage && hasTitle &&
+        (self.imagePosition == ATButtonImagePositionLeft ||
+         self.imagePosition == ATButtonImagePositionRight)) {
+        [self _layoutTwoEndsHorizontalInRect:contentRect image:img];
+        self.backgroundImageView.frame = self.bounds;
+        _highlightEffectView.frame = self.bounds;
+        return;
+    }
+    
     BOOL multiline = self.titleLabel.numberOfLines != 1;
     CGFloat gap = [self _gapBetweenImageAndTitle];
     
@@ -658,9 +735,14 @@ static char kCustomButtonKVOTitleAttr;
     
     BOOL horizontal = (self.imagePosition == ATButtonImagePositionLeft ||
                        self.imagePosition == ATButtonImagePositionRight);
-    
+    BOOL twoEnds = self.twoEndsAlignment && horizontal && hasTitle && img.size.width > 0;
+
     CGFloat w, h;
-    if (horizontal) {
+    if (twoEnds) {
+        // 两端对齐：图 + 左右各一个 spacing 端边距 + 标题宽
+        w = img.size.width + self.spacing * 2 + titleSize.width;
+        h = MAX(img.size.height, titleSize.height);
+    } else if (horizontal) {
         w = img.size.width + gap + (hasTitle ? titleSize.width : 0);
         h = MAX(img.size.height, hasTitle ? titleSize.height : 0);
     } else {
@@ -727,6 +809,12 @@ static char kCustomButtonKVOTitleAttr;
 - (void)setImagePosition:(ATButtonImagePosition)imagePosition {
     if (_imagePosition == imagePosition) return;
     _imagePosition = imagePosition;
+    [self _refreshLayout];
+}
+
+- (void)setTwoEndsAlignment:(BOOL)twoEndsAlignment {
+    if (_twoEndsAlignment == twoEndsAlignment) return;
+    _twoEndsAlignment = twoEndsAlignment;
     [self _refreshLayout];
 }
 
