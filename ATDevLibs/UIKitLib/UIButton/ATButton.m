@@ -42,6 +42,14 @@ static char kCustomButtonKVOTitleAttr;
 @property (nonatomic, strong) NSMutableDictionary<NSNumber *, UIImage *> *backgroundImages;
 @property (nonatomic, strong) NSMutableArray<_ButtonTargetAction *> *targetActions;
 @property (nonatomic, assign) BOOL touchInside;
+// 批处理挂起：suspendLevel>0 时 setter 仅标记 pendingRefresh，不立即刷新
+@property (nonatomic, assign) NSInteger suspendLevel;
+@property (nonatomic, assign) BOOL pendingRefresh;
+// 标题尺寸缓存：titleCacheVersion 变化即失效；cachedTitleVersion/MaxWidth/Size 三者共同命中才复用
+@property (nonatomic, assign) NSInteger titleCacheVersion;
+@property (nonatomic, assign) NSInteger cachedTitleVersion;
+@property (nonatomic, assign) CGFloat   cachedTitleMaxWidth;
+@property (nonatomic, assign) CGSize    cachedTitleSize;
 
 @end
 
@@ -51,6 +59,13 @@ static char kCustomButtonKVOTitleAttr;
 + (instancetype)buttonWithType:(UIButtonType)buttonType {
     ATButton *button = [[self alloc] init];      // 走 initWithFrame: → setup
     [button configureForType:buttonType];
+    return button;
+}
+
++ (instancetype)buttonWithTitle:(NSString *)title image:(UIImage *)image {
+    ATButton *button = [[self alloc] init];
+    if (title) [button setTitle:title forState:UIControlStateNormal];
+    if (image) [button setImage:image forState:UIControlStateNormal];
     return button;
 }
 
@@ -91,6 +106,14 @@ static char kCustomButtonKVOTitleAttr;
     _adjustsImageWhenHighlighted = YES;
     _adjustsImageWhenDisabled = YES;
     _showsTouchWhenHighlighted = NO;
+    // 批处理挂起状态
+    _suspendLevel = 0;            // > 0 表示处于 beginUpdates/endUpdates 之间
+    _pendingRefresh = NO;         // 挂起期间是否有 setter 触发过刷新
+    // 标题尺寸缓存（按 version + maxWidth 失效）
+    _titleCacheVersion = 0;       // 任何属性变化都 bump，使缓存失效（保守策略）
+    _cachedTitleVersion = -1;     // 上次计算时的 version，-1 表示无缓存
+    _cachedTitleMaxWidth = -1;    // 上次计算时的 maxWidth
+    _cachedTitleSize = CGSizeZero;
     
     _titles = [NSMutableDictionary dictionary];
     _titleColors = [NSMutableDictionary dictionary];
@@ -183,10 +206,30 @@ static char kCustomButtonKVOTitleAttr;
     [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }
 
-#pragma mark - 布局刷新（设置属性后统一调用）
+#pragma mark - 布局刷新（所有 setter 统一入口）
+/// 1) bump 标题尺寸缓存版本号（保守失效策略）
+/// 2) 若处于批处理挂起态（suspendLevel>0），仅标记 pendingRefresh 直接返回
+/// 3) 否则触发 setNeedsLayout + invalidateIntrinsicContentSize
 - (void)_refreshLayout {
-    [self setNeedsLayout];                 // 触发 layoutSubviews 重排
-    [self invalidateIntrinsicContentSize]; // 让 AutoLayout 重新询问内容尺寸
+    _titleCacheVersion++;                       // 任何属性变化都让标题尺寸缓存失效（保守策略）
+    if (_suspendLevel > 0) {                    // 批处理进行中：仅标记，不刷新
+        _pendingRefresh = YES;
+        return;
+    }
+    [self setNeedsLayout];                      // 触发 layoutSubviews 重排
+    [self invalidateIntrinsicContentSize];      // 让 AutoLayout 重新询问内容尺寸
+}
+
+#pragma mark - 批量更新
+/// 挂起刷新：可嵌套调用，最外层 endUpdates 才真正触发一次刷新
+- (void)beginUpdates { _suspendLevel++; }
+/// 结束挂起：suspendLevel 归零且期间有 setter 标记过 pendingRefresh 时，统一刷新一次
+- (void)endUpdates {
+    if (_suspendLevel > 0) _suspendLevel--;
+    if (_suspendLevel == 0 && _pendingRefresh) {
+        _pendingRefresh = NO;
+        [self _refreshLayout];                  // 此时 _titleCacheVersion 已 bump 过；本调用再 bump 一次无副作用
+    }
 }
 
 #pragma mark - 状态（组合为 UIControlState）
@@ -381,8 +424,7 @@ static char kCustomButtonKVOTitleAttr;
     if (inside != self.touchInside) {
         self.touchInside = inside;
         self.highlighted = inside;
-        [self sendActionsForControlEvents:inside ? UIControlEventTouchDragEnter
-                                         : UIControlEventTouchDragExit];
+        [self sendActionsForControlEvents:inside ? UIControlEventTouchDragEnter : UIControlEventTouchDragExit];
     }
 }
 
@@ -392,8 +434,7 @@ static char kCustomButtonKVOTitleAttr;
     BOOL inside = CGRectContainsPoint(self.bounds, [t locationInView:self]);
     self.highlighted = NO;
     self.touchInside = NO;
-    [self sendActionsForControlEvents:inside ? UIControlEventTouchUpInside
-                                     : UIControlEventTouchUpOutside];
+    [self sendActionsForControlEvents:inside ? UIControlEventTouchUpInside : UIControlEventTouchUpOutside];
 }
 
 - (void)touchesCancelled:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
@@ -430,6 +471,25 @@ static char kCustomButtonKVOTitleAttr;
     _highlightEffectView.hidden = !self.highlighted;
 }
 
+#pragma mark - 水平对齐解析
+/// 将 Leading/Trailing 按当前语义方向（RTL/LTR）解析为具体的 Left/Right
+/// iOS 11+ 提供 Leading/Trailing；低于 11 或非 Leading/Trailing 直接返回原值
+- (UIControlContentHorizontalAlignment)_resolvedHorizontalAlignment {
+    UIControlContentHorizontalAlignment hAlign = self.contentHorizontalAlignment;
+    if (@available(iOS 11.0, *)) {
+        if (hAlign == UIControlContentHorizontalAlignmentLeading ||
+            hAlign == UIControlContentHorizontalAlignmentTrailing) {
+            BOOL isRTL = [UIView userInterfaceLayoutDirectionForSemanticContentAttribute:self.semanticContentAttribute] == UIUserInterfaceLayoutDirectionRightToLeft;
+            if (hAlign == UIControlContentHorizontalAlignmentLeading) {
+                hAlign = isRTL ? UIControlContentHorizontalAlignmentRight : UIControlContentHorizontalAlignmentLeft;
+            } else {
+                hAlign = isRTL ? UIControlContentHorizontalAlignmentLeft : UIControlContentHorizontalAlignmentRight;
+            }
+        }
+    }
+    return hAlign;
+}
+
 #pragma mark - 图文间距
 /// 图片与文字之间的基础间距，仅由spacing控制；
 /// imageEdgeInsets / titleEdgeInsets 仅做位置偏移，不参与图文间隙计算（对齐原生UIButton）
@@ -450,8 +510,13 @@ static char kCustomButtonKVOTitleAttr;
 ///   N>1 → 最多 N 行，超过的部分截断（高度不超过 N 行）
 - (CGSize)_measureTitleWithMaxWidth:(CGFloat)maxWidth {
     NSString *text = self.titleLabel.text;
-    if (text.length == 0) return CGSizeZero;
-    
+    if (text.length == 0) { _cachedTitleSize = CGSizeZero; return CGSizeZero; }
+
+    // 命中缓存：版本号一致 + 同一 maxWidth 才复用（不同宽度换行结果不同）
+    if (_cachedTitleVersion == _titleCacheVersion && _cachedTitleMaxWidth == maxWidth) {
+        return _cachedTitleSize;
+    }
+
     NSAttributedString *attr = self.titleLabel.attributedText;
     NSAttributedString *str = attr;
     if (!str) {
@@ -462,7 +527,7 @@ static char kCustomButtonKVOTitleAttr;
                                  options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading
                                  context:nil];
     CGSize size = CGSizeMake(ceil(r.size.width), ceil(r.size.height));
-    
+
     // numberOfLines > 1 时，高度不超过 lines 行（超出截断）
     NSInteger maxLines = self.titleLabel.numberOfLines;
     if (maxLines > 1) {
@@ -471,6 +536,10 @@ static char kCustomButtonKVOTitleAttr;
     }
     // numberOfLines == 0：不截断，返回全部行高
     // numberOfLines == 1：单行，高度自然为一行
+
+    _cachedTitleVersion  = _titleCacheVersion;
+    _cachedTitleMaxWidth = maxWidth;
+    _cachedTitleSize     = size;
     return size;
 }
 
@@ -636,18 +705,7 @@ static char kCustomButtonKVOTitleAttr;
         hasBox = YES;
     }
     if (hasBox) {
-        UIControlContentHorizontalAlignment hAlign = self.contentHorizontalAlignment;
-        if (@available(iOS 11.0, *)) {
-            if (hAlign == UIControlContentHorizontalAlignmentLeading ||
-                hAlign == UIControlContentHorizontalAlignmentTrailing) {
-                BOOL isRTL = [UIView userInterfaceLayoutDirectionForSemanticContentAttribute:self.semanticContentAttribute] == UIUserInterfaceLayoutDirectionRightToLeft;
-                if (hAlign == UIControlContentHorizontalAlignmentLeading) {
-                    hAlign = isRTL ? UIControlContentHorizontalAlignmentRight : UIControlContentHorizontalAlignmentLeft;
-                } else {
-                    hAlign = isRTL ? UIControlContentHorizontalAlignmentLeft : UIControlContentHorizontalAlignmentRight;
-                }
-            }
-        }
+        UIControlContentHorizontalAlignment hAlign = [self _resolvedHorizontalAlignment];
         
         BOOL titleOnLeft   = hasTitle && (!hasImage || titleFrame.origin.x        <= imgFrame.origin.x);
         BOOL titleOnRight  = hasTitle && (!hasImage || CGRectGetMaxX(titleFrame)  >= CGRectGetMaxX(imgFrame));
@@ -764,15 +822,20 @@ static char kCustomButtonKVOTitleAttr;
         // 多行 + 宽度受限：把整体宽度约束换算成标题可用宽，返回真实换行高度
         UIImage *img = self.imageView.image;
         BOOL hasImage = img.size.width > 0 && img.size.height > 0;
-       // BOOL hasTitle = self.titleLabel.text.length > 0; // 0 或 N 都算多行
-        // CGFloat gap = (hasImage && hasTitle) ? self.spacing : 0;
+        BOOL hasTitle = self.titleLabel.text.length > 0;
         CGFloat gap = [self _gapBetweenImageAndTitle]; // 图文间距 = spacing + 相对面 insets
-        
+
         BOOL horizontal = (self.imagePosition == ATButtonImagePositionLeft ||
                            self.imagePosition == ATButtonImagePositionRight);
-        
+        // twoEnds 模式下 spacing 复用为两端端边距（图占一端、标题占另一端，各距端 spacing）
+        BOOL twoEnds = self.twoEndsAlignment && horizontal && hasImage && hasTitle;
+
         CGFloat titleMax = size.width;
-        if (horizontal && hasImage) {
+        if (twoEnds) {
+            // 两端对齐：扣图宽 + 左右各一个 spacing
+            titleMax = MAX(0, titleMax - img.size.width - self.spacing * 2);
+        } else if (horizontal && hasImage) {
+            // 普通水平：扣图宽 + 图文间距
             titleMax = MAX(0, titleMax - img.size.width - gap);
         }
         return [self _fittingContentSizeWithMaxTitleWidth:titleMax];

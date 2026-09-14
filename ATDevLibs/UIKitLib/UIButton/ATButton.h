@@ -24,6 +24,9 @@ typedef NS_ENUM(NSUInteger, ATButtonImagePosition) {
 + (instancetype)buttonWithType:(UIButtonType)buttonType;
 @property (nonatomic, readonly) UIButtonType buttonType; // 由 buttonWithType: 指定，init 默认 Custom
 
+/// 便捷构造：title 或 image 可传 nil；为 Normal 状态同时设标题与图片
++ (instancetype)buttonWithTitle:(nullable NSString *)title image:(nullable UIImage *)image;
+
 
 #pragma mark - 状态（对齐 UIControl 语义）
 @property (nonatomic, getter=isEnabled) BOOL enabled;
@@ -64,13 +67,24 @@ typedef NS_ENUM(NSUInteger, ATButtonImagePosition) {
 
 #pragma mark - 图片位置与间距（设置后自动刷新）
 @property (nonatomic, assign) ATButtonImagePosition imagePosition;
-@property (nonatomic, assign) CGFloat spacing;   // 图片与文字间距，默认 4
+@property (nonatomic, assign) CGFloat spacing;   // 图片与文字间距，默认 0；twoEndsAlignment=YES 时复用为两端端边距
 
 /// 两端对齐：YES 时图片贴一端、文字贴另一端（仅水平方向 Left/Right 生效；垂直方向或缺图/缺文字时回退默认布局）
 /// 此时 spacing 复用为两端的端边距（图与文字各距其端 edge 距离）；
 /// imagePosition 决定图与文字各在哪一端：Left=图在左端文字在右端，Right=文字在左端图在右端
 /// 忽略 contentHorizontalAlignment；imageEdgeInsets / titleEdgeInsets 仍作为最终偏移叠加
 @property (nonatomic, assign) BOOL twoEndsAlignment;
+
+#pragma mark - 批量更新（挂起中间刷新，endUpdates 时统一刷新一次）
+/// 连续设置多个属性时（如 title + color + image），用 beginUpdates/endUpdates 包起来可避免中间态多次刷新。
+/// 可选优化，不调用时每个 setter 都会自动刷新，行为与旧版一致。
+/// 用法：
+///   [btn beginUpdates];
+///   [btn setTitle:@"xxx" forState:UIControlStateNormal];
+///   [btn setImage:img forState:UIControlStateNormal];
+///   [btn endUpdates];   // 此处统一刷新一次
+- (void)beginUpdates;
+- (void)endUpdates;
 
 #pragma mark - iOS 15 起废弃的 insets（保留旧版语义，设置后自动刷新）
 @property (nonatomic) UIEdgeInsets contentEdgeInsets;
