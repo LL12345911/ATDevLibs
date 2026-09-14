@@ -41,10 +41,16 @@
     
     // 组装symbol配置
     UIImageSymbolConfiguration *config = [UIImageSymbolConfiguration configurationWithPointSize:pointSize weight:weight scale:scale];
+    UIImage *renderImage;
     // 染色，使用AlwaysOriginal保留自定义颜色，不受控件tintColor影响
-    UIImage *renderImage = [rawImage imageWithTintColor:tintColor renderingMode:UIImageRenderingModeAlwaysOriginal];
-    // 应用尺寸、字重、缩放配置
-    renderImage = [renderImage imageByApplyingSymbolConfiguration:config];
+    if (tintColor) {
+       renderImage = [rawImage imageWithTintColor:tintColor renderingMode:UIImageRenderingModeAlwaysOriginal];
+        // 应用尺寸、字重、缩放配置
+        renderImage = [renderImage imageByApplyingSymbolConfiguration:config];
+        
+    }else{
+        renderImage = [rawImage imageByApplyingSymbolConfiguration:config];
+    }
     return renderImage;
 }
 
@@ -64,4 +70,28 @@
                                   scale:UIImageSymbolScaleSmall
                       fallbackImageName:nil];
 }
+
+
+/**
+ *  @brief 便捷默认版本生成SF‑Symbol图片
+ *  @discussion 默认参数：pointSize=Inch(12)，weight=Regular，scale=Small，无兜底图
+ *  @param symbolName SF‑Symbol图标名称
+ *  @param pointSize symbol尺寸大小
+ *  @return 处理完成的UIImage，失败返回nil
+ *
+ *  @code
+ UIImage *img = [UIImage sf_defaultSymbolImageWithName:@"search" pointSize:20];
+ *  @endcode
+ */
++ (nullable UIImage *)sf_defaultSymbolImageWithName:(NSString *)symbolName pointSize:(CGFloat)pointSize {
+    return [self sf_symbolImageWithName:symbolName
+                              tintColor:nil
+                              pointSize:pointSize
+                                 weight:UIImageSymbolWeightRegular
+                                  scale:UIImageSymbolScaleSmall
+                      fallbackImageName:nil];
+}
+
+
+
 @end

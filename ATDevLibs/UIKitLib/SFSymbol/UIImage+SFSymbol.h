@@ -26,7 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  @endcode
  */
 + (nullable UIImage *)sf_symbolImageWithName:(NSString *)symbolName
-                                   tintColor:(UIColor *)tintColor
+                                   tintColor:(nullable UIColor *)tintColor
                                    pointSize:(CGFloat)pointSize
                                       weight:(UIImageSymbolWeight)weight
                                        scale:(UIImageSymbolScale)scale
@@ -45,6 +45,22 @@ NS_ASSUME_NONNULL_BEGIN
  *  @endcode
  */
 + (nullable UIImage *)sf_defaultSymbolImageWithName:(NSString *)symbolName tintColor:(UIColor *)tintColor pointSize:(CGFloat)pointSize;
+
+
+/**
+ *  @brief 便捷默认版本生成SF‑Symbol图片
+ *  @discussion 默认参数：pointSize=Inch(12)，weight=Regular，scale=Small，无兜底图
+ *  @param symbolName SF‑Symbol图标名称
+ *  @param pointSize symbol尺寸大小
+ *  @return 处理完成的UIImage，失败返回nil
+ *
+ *  @code
+ UIImage *img = [UIImage sf_defaultSymbolImageWithName:@"search" pointSize:20];
+ *  @endcode
+ */
++ (nullable UIImage *)sf_defaultSymbolImageWithName:(NSString *)symbolName pointSize:(CGFloat)pointSize;
+
+
 
 
 @end
