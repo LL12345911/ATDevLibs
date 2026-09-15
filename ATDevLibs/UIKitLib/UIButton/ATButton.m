@@ -160,6 +160,26 @@ static char kCustomButtonKVOTitleAttr;
     return UIEdgeInsetsInsetRect(self.bounds, UIEdgeInsetsMake(bw, bw, bw, bw));
 }
 
+/// 把 frame 钳制在 rect 内部，保证子视图不超出内容区域
+/// 超出时：原点对齐 rect 边缘，尺寸压缩到 rect 范围内（避免单向溢出）
+- (CGRect)_clampFrame:(CGRect)frame toRect:(CGRect)rect {
+    if (CGRectIsEmpty(rect) || CGRectIsEmpty(frame)) return CGRectZero;
+    CGFloat x = MAX(CGRectGetMinX(rect), MIN(CGRectGetMinX(frame), CGRectGetMaxX(rect) - CGRectGetWidth(frame)));
+    CGFloat y = MAX(CGRectGetMinY(rect), MIN(CGRectGetMinY(frame), CGRectGetMaxY(rect) - CGRectGetHeight(frame)));
+    CGFloat w = MIN(CGRectGetWidth(frame), CGRectGetWidth(rect) - MAX(0, x - CGRectGetMinX(rect)));
+    CGFloat h = MIN(CGRectGetHeight(frame), CGRectGetHeight(rect) - MAX(0, y - CGRectGetMinY(rect)));
+    return CGRectMake(x, y, MAX(0, w), MAX(0, h));
+}
+
+/// 图片专用钳制：只钳原点位置，不压缩尺寸
+/// 超出时：原点对齐 rect 边缘，尺寸保持原值（超出部分由 masksToBounds 裁切）
+- (CGRect)_clampFrameKeepSize:(CGRect)frame toRect:(CGRect)rect {
+    if (CGRectIsEmpty(rect) || CGRectIsEmpty(frame)) return CGRectZero;
+    CGFloat x = MAX(CGRectGetMinX(rect), MIN(CGRectGetMinX(frame), CGRectGetMaxX(rect) - CGRectGetWidth(frame)));
+    CGFloat y = MAX(CGRectGetMinY(rect), MIN(CGRectGetMinY(frame), CGRectGetMaxY(rect) - CGRectGetHeight(frame)));
+    return CGRectMake(x, y, CGRectGetWidth(frame), CGRectGetHeight(frame));
+}
+
 #pragma mark - 类型配置
 - (void)configureForType:(UIButtonType)buttonType {
     _buttonType = buttonType;
@@ -623,6 +643,10 @@ static char kCustomButtonKVOTitleAttr;
     titleFrame.origin.x += self.titleEdgeInsets.left - self.titleEdgeInsets.right;
     titleFrame.origin.y += self.titleEdgeInsets.top  - self.titleEdgeInsets.bottom;
 
+    // 钳制在 contentRect 内：图片保持原尺寸只钳位置，文字压缩到剩余空间
+    imgFrame   = [self _clampFrameKeepSize:imgFrame   toRect:contentRect];
+    titleFrame = [self _clampFrame:titleFrame toRect:contentRect];
+
     self.imageView.frame = imgFrame;
     self.titleLabel.frame = titleFrame;
 }
@@ -673,7 +697,10 @@ static char kCustomButtonKVOTitleAttr;
             titleSize = [self _measureTitleWithMaxWidth:availableTitleWidth];
             titleSize.width = MIN(titleSize.width, availableTitleWidth);
         } else {
-            titleSize = [self _measureTitleWithMaxWidth:CGFLOAT_MAX];
+            // 单行模式：也按可用宽度限制 width，让 UILabel 自身截断显示
+            // 避免超长文字撑破按钮或被 _clampFrame 压缩后错位
+            titleSize = [self _measureTitleWithMaxWidth:availableTitleWidth];
+            titleSize.width = MIN(titleSize.width, availableTitleWidth);
         }
     }
     
@@ -730,9 +757,11 @@ static char kCustomButtonKVOTitleAttr;
     if (!hasTitle) {
         imgFrame.origin.x = CGRectGetMidX(contentRect) - img.size.width / 2;
         imgFrame.origin.y = CGRectGetMidY(contentRect) - img.size.height / 2;
+        imgFrame = [self _clampFrameKeepSize:imgFrame toRect:contentRect];   // 单图超尺寸：不缩图，只钳位置
     } else if (!hasImage) {
         titleFrame.origin.x = CGRectGetMidX(contentRect) - titleSize.width / 2;
         titleFrame.origin.y = CGRectGetMidY(contentRect) - titleSize.height / 2;
+        titleFrame = [self _clampFrame:titleFrame toRect:contentRect];   // 单文本超尺寸：压缩文字
     }
     
     // ========== 重点改动：先做内容对齐（基于未应用image/titleInsets的原始frame）==========
@@ -804,7 +833,11 @@ static char kCustomButtonKVOTitleAttr;
     imgFrame.origin.y   += self.imageEdgeInsets.top  - self.imageEdgeInsets.bottom;
     titleFrame.origin.x += self.titleEdgeInsets.left - self.titleEdgeInsets.right;
     titleFrame.origin.y += self.titleEdgeInsets.top  - self.titleEdgeInsets.bottom;
-    
+
+    // 钳制在 contentRect 内：图片保持原尺寸只钳位置，文字压缩到剩余空间
+    imgFrame   = [self _clampFrameKeepSize:imgFrame   toRect:contentRect];
+    titleFrame = [self _clampFrame:titleFrame toRect:contentRect];
+
     self.imageView.frame = imgFrame;
     self.titleLabel.frame = titleFrame;
     _highlightEffectView.frame = self.bounds;
