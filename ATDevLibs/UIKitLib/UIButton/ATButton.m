@@ -42,6 +42,8 @@ static char kCustomButtonKVOTitleAttr;
 @property (nonatomic, strong) NSMutableDictionary<NSNumber *, UIImage *> *backgroundImages;
 @property (nonatomic, strong) NSMutableArray<_ButtonTargetAction *> *targetActions;
 @property (nonatomic, assign) BOOL touchInside;
+// 边框宽度跟踪：检测外部直接改 layer.borderWidth 时触发重排
+@property (nonatomic, assign) CGFloat lastBorderWidth;
 // 批处理挂起：suspendLevel>0 时 setter 仅标记 pendingRefresh，不立即刷新
 @property (nonatomic, assign) NSInteger suspendLevel;
 @property (nonatomic, assign) BOOL pendingRefresh;
@@ -107,6 +109,7 @@ static char kCustomButtonKVOTitleAttr;
     _adjustsImageWhenDisabled = YES;
     _showsTouchWhenHighlighted = NO;
     // 批处理挂起状态
+    _lastBorderWidth = 0;         // 跟踪 layer.borderWidth 外部直接修改
     _suspendLevel = 0;            // > 0 表示处于 beginUpdates/endUpdates 之间
     _pendingRefresh = NO;         // 挂起期间是否有 setter 触发过刷新
     // 标题尺寸缓存（按 version + maxWidth 失效）
@@ -145,6 +148,16 @@ static char kCustomButtonKVOTitleAttr;
     [_titleLabel addObserver:self forKeyPath:@"font"           options:0 context:&kCustomButtonKVOTitleFont];
     [_titleLabel addObserver:self forKeyPath:@"text"           options:0 context:&kCustomButtonKVOTitleText];
     [_titleLabel addObserver:self forKeyPath:@"attributedText" options:0 context:&kCustomButtonKVOTitleAttr];
+}
+
+#pragma mark - 边框避让
+/// 返回扣除 borderWidth 后的内部区域
+/// CALayer 渲染顺序：backgroundColor → 边框 → contents → 子层
+/// 子视图（如 backgroundImageView）会绘制在边框之上导致遮挡，需内缩 borderWidth
+- (CGRect)_innerBoundsExcludingBorder {
+    CGFloat bw = self.layer.borderWidth;   // 直接读 layer，避免与 _borderWidth ivar 不同步
+    if (bw <= 0) return self.bounds;
+    return UIEdgeInsetsInsetRect(self.bounds, UIEdgeInsetsMake(bw, bw, bw, bw));
 }
 
 #pragma mark - 类型配置
@@ -613,7 +626,13 @@ static char kCustomButtonKVOTitleAttr;
 - (void)layoutSubviews {
     [super layoutSubviews];
     
-    self.backgroundImageView.frame = self.bounds;            // 背景图始终铺满
+    // 检测外部直接修改 layer.borderWidth 的情况（绕过 setBorderWidth: setter）
+    if (self.layer.borderWidth != _lastBorderWidth) {
+        _lastBorderWidth = self.layer.borderWidth;
+        _titleCacheVersion++;   // 边框变化影响可用内容区域，让标题尺寸缓存失效
+    }
+    
+    self.backgroundImageView.frame = [self _innerBoundsExcludingBorder]; // 内缩 borderWidth，避免遮挡边框
     
     CGRect contentRect = UIEdgeInsetsInsetRect(self.bounds, self.contentEdgeInsets);
     
@@ -626,7 +645,7 @@ static char kCustomButtonKVOTitleAttr;
         (self.imagePosition == ATButtonImagePositionLeft ||
          self.imagePosition == ATButtonImagePositionRight)) {
         [self _layoutTwoEndsHorizontalInRect:contentRect image:img];
-        self.backgroundImageView.frame = self.bounds;
+        self.backgroundImageView.frame = [self _innerBoundsExcludingBorder];
         _highlightEffectView.frame = self.bounds;
         return;
     }
@@ -956,7 +975,9 @@ static char kCustomButtonKVOTitleAttr;
 
 - (void)setBorderWidth:(CGFloat)borderWidth {
     _borderWidth = borderWidth;
+    _lastBorderWidth = borderWidth;   // 同步跟踪值，避免 layoutSubviews 误判
     self.layer.borderWidth = borderWidth;
+    [self setNeedsLayout];   // 边框宽度变化，背景图等铺满型子视图需重排以避让边框
 }
 
 - (void)setBorderColor:(UIColor *)borderColor {
