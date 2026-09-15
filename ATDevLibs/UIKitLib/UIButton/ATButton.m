@@ -539,7 +539,11 @@ static char kCustomButtonKVOTitleAttr;
     CGRect r = [str boundingRectWithSize:CGSizeMake(maxWidth, CGFLOAT_MAX)
                                  options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading
                                  context:nil];
-    CGSize size = CGSizeMake(ceil(r.size.width), ceil(r.size.height));
+    // maxWidth 有限时（非 CGFLOAT_MAX）才 clamp width：
+    // boundingRectWithSize 在 width 受限时，部分文本（如单行未触发换行）会返回超过 maxWidth 的自然宽度
+    // 这里强制 clamp 到 maxWidth，确保调用方拿到的 width 不会超过约束，避免布局溢出
+    CGFloat effectiveMaxWidth = (isinf(maxWidth) || maxWidth == CGFLOAT_MAX) ? r.size.width : maxWidth;
+    CGSize size = CGSizeMake(ceil(MIN(r.size.width, effectiveMaxWidth)), ceil(r.size.height));
 
     // numberOfLines > 1 时，高度不超过 lines 行（超出截断）
     NSInteger maxLines = self.titleLabel.numberOfLines;
@@ -596,9 +600,11 @@ static char kCustomButtonKVOTitleAttr;
     CGFloat imgY   = startY + (contentHeight - imgH) / 2.0;
     CGFloat titleY = startY + (contentHeight - titleSize.height) / 2.0;
 
-    CGFloat leftX       = CGRectGetMinX(contentRect) + gap;                          // 左端起点
-    CGFloat rightImgX   = CGRectGetMaxX(contentRect) - gap - imgW;                  // 右端图起点
-    CGFloat rightTitleX = CGRectGetMaxX(contentRect) - gap - titleSize.width;       // 右端文字起点
+    // 文字/图位置起点：clamp 防止文本超长时 rightX 跑到左边界之前导致溢出
+    // 超长时文字从 contentRect.minX + gap 开始，超出部分被 clipsToBounds 裁切
+    CGFloat leftX       = CGRectGetMinX(contentRect) + gap;
+    CGFloat rightImgX   = MAX(leftX, CGRectGetMaxX(contentRect) - gap - imgW);
+    CGFloat rightTitleX = MAX(leftX, CGRectGetMaxX(contentRect) - gap - titleSize.width);
 
     CGRect imgFrame, titleFrame;
     if (self.imagePosition == ATButtonImagePositionLeft) {
@@ -675,9 +681,26 @@ static char kCustomButtonKVOTitleAttr;
     : (img.size.height + gap + titleSize.height);
     CGFloat crossMax = horizontal ? MAX(img.size.height, titleSize.height)
     : MAX(img.size.width, titleSize.width);
-    
-    CGFloat startX = CGRectGetMidX(contentRect) - (horizontal ? mainTotal : crossMax) / 2;
-    CGFloat startY = CGRectGetMidY(contentRect) - (horizontal ? crossMax : mainTotal) / 2;
+
+    // 居中起点：若 mainTotal/crossMax 超过 contentRect 宽/高，强制从 contentRect 边缘开始，
+    // 避免内容超出按钮边界（文本过长时 startX 会跑到负数）
+    CGFloat startX, startY;
+    if (horizontal) {
+        if (mainTotal <= CGRectGetWidth(contentRect)) {
+            startX = CGRectGetMidX(contentRect) - mainTotal / 2;
+        } else {
+            // 内容超宽：从左边缘开始，超出部分被 clipsToBounds 裁切
+            startX = CGRectGetMinX(contentRect);
+        }
+        startY = CGRectGetMidY(contentRect) - crossMax / 2;
+    } else {
+        if (mainTotal <= CGRectGetHeight(contentRect)) {
+            startY = CGRectGetMidY(contentRect) - mainTotal / 2;
+        } else {
+            startY = CGRectGetMinY(contentRect);
+        }
+        startX = CGRectGetMidX(contentRect) - crossMax / 2;
+    }
     
     CGRect imgFrame = CGRectZero, titleFrame = CGRectZero;
     if (horizontal) {
