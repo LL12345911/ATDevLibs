@@ -70,16 +70,16 @@ static char overlayImageKey;
 //    } else {
 //        return [UIApplication sharedApplication].statusBarFrame.size.height;
 //    }
-    if (@available(iOS 13.0, *)) {
+//    if (@available(iOS 13.0, *)) {
         UIWindowScene *windowScene = (UIWindowScene *)[UIApplication.sharedApplication.connectedScenes anyObject];
         if (windowScene) {
             return windowScene.statusBarManager.statusBarFrame.size.height;
         }else{
             return 0;
         }
-    } else {
-        return UIApplication.sharedApplication.statusBarFrame.size.height;
-    }
+//    } else {
+//        return UIApplication.sharedApplication.statusBarFrame.size.height;
+//    }
     
 }
 

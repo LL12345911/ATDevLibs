@@ -160,9 +160,10 @@
     //    [self.scrollView addSubview:_textView];
     //
     //
-    //    UIButton *btn = [UIButton sf_buttonWithSymbol:@"arrow.up.circle.fill"
-    //                                                          forState:UIControlStateNormal
-    //                                                         tintColor:UIColor.redColor];
+        UIButton *btn = [UIButton sf_buttonWithSymbol:@"arrow.up.circle.fill"
+                                                              forState:UIControlStateNormal
+                                                             tintColor:UIColor.redColor];
+//    [btn actionsForTarget:self forControlEvent:UIControlEventTouchUpInside];
     //    btn.frame = CGRectMake(10, 400, 100, 100);
     //    btn.sf_pointSize = Inch(60);
     //    [btn sf_reloadAllSymbols];

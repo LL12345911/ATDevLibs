@@ -42,6 +42,11 @@ static char kCustomButtonKVOTitleAttr;
 @property (nonatomic, strong) NSMutableDictionary<NSNumber *, UIImage *> *backgroundImages;
 @property (nonatomic, strong) NSMutableArray<_ButtonTargetAction *> *targetActions;
 @property (nonatomic, assign) BOOL touchInside;
+@property (nonatomic, assign) BOOL tracking;
+// 标题阴影颜色字典（titleShadowOffset / reversesTitleShadowWhenHighlighted 由头文件属性声明，编译器自动合成）
+@property (nonatomic, strong) NSMutableDictionary<NSNumber *, UIColor *> *titleShadowColors;
+// SF Symbol 配置（iOS 13+）
+@property (nonatomic, strong) NSMutableDictionary<NSNumber *, UIImageSymbolConfiguration *> *symbolConfigurations;
 // 边框宽度跟踪：检测外部直接改 layer.borderWidth 时触发重排
 @property (nonatomic, assign) CGFloat lastBorderWidth;
 // 批处理挂起：suspendLevel>0 时 setter 仅标记 pendingRefresh，不立即刷新
@@ -56,6 +61,14 @@ static char kCustomButtonKVOTitleAttr;
 @end
 
 @implementation ATButton
+
+// 自定义了 getter+setter 的属性需显式 @synthesize 生成 ivar
+@synthesize role = _buttonRole;
+@synthesize changesSelectionAsPrimaryAction = _changesSelectionAsPrimaryAction;
+@synthesize largeContentTitle = _largeContentTitle;
+@synthesize scalesLargeContentImage = _scalesLargeContentImage;
+@synthesize largeContentImage = _largeContentImage;
+@synthesize hitTestEdgeInsets = _hitTestEdgeInsets;
 
 #pragma mark - 初始化
 + (instancetype)buttonWithType:(UIButtonType)buttonType {
@@ -108,6 +121,19 @@ static char kCustomButtonKVOTitleAttr;
     _adjustsImageWhenHighlighted = YES;
     _adjustsImageWhenDisabled = YES;
     _showsTouchWhenHighlighted = NO;
+    // 标题阴影（默认与 UIButton 一致：向上 1pt 阴影）
+    _titleShadowOffset = CGSizeMake(0, -1);
+    _reversesTitleShadowWhenHighlighted = YES;
+    _titleShadowColors = [NSMutableDictionary dictionary];
+    // 点击热区
+    _hitTestEdgeInsets = UIEdgeInsetsZero;
+    _tracking = NO;
+    // iOS 版本相关属性
+    _symbolConfigurations = [NSMutableDictionary dictionary];
+    _changesSelectionAsPrimaryAction = NO;
+    _scalesLargeContentImage = NO;
+    _largeContentTitle = nil;
+    _largeContentImage = nil;
     // 批处理挂起状态
     _lastBorderWidth = 0;         // 跟踪 layer.borderWidth 外部直接修改
     _suspendLevel = 0;            // > 0 表示处于 beginUpdates/endUpdates 之间
@@ -125,8 +151,13 @@ static char kCustomButtonKVOTitleAttr;
     _backgroundImages = [NSMutableDictionary dictionary];
     _targetActions = [NSMutableArray array];
     
+    // 缩放控制
+    _enableTapScaleAnimation = NO;   // 默认不缩放
+    _tapScaleFactor = 0.96;          // 默认缩放比例
+    
     _backgroundImageView = [[UIImageView alloc] init];
     _backgroundImageView.userInteractionEnabled = NO;
+    _backgroundImageView.contentMode = UIViewContentModeScaleToFill;   // 默认铺满
     [self insertSubview:_backgroundImageView atIndex:0];   // 最底层：背景图
     
     _titleLabel = [[UILabel alloc] init];
@@ -140,6 +171,7 @@ static char kCustomButtonKVOTitleAttr;
     
     _imageView = [[UIImageView alloc] init];
     _imageView.userInteractionEnabled = NO;
+    _imageView.contentMode = UIViewContentModeScaleAspectFit;   // 默认保持比例
     [self addSubview:_imageView];
     
     self.layer.masksToBounds = YES;
@@ -278,7 +310,7 @@ static char kCustomButtonKVOTitleAttr;
     if (_highlighted == highlighted) return;
     _highlighted = highlighted;
     [self refreshContentForCurrentState];
-    [self animatePress:highlighted];
+    [self animatePress:highlighted]; // ← 点击缩放触发点
     [self updateImageAppearance];
     [self updateHighlightEffect];
 }
@@ -324,9 +356,29 @@ static char kCustomButtonKVOTitleAttr;
         self.titleLabel.text = [self _valueInDict:_titles forState:s];
         self.titleLabel.textColor = [self _valueInDict:_titleColors forState:s] ?: [UIColor whiteColor];
     }
-    self.imageView.image = [self _valueInDict:_images forState:s];
+    UIImage *img = [self _valueInDict:_images forState:s];
+    // 应用 SF Symbol 配置（iOS 13+）
+    if (@available(iOS 13.0, *)) {
+        UIImageSymbolConfiguration *cfg = [self _valueInDict:_symbolConfigurations forState:s];
+        if (cfg && img) {
+            img = [img imageWithConfiguration:cfg];
+        }
+    }
+    self.imageView.image = img;
+    // 同步 tintColor 到 imageView（template image 自动着色）
+    self.imageView.tintColor = self.tintColor;
     self.backgroundImageView.image = [self _valueInDict:_backgroundImages forState:s];
-    
+
+    // 标题阴影颜色
+    UIColor *shadowColor = [self _valueInDict:_titleShadowColors forState:s];
+    self.titleLabel.shadowColor = shadowColor;
+    // 阴影偏移：高亮且 reversesTitleShadowWhenHighlighted 时翻转
+    CGSize shadowOff = _titleShadowOffset;
+    if (self.highlighted && self.reversesTitleShadowWhenHighlighted) {
+        shadowOff = CGSizeMake(-shadowOff.width, -shadowOff.height);
+    }
+    self.titleLabel.shadowOffset = shadowOff;
+
     [self _refreshLayout];                                  // 内容变化，位置和尺寸都可能变
 }
 
@@ -382,6 +434,17 @@ static char kCustomButtonKVOTitleAttr;
     return [self _valueInDict:_backgroundImages forState:state];
 }
 
+#pragma mark - 标题阴影 API
+- (void)setTitleShadowColor:(UIColor *)color forState:(UIControlState)state {
+    if (color) _titleShadowColors[@(state)] = color;
+    else [_titleShadowColors removeObjectForKey:@(state)];
+    [self refreshContentForCurrentState];
+}
+
+- (UIColor *)titleShadowColorForState:(UIControlState)state {
+    return [self _valueInDict:_titleShadowColors forState:state];
+}
+
 #pragma mark - 当前状态读取（对齐 UIButton）
 - (NSString *)currentTitle {
     return [self _valueInDict:_titles forState:self.state];
@@ -401,6 +464,10 @@ static char kCustomButtonKVOTitleAttr;
 
 - (UIImage *)currentBackgroundImage {
     return [self _valueInDict:_backgroundImages forState:self.state];
+}
+
+- (UIColor *)currentTitleShadowColor {
+    return [self _valueInDict:_titleShadowColors forState:self.state];
 }
 
 - (UIButtonType)buttonType {
@@ -442,9 +509,39 @@ static char kCustomButtonKVOTitleAttr;
     }
 }
 
+#pragma mark - 事件查询（对齐 UIControl）
+- (NSSet *)allTargets {
+    NSMutableSet *set = [NSMutableSet set];
+    for (_ButtonTargetAction *ta in _targetActions) {
+        if (ta.target) [set addObject:ta.target];
+    }
+    return set;
+}
+
+- (UIControlEvents)allControlEvents {
+    UIControlEvents events = 0;
+    for (_ButtonTargetAction *ta in _targetActions) {
+        events |= ta.events;
+    }
+    return events;
+}
+
+- (NSArray<NSString *> *)actionsForTarget:(id)target forControlEvent:(UIControlEvents)controlEvent {
+    NSMutableArray *actions = [NSMutableArray array];
+    for (_ButtonTargetAction *ta in _targetActions) {
+        BOOL hitTarget = (target == nil || ta.target == target);
+        BOOL hitEvent = (controlEvent == 0 || (ta.events & controlEvent) != 0);
+        if (hitTarget && hitEvent && ta.action) {
+            [actions addObject:NSStringFromSelector(ta.action)];
+        }
+    }
+    return actions;
+}
+
 #pragma mark - 触摸处理（模拟 UIControl）
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     if (!self.enabled) return;
+    _tracking = YES;
     self.highlighted = YES;
     self.touchInside = YES;
     [self sendActionsForControlEvents:UIControlEventTouchDown];
@@ -465,13 +562,25 @@ static char kCustomButtonKVOTitleAttr;
     if (!self.enabled) return;
     UITouch *t = touches.anyObject;
     BOOL inside = CGRectContainsPoint(self.bounds, [t locationInView:self]);
+    _tracking = NO;
     self.highlighted = NO;
     self.touchInside = NO;
-    [self sendActionsForControlEvents:inside ? UIControlEventTouchUpInside : UIControlEventTouchUpOutside];
+    if (inside) {
+        // iOS 15+ changesSelectionAsPrimaryAction：点击自动切换选中
+        if (@available(iOS 15.0, *)) {
+            if (self.changesSelectionAsPrimaryAction) {
+                self.selected = !self.selected;
+            }
+        }
+        [self sendActionsForControlEvents:UIControlEventTouchUpInside];
+    } else {
+        [self sendActionsForControlEvents:UIControlEventTouchUpOutside];
+    }
 }
 
 - (void)touchesCancelled:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     if (!self.enabled) return;
+    _tracking = NO;
     self.highlighted = NO;
     self.touchInside = NO;
     [self sendActionsForControlEvents:UIControlEventTouchCancel];
@@ -502,6 +611,23 @@ static char kCustomButtonKVOTitleAttr;
     _highlightEffectView.frame = self.bounds;
     _highlightEffectView.layer.cornerRadius = self.layer.cornerRadius;
     _highlightEffectView.hidden = !self.highlighted;
+}
+
+#pragma mark - tintColor 同步（template image 自动着色）
+- (void)tintColorDidChange {
+    [super tintColorDidChange];
+    self.imageView.tintColor = self.tintColor;
+}
+
+#pragma mark - 点击热区扩展
+/// 重写 pointInside:withEvent: 支持 hitTestEdgeInsets 扩大点击区域
+/// insets 为负表示向外扩展（如 {-10,-10,-10,-10} 各方向扩大 10pt）
+- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event {
+    if (UIEdgeInsetsEqualToEdgeInsets(self.hitTestEdgeInsets, UIEdgeInsetsZero)) {
+        return [super pointInside:point withEvent:event];
+    }
+    CGRect hitRect = UIEdgeInsetsInsetRect(self.bounds, self.hitTestEdgeInsets);
+    return CGRectContainsPoint(hitRect, point);
 }
 
 #pragma mark - 水平对齐解析
@@ -1015,9 +1141,13 @@ static char kCustomButtonKVOTitleAttr;
 
 #pragma mark - 按下动画（不想要就删掉此方法）
 - (void)animatePress:(BOOL)pressed {
+    if (!_enableTapScaleAnimation) {
+        return;
+    }
+    CGFloat scale = pressed ? self.tapScaleFactor : 1.0;
     [UIView animateWithDuration:pressed ? 0.08 : 0.12
                      animations:^{
-        self.transform = pressed ? CGAffineTransformMakeScale(0.96, 0.96)
+        self.transform = pressed ? CGAffineTransformMakeScale(scale, scale)
         : CGAffineTransformIdentity;
     }];
 }
@@ -1039,6 +1169,97 @@ static char kCustomButtonKVOTitleAttr;
 - (void)setBorderColor:(UIColor *)borderColor {
     _borderColor = borderColor;
     self.layer.borderColor = borderColor.CGColor;
+}
+
+#pragma mark - 图片填充方式
+- (UIViewContentMode)imageContentMode {
+    return self.imageView.contentMode;
+}
+
+- (void)setImageContentMode:(UIViewContentMode)imageContentMode {
+    self.imageView.contentMode = imageContentMode;
+    [self setNeedsLayout];
+}
+
+- (UIViewContentMode)backgroundImageContentMode {
+    return self.backgroundImageView.contentMode;
+}
+
+- (void)setBackgroundImageContentMode:(UIViewContentMode)backgroundImageContentMode {
+    self.backgroundImageView.contentMode = backgroundImageContentMode;
+}
+
+#pragma mark - 标题阴影 setter
+- (void)setTitleShadowOffset:(CGSize)titleShadowOffset {
+    if (CGSizeEqualToSize(_titleShadowOffset, titleShadowOffset)) return;
+    _titleShadowOffset = titleShadowOffset;
+    [self refreshContentForCurrentState];
+}
+
+- (void)setReversesTitleShadowWhenHighlighted:(BOOL)reversesTitleShadowWhenHighlighted {
+    if (_reversesTitleShadowWhenHighlighted == reversesTitleShadowWhenHighlighted) return;
+    _reversesTitleShadowWhenHighlighted = reversesTitleShadowWhenHighlighted;
+    [self refreshContentForCurrentState];
+}
+
+#pragma mark - 点击热区 setter
+- (void)setHitTestEdgeInsets:(UIEdgeInsets)hitTestEdgeInsets {
+    _hitTestEdgeInsets = hitTestEdgeInsets;
+    // 不影响布局，仅影响命中测试，无需刷新
+}
+
+#pragma mark - SF Symbol 配置（iOS 13+）
+- (void)setPreferredSymbolConfiguration:(UIImageSymbolConfiguration *)configuration forImageInState:(UIControlState)state API_AVAILABLE(ios(13.0)) {
+    if (configuration) _symbolConfigurations[@(state)] = configuration;
+    else [_symbolConfigurations removeObjectForKey:@(state)];
+    [self refreshContentForCurrentState];
+}
+
+- (UIImageSymbolConfiguration *)preferredSymbolConfigurationForImageInState:(UIControlState)state API_AVAILABLE(ios(13.0)) {
+    return [self _valueInDict:_symbolConfigurations forState:state];
+}
+
+#pragma mark - 角色（iOS 14+）
+- (UIButtonRole)role API_AVAILABLE(ios(14.0)) {
+    return _buttonRole;
+}
+
+- (void)setRole:(UIButtonRole)role API_AVAILABLE(ios(14.0)) {
+    _buttonRole = role;
+}
+
+#pragma mark - 切换选中（iOS 15+）
+- (BOOL)changesSelectionAsPrimaryAction API_AVAILABLE(ios(15.0)) {
+    return _changesSelectionAsPrimaryAction;
+}
+
+- (void)setChangesSelectionAsPrimaryAction:(BOOL)changesSelectionAsPrimaryAction API_AVAILABLE(ios(15.0)) {
+    _changesSelectionAsPrimaryAction = changesSelectionAsPrimaryAction;
+}
+
+#pragma mark - 大内容辅助（iOS 11+）
+- (NSString *)largeContentTitle API_AVAILABLE(ios(11.0)) {
+    return _largeContentTitle;
+}
+
+- (void)setLargeContentTitle:(NSString *)largeContentTitle API_AVAILABLE(ios(11.0)) {
+    _largeContentTitle = [largeContentTitle copy];
+}
+
+- (BOOL)scalesLargeContentImage API_AVAILABLE(ios(11.0)) {
+    return _scalesLargeContentImage;
+}
+
+- (void)setScalesLargeContentImage:(BOOL)scalesLargeContentImage API_AVAILABLE(ios(11.0)) {
+    _scalesLargeContentImage = scalesLargeContentImage;
+}
+
+- (UIImage *)largeContentImage API_AVAILABLE(ios(11.0)) {
+    return _largeContentImage;
+}
+
+- (void)setLargeContentImage:(UIImage *)largeContentImage API_AVAILABLE(ios(11.0)) {
+    _largeContentImage = largeContentImage;
 }
 
 @end

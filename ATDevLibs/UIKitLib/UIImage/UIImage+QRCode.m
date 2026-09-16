@@ -134,7 +134,11 @@
     size_t bytesPerRow = imageWidth * 4;
     uint32_t *rgbImageBuf = (uint32_t *)malloc(bytesPerRow * imageHeight);
     CGColorSpaceRef colorSpaceRef = CGColorSpaceCreateDeviceRGB();
-    CGContextRef context = CGBitmapContextCreate(rgbImageBuf, imageWidth, imageHeight, 8, bytesPerRow, colorSpaceRef, kCGBitmapByteOrder32Little|kCGImageAlphaNoneSkipLast);
+// CGContextRef context = CGBitmapContextCreate(rgbImageBuf, imageWidth, imageHeight, 8, bytesPerRow, colorSpaceRef, kCGBitmapByteOrder32Little|kCGImageAlphaNoneSkipLast);
+    // ========== 修复枚举警告：把CGImageAlphaInfo强转为CGBitmapInfo ==========
+    CGBitmapInfo bitmapInfo = kCGBitmapByteOrder32Little | (CGBitmapInfo)kCGImageAlphaNoneSkipLast;
+    CGContextRef context = CGBitmapContextCreate(rgbImageBuf, imageWidth, imageHeight, 8, bytesPerRow, colorSpaceRef, bitmapInfo);
+    
     CGContextDrawImage(context, CGRectMake(0, 0, imageWidth, imageHeight), image.CGImage);
     //遍历像素, 改变像素点颜色
     int pixelNum = imageWidth * imageHeight;
@@ -151,9 +155,16 @@
         }
     }
     //取出图片
+//    CGDataProviderRef dataProvider = CGDataProviderCreateWithData(NULL, rgbImageBuf, bytesPerRow * imageHeight, ProviderReleaseData);
+//    CGImageRef imageRef = CGImageCreate(imageWidth, imageHeight, 8, 32, bytesPerRow, colorSpaceRef,
+//                                        kCGImageAlphaLast | kCGBitmapByteOrder32Little, dataProvider,
+//                                        NULL, true, kCGRenderingIntentDefault);
+    //取出图片
+    // ========== 这里同样修复枚举警告 ==========
+    CGBitmapInfo outputBitmapInfo = kCGBitmapByteOrder32Little | (CGBitmapInfo)kCGImageAlphaLast;
     CGDataProviderRef dataProvider = CGDataProviderCreateWithData(NULL, rgbImageBuf, bytesPerRow * imageHeight, ProviderReleaseData);
     CGImageRef imageRef = CGImageCreate(imageWidth, imageHeight, 8, 32, bytesPerRow, colorSpaceRef,
-                                        kCGImageAlphaLast | kCGBitmapByteOrder32Little, dataProvider,
+                                        outputBitmapInfo, dataProvider,
                                         NULL, true, kCGRenderingIntentDefault);
     CGDataProviderRelease(dataProvider);
     UIImage *resultImage = [UIImage imageWithCGImage:imageRef];
@@ -210,7 +221,11 @@
     size_t bytesPerRow = imageWidth * 4;
     uint32_t *rgbImageBuf = (uint32_t *)malloc(bytesPerRow * imageHeight);
     CGColorSpaceRef colorSpaceRef = CGColorSpaceCreateDeviceRGB();
-    CGContextRef context = CGBitmapContextCreate(rgbImageBuf, imageWidth, imageHeight, 8, bytesPerRow, colorSpaceRef, kCGBitmapByteOrder32Little|kCGImageAlphaNoneSkipLast);
+    //CGContextRef context = CGBitmapContextCreate(rgbImageBuf, imageWidth, imageHeight, 8, bytesPerRow, colorSpaceRef, kCGBitmapByteOrder32Little|kCGImageAlphaNoneSkipLast);
+    // 修复：枚举类型位运算警告，显式强转为 CGBitmapInfo
+    CGBitmapInfo bitmapInfo = kCGBitmapByteOrder32Little | (CGBitmapInfo)kCGImageAlphaNoneSkipLast;
+    CGContextRef context = CGBitmapContextCreate(rgbImageBuf, imageWidth, imageHeight, 8, bytesPerRow, colorSpaceRef, bitmapInfo);
+    
     CGContextDrawImage(context, CGRectMake(0, 0, imageWidth, imageHeight), image.CGImage);
     //遍历像素, 改变像素点颜色
     int pixelNum = imageWidth * imageHeight;
@@ -227,10 +242,18 @@
         }
     }
     //取出图片
+//    CGDataProviderRef dataProvider = CGDataProviderCreateWithData(NULL, rgbImageBuf, bytesPerRow * imageHeight, ProviderReleaseData);
+//    CGImageRef imageRef = CGImageCreate(imageWidth, imageHeight, 8, 32, bytesPerRow, colorSpaceRef,
+//                                        kCGImageAlphaLast | kCGBitmapByteOrder32Little, dataProvider,
+//                                        NULL, true, kCGRenderingIntentDefault);
+    
+    //取出图片
+    CGBitmapInfo outputBitmapInfo = kCGBitmapByteOrder32Little | (CGBitmapInfo)kCGImageAlphaLast;
     CGDataProviderRef dataProvider = CGDataProviderCreateWithData(NULL, rgbImageBuf, bytesPerRow * imageHeight, ProviderReleaseData);
     CGImageRef imageRef = CGImageCreate(imageWidth, imageHeight, 8, 32, bytesPerRow, colorSpaceRef,
-                                        kCGImageAlphaLast | kCGBitmapByteOrder32Little, dataProvider,
+                                        outputBitmapInfo, dataProvider,
                                         NULL, true, kCGRenderingIntentDefault);
+    
     CGDataProviderRelease(dataProvider);
     UIImage *resultImage = [UIImage imageWithCGImage:imageRef];
     CGImageRelease(imageRef);

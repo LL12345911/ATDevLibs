@@ -1,5 +1,4 @@
-
-    //
+//
 //  UIImage+ATKit.m
 //  HighwayDoctor
 //
@@ -43,14 +42,19 @@
     int bytesPerRow = bytesPerPixel * 1;
     NSUInteger bitsPerComponent = 8;
     unsigned char pixelData[4] = { 0, 0, 0, 0 };
+    // ========== 修复枚举位运算警告 ==========
+    CGBitmapInfo bitmapInfo = kCGBitmapByteOrder32Big | (CGBitmapInfo)kCGImageAlphaPremultipliedLast;
     CGContextRef context = CGBitmapContextCreate(pixelData,
                                                  1,
                                                  1,
                                                  bitsPerComponent,
                                                  bytesPerRow,
                                                  colorSpace,
-                                                 kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
+                                                 bitmapInfo);
     CGColorSpaceRelease(colorSpace);
+    if (!context) {
+        return nil;
+    }
     CGContextSetBlendMode(context, kCGBlendModeCopy);
     
     CGContextTranslateCTM(context, -pointX, pointY-(CGFloat)height);
@@ -71,7 +75,11 @@
     int height = self.size.height;
     
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
-    CGContextRef context = CGBitmapContextCreate(nil,width,height,8,0,colorSpace,kCGImageAlphaNone);
+//    CGContextRef context = CGBitmapContextCreate(nil,width,height,8,0,colorSpace,kCGImageAlphaNone);
+//    CGColorSpaceRelease(colorSpace);
+    // ✅ 关键修复：强制转为 CGBitmapInfo
+    CGBitmapInfo bitmapInfo = (CGBitmapInfo)kCGImageAlphaNone;
+    CGContextRef context = CGBitmapContextCreate(nil, width, height, 8, 0, colorSpace, bitmapInfo);
     CGColorSpaceRelease(colorSpace);
     
     if (context == NULL)
@@ -297,7 +305,7 @@ static CGFloat edgeSizeFromCornerRadius(CGFloat cornerRadius) {
 
 - (UIImage *)imageTintedWithColor:(UIColor *)color
 {
-        // This method is designed for use with template images, i.e. solid-coloured mask-like images.
+    // This method is designed for use with template images, i.e. solid-coloured mask-like images.
     return [self imageTintedWithColor:color fraction:0.0]; // default to a fully tinted mask of the image.
 }
 
@@ -305,7 +313,7 @@ static CGFloat edgeSizeFromCornerRadius(CGFloat cornerRadius) {
 - (UIImage *)imageTintedWithColor:(UIColor *)color fraction:(CGFloat)fraction
 {
     if (color) {
-            // Construct new image the same size as this one.
+        // Construct new image the same size as this one.
         UIImage *image;
         
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0
@@ -320,17 +328,17 @@ static CGFloat edgeSizeFromCornerRadius(CGFloat cornerRadius) {
         CGRect rect = CGRectZero;
         rect.size = [self size];
         
-            // Composite tint color at its own opacity.
+        // Composite tint color at its own opacity.
         [color set];
         UIRectFill(rect);
         
-            // Mask tint color-swatch to this image's opaque mask.
-            // We want behaviour like NSCompositeDestinationIn on Mac OS X.
+        // Mask tint color-swatch to this image's opaque mask.
+        // We want behaviour like NSCompositeDestinationIn on Mac OS X.
         [self drawInRect:rect blendMode:kCGBlendModeDestinationIn alpha:1.0];
         
-            // Finally, composite this image over the tinted mask at desired opacity.
+        // Finally, composite this image over the tinted mask at desired opacity.
         if (fraction > 0.0) {
-                // We want behaviour like NSCompositeSourceOver on Mac OS X.
+            // We want behaviour like NSCompositeSourceOver on Mac OS X.
             [self drawInRect:rect blendMode:kCGBlendModeSourceAtop alpha:fraction];
         }
         image = UIGraphicsGetImageFromCurrentImageContext();
@@ -414,13 +422,14 @@ static void addRoundedRectToPath(CGContextRef context, CGRect rect, float ovalWi
 
 - (id)roundedSize:(CGSize)size radius:(NSInteger)r
 {
-        // the size of CGContextRef
+    // the size of CGContextRef
     int w = size.width;
     int h = size.height;
     
     UIImage *img = self;
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    CGContextRef context = CGBitmapContextCreate(NULL, w, h, 8, 4 * w, colorSpace,(CGBitmapInfo) kCGImageAlphaPremultipliedFirst);
+    CGBitmapInfo bitmapInfo = (CGBitmapInfo)kCGImageAlphaPremultipliedFirst;
+    CGContextRef context = CGBitmapContextCreate(NULL, w, h, 8, 4 * w, colorSpace, bitmapInfo);
     CGRect rect = CGRectMake(0, 0, w, h);
     
     CGContextBeginPath(context);
@@ -444,7 +453,7 @@ static void addRoundedRectToPath(CGContextRef context, CGRect rect, float ovalWi
     
     CGImageRef inImage = self.CGImage;
     
-        // Create off screen bitmap context to draw the image into. Format ARGB is 4 bytes for each pixel: Alpa, Red, Green, Blue
+    // Create off screen bitmap context to draw the image into. Format ARGB is 4 bytes for each pixel: Alpa, Red, Green, Blue
     
     CGContextRef cgctx = [self createARGBBitmapContextFromImage:inImage];
     
@@ -464,27 +473,27 @@ static void addRoundedRectToPath(CGContextRef context, CGRect rect, float ovalWi
     
     
     
-        // Draw the image to the bitmap context. Once we draw, the memory
+    // Draw the image to the bitmap context. Once we draw, the memory
     
-        // allocated for the context for rendering will then contain the
+    // allocated for the context for rendering will then contain the
     
-        // raw image data in the specified color space.
+    // raw image data in the specified color space.
     
     CGContextDrawImage(cgctx, rect, inImage);
     
     
     
-        // Now we can get a pointer to the image data associated with the bitmap
+    // Now we can get a pointer to the image data associated with the bitmap
     
-        // context.
+    // context.
     
     unsigned char* data = CGBitmapContextGetData (cgctx);
     
     if (data != NULL) {
         
-            //offset locates the pixel in the data from x,y.
+        //offset locates the pixel in the data from x,y.
         
-            //4 for 4 bytes of data per pixel, w is width of one row of data.
+        //4 for 4 bytes of data per pixel, w is width of one row of data.
         
         int offset = 4*((w*round(point.y))+round(point.x));
         
@@ -496,7 +505,7 @@ static void addRoundedRectToPath(CGContextRef context, CGRect rect, float ovalWi
         
         int blue = data[offset+3];
         
-            //NSLog(@"offset: %i colors: RGB A %i %i %i  %i",offset,red,green,blue,alpha);
+        //NSLog(@"offset: %i colors: RGB A %i %i %i  %i",offset,red,green,blue,alpha);
         
         color = [UIColor colorWithRed:(red/255.0f) green:(green/255.0f) blue:(blue/255.0f) alpha:(alpha/255.0f)];
         
@@ -506,11 +515,11 @@ static void addRoundedRectToPath(CGContextRef context, CGRect rect, float ovalWi
     
     
     
-        // When finished, release the context
+    // When finished, release the context
     
     CGContextRelease(cgctx);
     
-        // Free image data memory for the context
+    // Free image data memory for the context
     
     if (data) { free(data); }
     
@@ -536,7 +545,7 @@ static void addRoundedRectToPath(CGContextRef context, CGRect rect, float ovalWi
     
     
     
-        // Get image width, height. We'll use the entire image.
+    // Get image width, height. We'll use the entire image.
     
     size_t pixelsWide = CGImageGetWidth(inImage);
     
@@ -544,11 +553,11 @@ static void addRoundedRectToPath(CGContextRef context, CGRect rect, float ovalWi
     
     
     
-        // Declare the number of bytes per row. Each pixel in the bitmap in this
+    // Declare the number of bytes per row. Each pixel in the bitmap in this
     
-        // example is represented by 4 bytes; 8 bits each of red, green, blue, and
+    // example is represented by 4 bytes; 8 bits each of red, green, blue, and
     
-        // alpha.
+    // alpha.
     
     bitmapBytesPerRow   = (pixelsWide * 4);
     
@@ -556,7 +565,7 @@ static void addRoundedRectToPath(CGContextRef context, CGRect rect, float ovalWi
     
     
     
-        // Use the generic RGB color space.
+    // Use the generic RGB color space.
     
     colorSpace = CGColorSpaceCreateDeviceRGB();
     
@@ -574,9 +583,9 @@ static void addRoundedRectToPath(CGContextRef context, CGRect rect, float ovalWi
     
     
     
-        // Allocate memory for image data. This is the destination in memory
+    // Allocate memory for image data. This is the destination in memory
     
-        // where any drawing to the bitmap context will be rendered.
+    // where any drawing to the bitmap context will be rendered.
     
     bitmapData = malloc( bitmapByteCount );
     
@@ -594,14 +603,15 @@ static void addRoundedRectToPath(CGContextRef context, CGRect rect, float ovalWi
     
     
     
-        // Create the bitmap context. We want pre-multiplied ARGB, 8-bits
+    // Create the bitmap context. We want pre-multiplied ARGB, 8-bits
     
-        // per component. Regardless of what the source image format is
+    // per component. Regardless of what the source image format is
     
-        // (CMYK, Grayscale, and so on) it will be converted over to the format
+    // (CMYK, Grayscale, and so on) it will be converted over to the format
     
-        // specified here by CGBitmapContextCreate.
-    
+    // specified here by CGBitmapContextCreate.
+    // ========== 修复枚举位运算警告 ==========
+    CGBitmapInfo bitmapInfo = (CGBitmapInfo)kCGImageAlphaPremultipliedFirst;
     context = CGBitmapContextCreate (bitmapData,
                                      
                                      pixelsWide,
@@ -614,8 +624,7 @@ static void addRoundedRectToPath(CGContextRef context, CGRect rect, float ovalWi
                                      
                                      colorSpace,
                                      
-                                     (CGBitmapInfo)kCGImageAlphaPremultipliedFirst);
-    
+                                     bitmapInfo);
     if (context == NULL)
         
     {
@@ -628,7 +637,7 @@ static void addRoundedRectToPath(CGContextRef context, CGRect rect, float ovalWi
     
     
     
-        // Make sure and release colorspace before returning
+    // Make sure and release colorspace before returning
     
     CGColorSpaceRelease( colorSpace );
     
@@ -656,7 +665,7 @@ static void addRoundedRectToPath(CGContextRef context, CGRect rect, float ovalWi
     return flippedImage;
 }
 
-    //根据颜色创建一个图片
+//根据颜色创建一个图片
 + (UIImage *)createImageWithColor:(UIColor *)color rect:(CGRect)rect
 {
     UIGraphicsBeginImageContext(rect.size);
@@ -731,7 +740,9 @@ static void addRoundedRectToPath(CGContextRef context, CGRect rect, float ovalWi
     
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
     unsigned char rgba[4];
-    CGContextRef context = CGBitmapContextCreate(rgba, 1, 1, 8, 4, colorSpace, kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
+    // ========== 修复枚举位运算警告 ==========
+    CGBitmapInfo bitmapInfo = kCGBitmapByteOrder32Big | (CGBitmapInfo)kCGImageAlphaPremultipliedLast;
+    CGContextRef context = CGBitmapContextCreate(rgba, 1, 1, 8, 4, colorSpace, bitmapInfo);
     
     CGContextDrawImage(context, CGRectMake(0, 0, 1, 1), self.CGImage);
     CGColorSpaceRelease(colorSpace);
@@ -791,7 +802,7 @@ static void addRoundedRectToPath(CGContextRef context, CGRect rect, float ovalWi
 
 /**
  设置图片旋转角度
-
+ 
  @param Angle 旋转的角度（0~360）
  @return 旋转后的图片
  */
@@ -799,11 +810,11 @@ static void addRoundedRectToPath(CGContextRef context, CGRect rect, float ovalWi
     @autoreleasepool {
         CGFloat width = CGImageGetWidth(self.CGImage);
         CGFloat height = CGImageGetHeight(self.CGImage);
-
+        
         CGSize rotatedSize;
         rotatedSize.width = width;
         rotatedSize.height = height;
-
+        
         UIGraphicsBeginImageContext(rotatedSize);
         CGContextRef bitmap = UIGraphicsGetCurrentContext();
         CGContextTranslateCTM(bitmap, rotatedSize.width/2, rotatedSize.height/2);
